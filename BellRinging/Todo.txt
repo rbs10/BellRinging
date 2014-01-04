@@ -1,0 +1,196 @@
+// 17-NOV-2013
+
+Left set to compose exactly 2014 changes of single method with snap start.
+
+Tweaks for snap start
+Treat snap start as its own method
+Prime to start with lead of snap
+
+Got 92 or so for superlative overnight - 270 mins
+With heuristic of music > threshold can get there quite quickly - maybe have adaptive music threshold to focus on improvements - might lose touches music near end but limited
+
+To clean up snap
+	remove jump start
+	do not initialise with snap method 
+
+Snap - don't seem to get bobs only compositions - need something that kept in course
+
+Does better at producing true compositions if have falseness check in!
+
+Rutland - too many calls
+Pudesy, Lincolnshire, Belfast, Cambridge, Glasgow - nothing meeting cut
+London - too many calls (fewer compositions than Rutland)
+Yorkshire 14/78 - nothing fewer calls
+Superlative 12/70
+Bristol - lots, lots music, lots calls for even more music - got a 12/78
+"Ashtead" - long time to not great 15/66ish
+ "Cassiobury" 19/66
+  "Cornwall" 14/107 absolute max music yet - 7642
+  , "Lessness" 13/74 so far - yeah whatever
+  , "Uxbridge" - similar
+  "Tavistock" 19/70
+  "Northampton" 20/70
+   "Cray" 11/91; 12/99 - 8272
+// Can get down to 10 calls in Superlative, 11 quite easily in SKYBE with 1 single in SYE, extra call to get 1 single in B and lots singles in K
+
+Minimise number of calls and Superlative looks a winner - 10/-35 = 10/65 or 10.75? (first lead ! takes hit)
+
+Tried priming to start with a wrong or middle - lose a bit on total music but get some compositions
+Tried forcing to come round at a plain lead - only worked for E on SKYBE
+
+// OLD
+Medium length compositions with lots of music
+Practise night spliced
+  Export compositions
+  Search compositions by wildcards or set of methods
+  6/7/8 lead compositions
+  Sunday evening 8 spliced - 2 courses ?
+Simpleish Glasgow
+
+GUI options
+  length
+  composition rendering
+  set of methods
+  tenors together
+  falseness mode - absolute or trivial
+  music preferences
+  filtering options  
+    min score at length
+    best score at length
+  score
+    music
+    calls
+    wraps
+    com
+    singles
+    
+
+Can we get peals?
+  not trivially quickly with Cambridge
+  speedups
+    - trim out music counts
+    - maintain lead head array - quicker lead end falseness checking
+    - rotational sym - no snaps
+    - compress leads XB M WX XH
+    - compress whole courses
+        fewer moves up/down tree
+        reduces tree size if any courses are false
+    - inline stuff
+    - better falseness checking
+    - assembly
+
+Visualise:
+  snap ends
+  see coursing order quickly
+  see lead contents quickly
+  see wraps
+  find arbitrary patterns
+  see composition
+  prick out composition
+  arrange for tenors together only
+  arrange for in course only - no singles
+  different methods
+  different music scorings
+  
+Falseness check - performance for all leads vs performance for false lead heads
+
+Customise output criteria - better or equal
+
+Look for cross lead head music
+        start with medium length composition and explore candidates with good music
+        route towards good music - score changes according to nearness to good music -> choice mapping at each lead for route to take
+        route away from falseness against things we want
+        run all day
+
+Classify compositions
+  - number of singles
+  - unrotated signature
+  - distinct calls
+  - distinct runs
+  - number of leads out of course
+  - 87's at backstroke
+  
+Write compositions out in better style - separate methods and calls
+Letters for methods
+
+Option to include only gross falseness - duplicate leads or rounds repeated  
+  
+Move leadHead so that rounds is part of the ending of the method. Leads are HS,BS x 16
+
+Save options to file
+
+Where is music?
+Avoid counting rows past snap end in music
+
+Spliced
+   extend falseness calculation for what want - modest numbers of methods
+   map choice to text
+   initialise for spliced
+
+Make music entry easier
+Keep top N compositions
+Tenors together
+In and Fifths
+Funny start
+Get a composition checked
+Write composition out intelligently
+Use two threads
+Allow for methods with different lengths
+
+Bobs only 
+Tenors together
+    - optimise falseness set to match (ignore leads will never ring)
+    
+    How is music distributed lots of 1's or lots of 5s ?
+    
+    What is optimal music at each length ?
+    
+    GUI wrapper (minimal with stop and stats)
+
+Semsible performance metrics
+    Time to score
+    Space covered over time
+    
+Is in-progress falseness check worthwhile?
+
+Simplify problem to counting rotationally distinct leads on N
+  neither falseness nor coming round constraint
+  
+  
+  Unsorted - 2^N
+  Sorted - depends on symettry of change - things that will be the same with blocks
+  
+  On prime only thing is the identities (2 changes)
+  
+  
+  Performance
+  
+  40 leads of Bristol - not Tenors together. SimpleComposor about 6.5min ELF 9.5min. Same composition out, 
+    music score off by 1 (Simple 91, Elf 90)
+    
+    
+  Rotational composer - no music check, in line truth checking, no postfix elimination
+    
+Composition complete in 00:03:36.4843750
+Leads 356936209 Max length 39 Compositions 8695928 best music System.Int32[]
+
+    
+  Tenors together Elf - 0 sec SimpleComposor with printing off 
+     00:00:00.9687500
+
+		l.ToLongString(true)	"12436587 2134567812435768 2134758623145768 3241567823146587 3241685723461875 2436815742631875 4623815764328517 4623587142638517 2436587123456781 3254761835246781 5342761835247168 3254178623457168 2435178642315768 2413567842316587 2413685721438675 1234685721436587 12345678"	string
+
+Performance
+  - Lessness - incremental truth checking 60,000 leads/s
+               end only - 120,000 and a bit 
+                  however doing more false stuff
+               similar with by-row truth checking 120,000 or so
+               with check for snap completion in line comes down to 90,000 or so
+               
+               few percent slower if expose maxLeadLength directly
+               
+               3.64 min to first solution with incremental truth check
+               3.98 min w/o incremental truth check
+
+Standard Methods - some modest benefit to including singles on SJT score. Quite a large effect on Bristol and London. 
+None on Belfast - false immediately?
