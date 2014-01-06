@@ -164,11 +164,11 @@ namespace BellRinging
       // accumulate the simple score skipping the final row which is modelled as part of the
       // next lead
       short score = 0;
-      if (allRows[0].CoursingOrder().StartsWith("7"))
-      {
-         score = 10;
-      }
-      return score;
+      //if (allRows[0].CoursingOrder().StartsWith("7"))
+      //{
+      //   score = 10;
+      //}
+      //return score;
 
       short lastRowScore = 0;
       foreach (Row r in allRows)

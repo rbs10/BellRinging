@@ -190,7 +190,10 @@ namespace BellRinging
     {
       get
       {
-        return minBackTrackPoint.ToString() + "/" + timesToPoint.ToString();
+           var temp = _composition.Clone();
+           temp.maxLeadIndex = (short)(temp.leads.Length - 1);
+           return temp.ToString();
+        //return minBackTrackPoint.ToString() + "/" + timesToPoint.ToString();
       }
     }
 
@@ -377,9 +380,12 @@ namespace BellRinging
             // constraint to go through Cambridge group sBIM finish
             && (nextLead == 3910 || maxLeadIndex != maxLeads - 5 )
 
+            // try and get a largely tenors together compostion
+            && ( maxLeadIndex > 58 || Row.FromNumber(nextLead).IsTenorsTogetherLeadEnd)
+
             && IsNotTriviallyFalseOrRepetitive(nextLead,leads,choices,maxLeadIndex)
 
-            //  && totalMusic >= maxLeadIndex  * bestMusic[maxLeads-1]/maxLeads
+            && totalMusic >= (0.95 * maxLeadIndex  * bestMusic[maxLeads-1])/maxLeads 
             // aiming for superlative score above 90)
             //&& totalMusic >= maxLeadIndex * ( 90.0/63 * 0.8) - 5
             //&& totalMusic >= maxLeadIndex * (260 / 63 * 0.8) - 5

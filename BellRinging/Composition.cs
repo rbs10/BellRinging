@@ -249,32 +249,44 @@ namespace BellRinging
         for (int i = 0; i <= maxLeadIndex; ++i)
         {
           int leadIndex = (i + rot) % (maxLeadIndex + 1);
+
           int choice = choices[leadIndex];
+          // handle snapshots of in progress touches
+          if (choice >= _tables._methodsByChoice.Length) break;
+
           Method method = _tables._methodsByChoice[choice];
           int methodIndex = _tables.methodIndexByChoice[choice];
           short nextLead = _tables.leadMapping[thisLead, choice];
-          Row r = Row.FromNumber(nextLead);
-          //sb.Append(methodIndex);
-          //sb.Append(method.Letter);
-          int call = _tables.CallIndex(choice);
-
-          //sb.Append(call > 0 ? "B" : "P");
-          if (call > 0)
+          if (nextLead >= 0)
           {
-            char callName = "?IB4VMWH"[r.ToString().IndexOf('8')];
-            //if (sb.Length > 0)
-            //{
-            //  sb.Append(" ");
-            //}
-            if (call == 2)
-            {
-              sb.Append("s");
-            }
-            //else
-            //{
-            //  sb.Append("-");
-            //}
-            sb.Append(callName);
+              Row r = Row.FromNumber(nextLead);
+              //sb.Append(methodIndex);
+              //sb.Append(method.Letter);
+              int call = _tables.CallIndex(choice);
+
+              //sb.Append(call > 0 ? "B" : "P");
+              if (call > 0)
+              {
+                  char callName = "?IB4VMWH"[r.ToString().IndexOf('8')];
+                  //if (sb.Length > 0)
+                  //{
+                  //  sb.Append(" ");
+                  //}
+                  if (call == 2)
+                  {
+                      sb.Append("s");
+                  }
+                  //else
+                  //{
+                  //  sb.Append("-");
+                  //}
+                  sb.Append(callName);
+              }
+          }
+          else
+          {
+              sb.Append(".");
+              break;
           }
           thisLead = nextLead;
         }
@@ -287,9 +299,15 @@ namespace BellRinging
         {
           int leadIndex = (i + rot) % (maxLeadIndex + 1);
           int choice = choices[leadIndex];
+
+           // handle snapshots of in progress touches
+          if (choice >= _tables._methodsByChoice.Length) break;
+
           Method method = _tables._methodsByChoice[choice];
           int methodIndex = _tables.methodIndexByChoice[choice];
           short nextLead = _tables.leadMapping[thisLead, choice];
+          // handle snapshots of in progress touches
+          if (nextLead < 0) break;
           Row r = Row.FromNumber(nextLead);
           //sb.Append(methodIndex);
           sb.Append(method.Letter);

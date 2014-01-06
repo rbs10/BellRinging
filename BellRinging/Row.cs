@@ -159,13 +159,20 @@ namespace BellRinging
     {
       _row = row;
       _number = CalcNumber();
+      IsTenorsTogetherLeadEnd = _row[0] == _rounds[0] && CoursingOrder().StartsWith("7");
     }
 
     public Row(int noBells)
     {
       _row = _rounds.Substring(0, noBells).ToCharArray();
       _number = CalcNumber();
+      IsTenorsTogetherLeadEnd = _row[0] == _rounds[0] && CoursingOrder().StartsWith("7");
     }
+
+    /// <summary>
+    /// True if as a lead end this row has tenors together
+    /// </summary>
+    public bool IsTenorsTogetherLeadEnd { get; private set; }
 
     public Row Apply(int[] mapping)
     {
