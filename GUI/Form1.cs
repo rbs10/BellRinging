@@ -164,9 +164,12 @@ namespace GUI
         {
             text += kvp.Key;
             text += " " + " BS"[kvp.Value % 3];
+            text += " ";
+            text += kvp.Value;
+            text += " ";
+            text += Row.FromNumber(kvp.Key).CoursingOrder();
             text += "\r\n";
         }
-        text += Row.FromNumber(0);
         text += "\r\n";
 
       }

@@ -1,3 +1,7 @@
+// 8-NOV-2014
+
+  Get working - Glasgow/Superlative not finding - need look compatability, waypoints
+
 // 17-NOV-2013
 
 Left set to compose exactly 2014 changes of single method with snap start.

@@ -243,14 +243,19 @@ namespace BellRinging
 
     public override string ToString()
     {
+        if (_tables._methodsByChoice == null) return "Initialising";
+
       StringBuilder sb = new StringBuilder();
       {
+          // handle case of peak at composition before tables initialiased
         short thisLead = leads[0]; // rounds
         for (int i = 0; i <= maxLeadIndex; ++i)
         {
           int leadIndex = (i + rot) % (maxLeadIndex + 1);
 
-          int choice = choices[leadIndex];
+            int choice = choices[leadIndex];
+
+
           // handle snapshots of in progress touches
           if (choice >= _tables._methodsByChoice.Length) break;
 
@@ -344,7 +349,10 @@ namespace BellRinging
         int calls = 0;
         for (int i = 0; i <= this.maxLeadIndex; ++i)
         {
-          if ( _tables.IsCall(choices[i]) ) ++calls;
+          //if ( _tables.IsCall(choices[i]) ) ++calls;
+            var grp = choices[i] % 3;
+            if (grp == 1) ++calls;
+            if (grp == 2) calls += 1000;
         }
         return calls;
       }

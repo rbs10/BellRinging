@@ -46,7 +46,7 @@ namespace BellRinging
         int index = 0;
         foreach (string method in
           new string[] { 
-             "Superlative","London"
+             "Cambridge","London"
           
          // ,"Superlative"
          // ,"Yorkshire"
@@ -115,8 +115,10 @@ namespace BellRinging
     int[] bestMusic;
     int[] bestQuality;
     int[] bestCalls;
+    int bestTotalMusic;
 
     int totalMusic = 0;
+    int totalChoices = 0;
 
     long totalLeads;
     int maxLength;
@@ -136,6 +138,11 @@ namespace BellRinging
       bestMusic = new int[maxLeads*32+1];
       bestQuality = new int[maxLeads * 32 + 1];
       bestCalls = new int[maxLeads * 32 + 1];
+
+      int maxGroup = 63 * 1000;
+      bestMusic = new int[maxGroup];
+      bestQuality = new int[maxGroup];
+      bestCalls = new int[maxGroup];
       //compositionsWithMusicScore = new int[1 + _tables.maxMusic * _tables.MAX_LEADS];
 
       //DoComposeWrapper(null);
@@ -278,7 +285,7 @@ namespace BellRinging
       choices[0] = 0;
 
 // London?
-      choices[0] = 4;
+      choices[0] = 3;
 
       // for snap start have set up "3" from rounds as the snap start lead
       // so start the composition there (and nothing beyond so no problem there)
@@ -344,9 +351,13 @@ namespace BellRinging
           
           if (falseAt < 0)
           {
-            totalMusic += _tables.music[currentLead, choices[maxLeadIndex]];
-            WriteComposition(maxLeadIndex);
-            totalMusic -= _tables.music[currentLead, choices[maxLeadIndex]];
+              //only want longest compositions
+              if (maxLeadIndex == maxLeads-1)
+              {
+                  totalMusic += _tables.music[currentLead, choices[maxLeadIndex]];
+                  WriteComposition(maxLeadIndex);
+                  totalMusic -= _tables.music[currentLead, choices[maxLeadIndex]];
+              }
             // true - no need to backtrack other than because of outcome of other choices here
             minBackTrack = maxLeadIndex;
           }
@@ -378,14 +389,19 @@ namespace BellRinging
             && maxLeadIndex + _tables.leadsToEnd[nextLead] < maxLeads // could come round in time
 
             // constraint to go through Cambridge group sBIM finish
-            && (nextLead == 3910 || maxLeadIndex != maxLeads - 5 )
+            && (nextLead == 3910 || maxLeadIndex != maxLeads - 5 ) // 63 - 5 = 58
 
             // try and get a largely tenors together compostion
-            && ( maxLeadIndex > 58 || Row.FromNumber(nextLead).IsTenorsTogetherLeadEnd)
+            //&& ( maxLeadIndex > 58 || Row.FromNumber(nextLead).IsTenorsTogetherLeadEnd)
+
+            //&& totalChoices < 20
 
             && IsNotTriviallyFalseOrRepetitive(nextLead,leads,choices,maxLeadIndex)
 
-            && totalMusic >= (0.95 * maxLeadIndex  * bestMusic[maxLeads-1])/maxLeads 
+            && totalMusic >= (maxLeadIndex  * bestTotalMusic)/maxLeads - 100
+
+           // && totalMusic * maxLeads >= (90 * maxLeadIndex * bestTotalMusic) / 100
+
             // aiming for superlative score above 90)
             //&& totalMusic >= maxLeadIndex * ( 90.0/63 * 0.8) - 5
             //&& totalMusic >= maxLeadIndex * (260 / 63 * 0.8) - 5
@@ -444,6 +460,7 @@ namespace BellRinging
             )
           {
             totalMusic += _tables.music[currentLead, choices[maxLeadIndex]];
+            totalChoices += choices[maxLeadIndex];
             currentLead = nextLead;
             ++maxLeadIndex;
             if (maxLeadIndex > maxLength) maxLength = maxLeadIndex;
@@ -488,6 +505,7 @@ namespace BellRinging
           --maxLeadIndex;
           currentLead = leads[maxLeadIndex];
           totalMusic -= _tables.music[currentLead, choices[maxLeadIndex]];
+          totalChoices -= choices[maxLeadIndex];
           ++choices[maxLeadIndex];
         }
         else
@@ -569,11 +587,12 @@ namespace BellRinging
 
         int totalScore = _composition.Score;// -_composition.Calls;
         var quality = _composition.Quality;
-        var calls = 1000-_composition.Calls;
+        var calls = bestMusic.Length-1- _composition.Calls;
         //_composition.CalcWraps();
 
        // compositionsWithMusicScore[totalScore]++;
         int changes = _composition.Changes;
+        var group = calls;
         if (
             // changes == 2015 - (6 * 7 * 32) &&
              changes == maxLeads * 32 - 1 &&
@@ -581,9 +600,9 @@ namespace BellRinging
             //(changes % 2 != 0 ) &&
             //changes == 2015 && 
             (
-          totalScore >= bestMusic[changes] ||
-          quality >= bestQuality[changes] 
-          ||calls >=bestCalls[changes]
+          totalScore >= bestMusic[group] ||
+          quality >= bestQuality[group] 
+          //||calls >=bestCalls[changes]
           )
             //totalScore >= 120 &&
             // _composition.Calls < 10&&
@@ -597,17 +616,21 @@ namespace BellRinging
                 _receiver.AddComposition(_composition.Clone());
             }
 
-            if (totalScore > bestMusic[changes])
+            if (totalScore > bestMusic[group])
             {
-                bestMusic[changes] = totalScore;
+                bestMusic[group] = totalScore;
             }
-            if (quality > bestQuality[changes])
+            if (totalScore > bestTotalMusic)
             {
-                bestQuality[changes] = quality;
-            } 
-            if (calls > bestCalls[changes])
+                bestTotalMusic = totalScore;
+            }
+            if (quality > bestQuality[group])
             {
-                bestCalls[changes] = calls;
+                bestQuality[group] = quality;
+            }
+            if (calls > bestCalls[group])
+            {
+                bestCalls[group] = calls;
             }
             return;
             Console.WriteLine("Leads = " + (noLeads + 1) + " ( " + (noLeads + 1) * 32 + "  changes) Total music " + totalMusic);

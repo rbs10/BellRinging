@@ -141,8 +141,9 @@ namespace BellRinging
             //  Console.WriteLine(num);
             //}
 
-                if (nextLeadHead != null && (!bTenorsTogether || nextLeadHead.CoursingOrder().StartsWith("7")))
+                if (nextLeadHead != null && (IncludeLeadHead(nextLeadHead)))
                 {
+                    
                  // music[num, i] = (short)l.CalcWraps(); // Wraps hunt version
                   music[num, i] = l.Score(musicalPreferences, nextLeadHead); // normal scoring
                    //music[num, i] = (short)(10 - (short)i); // favour simplicity
@@ -150,7 +151,7 @@ namespace BellRinging
                   
                   leadMapping[num, i] = nextLeadHead.ToNumberExTreble();
                   // ignore mapping back from nextLeadHead=rounds when this lead contains snap finish
-                  if (l.ContainsRoundsAt <= 0)
+                  //if (l.ContainsRoundsAt <= 0)
                   {
                     reverseLeadMapping[nextLeadHead.ToNumberExTreble(), i] = num;
                   }
@@ -174,6 +175,31 @@ namespace BellRinging
 
 
       //Console.WriteLine("Done leads to end count " + (DateTime.UtcNow - startInit));
+    }
+
+    private bool IncludeLeadHead(Row nextLeadHead)
+    {
+        //return true;
+
+        bool ret = nextLeadHead.CoursingOrder().StartsWith("7");
+        if ( !ret )
+        {
+            // include leads in the sBIM finish
+            int num = nextLeadHead.ToNumber(); 
+            if ( num == 3910 || num == 2051 ||
+                 num == 4761 ||
+                 num == 2356 || num == 127)
+            {
+                ret = true;
+            }
+        }
+        if ( ret )
+        {
+            System.Diagnostics.Debug.WriteLine(nextLeadHead.ToNumber());
+        }
+        return ret;
+        // standard include all version
+        //return !bTenorsTogether || nextLeadHead.CoursingOrder().StartsWith("7");
     }
 
 
