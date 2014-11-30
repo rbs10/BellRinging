@@ -13,7 +13,7 @@ namespace BellRinging
   {
     public  int NO_CHOICES;
     public  int NO_LEADENDS = 5040;
-    public  int MAX_LEADS = 63; //63; // 16; // 29; //42;
+    public  int MAX_LEADS = 63;// 63; //63; // 16; // 29; //42;
     public bool bTenorsTogether = false;
 
     // for each lead end where the next lead given a specified choice
@@ -179,19 +179,30 @@ namespace BellRinging
 
     private bool IncludeLeadHead(Row nextLeadHead)
     {
+        // standard include all version
+        //return !bTenorsTogether || nextLeadHead.CoursingOrder().StartsWith("7");
         //return true;
 
         bool ret = nextLeadHead.CoursingOrder().StartsWith("7");
         if ( !ret )
         {
-            // include leads in the sBIM finish
             int num = nextLeadHead.ToNumber(); 
-            if ( num == 3910 || num == 2051 ||
-                 num == 4761 ||
-                 num == 2356 || num == 127)
+            // 1819 London finish, 127 is the lead AFTER then end that we work back from
+
+            // 4066 Maypole - 1 lead to go
+            if (num == 4066 || num == 127)
             {
                 ret = true;
             }
+            //ret = true;
+
+            // include leads in the sBIM finish
+            //if ( num == 3910 || num == 2051 ||
+            //     num == 4761 ||
+            //     num == 2356 || num == 127)
+            //{
+            //    ret = true;
+            //}
         }
         if ( ret )
         {

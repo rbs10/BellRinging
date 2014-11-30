@@ -46,7 +46,7 @@ namespace BellRinging
         int index = 0;
         foreach (string method in
           new string[] { 
-             "Cambridge","London"
+             "Yorkshire","Maypole"
           
          // ,"Superlative"
          // ,"Yorkshire"
@@ -66,7 +66,8 @@ namespace BellRinging
             var methodObject = new Method(method, letter.ToString(), lib.GetNotation(method), 8);
             if (index > 1)
             {
-                methodObject.FirstLeadOnly();
+                //methodObject.FirstLeadOnly();
+                methodObject.LastLeadOnly();
             }
             p.AddMethod(methodObject);
         }
@@ -285,7 +286,7 @@ namespace BellRinging
       choices[0] = 0;
 
 // London?
-      choices[0] = 3;
+      //choices[0] = 3;
 
       // for snap start have set up "3" from rounds as the snap start lead
       // so start the composition there (and nothing beyond so no problem there)
@@ -309,7 +310,8 @@ namespace BellRinging
 
         // the start of the next lead as determined by what we do in at this choice
         Int16 nextLead = _tables.leadMapping[currentLead, choices[maxLeadIndex]];
-
+ 
+        
         // if the next lead starts with rounds then it does not matter what the method is - we are done
         // if the next lead has a snap in it then need to ring it (and not next lead)
         bool end;
@@ -352,7 +354,7 @@ namespace BellRinging
           if (falseAt < 0)
           {
               //only want longest compositions
-              if (maxLeadIndex == maxLeads-1)
+              //if (maxLeadIndex == maxLeads-1)
               {
                   totalMusic += _tables.music[currentLead, choices[maxLeadIndex]];
                   WriteComposition(maxLeadIndex);
@@ -381,6 +383,10 @@ namespace BellRinging
 
           // continue down tree if
           if (nextLead >= 0  // choice is allowed
+
+              // avoid lots of singles
+          && ( maxLeadIndex > maxLeads - 3 || choices[maxLeadIndex] != 2 )
+
             && maxLeadIndex < maxLeads - 1 // array length (else continue from rounds)
 
             // this is expensive - better to work out once got something that comes round
@@ -389,7 +395,7 @@ namespace BellRinging
             && maxLeadIndex + _tables.leadsToEnd[nextLead] < maxLeads // could come round in time
 
             // constraint to go through Cambridge group sBIM finish
-            && (nextLead == 3910 || maxLeadIndex != maxLeads - 5 ) // 63 - 5 = 58
+            //&& (nextLead == 3910 || maxLeadIndex != maxLeads - 5 ) // 63 - 5 = 58
 
             // try and get a largely tenors together compostion
             //&& ( maxLeadIndex > 58 || Row.FromNumber(nextLead).IsTenorsTogetherLeadEnd)
@@ -493,7 +499,8 @@ namespace BellRinging
 
     private bool BackTrack(ref Int16 currentLead, int[] choices, short[] leads, ref short maxLeadIndex, short lastPossiblyTrueLead)
     {
-      ++choices[maxLeadIndex];
+        ++choices[maxLeadIndex];
+      
 
       while (choices[maxLeadIndex] == _tables.NO_CHOICES || maxLeadIndex > lastPossiblyTrueLead
           // backtrack if ends with a call
@@ -507,6 +514,8 @@ namespace BellRinging
           totalMusic -= _tables.music[currentLead, choices[maxLeadIndex]];
           totalChoices -= choices[maxLeadIndex];
           ++choices[maxLeadIndex];
+
+          
         }
         else
         {
@@ -595,7 +604,8 @@ namespace BellRinging
         var group = calls;
         if (
             // changes == 2015 - (6 * 7 * 32) &&
-             changes == maxLeads * 32 - 1 &&
+             //changes == maxLeads * 32 - 1 &&
+            changes % 32 == 31 &&
             // _composition.Calls < 9
             //(changes % 2 != 0 ) &&
             //changes == 2015 && 

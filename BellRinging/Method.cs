@@ -81,11 +81,25 @@ namespace BellRinging
         IsFirstLead = true;
     }
 
+  /// <summary>
+    /// Only have coming into rounds at hand
+    /// </summary>
+    public void LastLeadOnly()
+    {
+        //_corePermutations.RemoveFirst(2);
+        IsLastLeadAtHand = true;
+    }
+
     /// <summary>
     /// Flag set for special handling of first lead
     /// </summary>
     public bool IsFirstLead { get; private set; }
- 
+
+    /// <summary>
+    /// Flag set for special handling of first lead
+    /// </summary>
+    public bool IsLastLeadAtHand { get; private set; }
+
     /// <summary>
     /// Flag set on snap start for special handling
     /// </summary>
@@ -130,6 +144,11 @@ namespace BellRinging
         {
             GenerateAllLeads(new Row(8), 6, _allLeads);
         }
+          if ( IsLastLeadAtHand )
+          {
+              _allLeads = _allLeads. Where(kvp => kvp.Value.ContainsRoundsAt == 31).
+                  ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+          }
       }
     }
 
