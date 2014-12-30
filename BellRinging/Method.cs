@@ -146,7 +146,11 @@ namespace BellRinging
         }
           if ( IsLastLeadAtHand )
           {
-              _allLeads = _allLeads. Where(kvp => kvp.Value.ContainsRoundsAt == 31).
+              //_allLeads = _allLeads. Where(kvp => kvp.Value.ContainsRoundsAt == 31).
+              //    ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+
+              _allLeads = _allLeads.Where(kvp => kvp.Value.LeadHead().CoursingOrder() == "642357").
                   ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
           }
       }

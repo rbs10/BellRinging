@@ -103,8 +103,10 @@ namespace BellRinging
       musicalPreferences.InitSJT();
       //musicalPreferences.InitELF();
 
+      int methodIndex = 0;
       foreach (Method method in problem.Methods)
       {
+          ++methodIndex;
         IEnumerable<Lead> allLeads = method.AllLeads;
         //Console.WriteLine("Generated all leads " + (DateTime.UtcNow - startInit));
 
@@ -141,7 +143,7 @@ namespace BellRinging
             //  Console.WriteLine(num);
             //}
 
-                if (nextLeadHead != null && (IncludeLeadHead(nextLeadHead)))
+                if (nextLeadHead != null && (IncludeLeadHead(nextLeadHead,methodIndex)))
                 {
                     
                  // music[num, i] = (short)l.CalcWraps(); // Wraps hunt version
@@ -177,24 +179,28 @@ namespace BellRinging
       //Console.WriteLine("Done leads to end count " + (DateTime.UtcNow - startInit));
     }
 
-    private bool IncludeLeadHead(Row nextLeadHead)
+    private bool IncludeLeadHead(Row nextLeadHead, int methodIndex)
     {
         // standard include all version
         //return !bTenorsTogether || nextLeadHead.CoursingOrder().StartsWith("7");
         //return true;
 
         bool ret = nextLeadHead.CoursingOrder().StartsWith("7");
-        if ( !ret )
+        if ( !ret && methodIndex == 1 )
         {
             int num = nextLeadHead.ToNumber(); 
             // 1819 London finish, 127 is the lead AFTER then end that we work back from
 
             // 4066 Maypole - 1 lead to go
-            if (num == 4066 || num == 127)
+            //if (num == 4066 || num == 127)
+            //{
+            //    ret = true;
+            //}
+            //ret = true;
+            if ( nextLeadHead.CoursingOrder() == "642357")
             {
                 ret = true;
             }
-            //ret = true;
 
             // include leads in the sBIM finish
             //if ( num == 3910 || num == 2051 ||

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace BellRinging
 {
@@ -46,7 +47,7 @@ namespace BellRinging
         int index = 0;
         foreach (string method in
           new string[] { 
-             "Yorkshire","Maypole"
+             "Superlative","London"
           
          // ,"Superlative"
          // ,"Yorkshire"
@@ -385,7 +386,7 @@ namespace BellRinging
           if (nextLead >= 0  // choice is allowed
 
               // avoid lots of singles
-          && ( maxLeadIndex > maxLeads - 3 || choices[maxLeadIndex] != 2 )
+          && ( maxLeadIndex > maxLeads - 5 || choices[maxLeadIndex] != 2 )
 
             && maxLeadIndex < maxLeads - 1 // array length (else continue from rounds)
 
@@ -596,6 +597,7 @@ namespace BellRinging
 
         int totalScore = _composition.Score;// -_composition.Calls;
         var quality = _composition.Quality;
+        //quality = _composition.choices.Where((c, i) => i <= noLeads && c > 2).Count();
         var calls = bestMusic.Length-1- _composition.Calls;
         //_composition.CalcWraps();
 
@@ -604,7 +606,7 @@ namespace BellRinging
         var group = calls;
         if (
             // changes == 2015 - (6 * 7 * 32) &&
-             //changes == maxLeads * 32 - 1 &&
+             changes == maxLeads * 32 - 1 &&
             changes % 32 == 31 &&
             // _composition.Calls < 9
             //(changes % 2 != 0 ) &&
@@ -614,6 +616,8 @@ namespace BellRinging
           quality >= bestQuality[group] 
           //||calls >=bestCalls[changes]
           )
+
+        // &&    quality > bestQuality[group] 
             //totalScore >= 120 &&
             // _composition.Calls < 10&&
             // totalScore > 2&&

@@ -1,3 +1,13 @@
+// 30-NOV-2014
+
+London will only work at end with something else - or weird method.
+
+Cambridge - London NO
+Superlative - Y
+Yorkshire - Y
+Cassiobury - No but long search
+
+
 // 8-NOV-2014
 
   Get working - Glasgow/Superlative not finding - need look compatability, waypoints
