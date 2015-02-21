@@ -339,5 +339,17 @@ namespace BellRinging
     {
       return _number == 0;
     }
+
+    internal static Row FromString(string change)
+    {
+       for ( int index = 0; index < _allRows.Length; ++index )
+       {
+           if ( _allRows[index].ToString() == change )
+           {
+               return _allRows[index];
+           }
+       }
+       throw new Exception("Row not found: " + change);
+    }
   }
 }

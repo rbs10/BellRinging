@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace BellRinging
 {
@@ -49,7 +50,7 @@ namespace BellRinging
       }
     }
 
-    public IEnumerable<int> RowsAsInts
+    public int[] RowsAsInts
     {
       get
       {
@@ -141,6 +142,91 @@ namespace BellRinging
     {
       return _rows[_rows.Count - 1].Apply(leadHeadChange);
     }
+
+    int cyclicScore = -1;
+    public int CyclicScore(MusicalPreferences musicalPreferences, Row nextLeadHead)
+    {
+        if ( cyclicScore == -1 )
+        {
+            cyclicScore = CalcCyclicScrore(musicalPreferences, nextLeadHead);
+        }
+        return cyclicScore;
+    }
+
+      // Does not appear to exclude anything
+    //public bool IsTrueToCyclic()
+    //{
+    //    List<Row> allRows = new List<Row>();
+    //    foreach (var rowx in _rows)
+    //    {
+    //        var row = rowx;
+    //        allRows.Add(row);
+
+    //        for (int part = 0; part < 6; ++part)
+    //        {
+
+    //            var change = row.ToString();
+    //            change = change.Replace("8", "x");
+    //            change = change.Replace("7", "8");
+    //            change = change.Replace("6", "7");
+    //            change = change.Replace("5", "6");
+    //            change = change.Replace("4", "5");
+    //            change = change.Replace("3", "4");
+    //            change = change.Replace("2", "3");
+    //            change = change.Replace("x", "2");
+
+    //            row = Row.FromString(change);
+    //            allRows.Add(row);
+    //        }
+    //    }
+    //    var isTrue =  allRows.Select(x => x.ToNumber())
+    //        .GroupBy(x => x)
+    //        .Select(g => g.Count()).Max() < 2;
+    //    return isTrue;
+    //}
+    
+    private int CalcCyclicScrore(MusicalPreferences musicalPreferences, Row nextLeadHead)
+    {
+        List<Row> allRows;
+        if (ContainsRoundsAt <= 0)
+        {
+            allRows = new List<Row>(_rows);
+        }
+        else
+        {
+            allRows = new List<Row>();
+            for (int i = 0; i < ContainsRoundsAt; ++i)
+            {
+                allRows.Add(_rows[i]);
+            }
+        }
+        allRows.Add(nextLeadHead);
+
+        int score  = musicalPreferences.ScoreLead(allRows);
+        for (int part = 0; part < 6; ++part )
+        {
+            var oldRows = allRows;
+            allRows = new List<Row>(oldRows.Count);
+            foreach (var row in oldRows)
+            {
+                var change = row.ToString();
+                change = change.Replace("8","x");
+                change = change.Replace("7","8");
+                change = change.Replace("6","7");
+                change = change.Replace("5","6");
+                change = change.Replace("4","5");
+                change = change.Replace("3","4");
+                change = change.Replace("2","3");
+                change = change.Replace("x","2");
+ 
+                var newRow = Row.FromString(change);
+                allRows.Add(newRow);
+            }
+            score += musicalPreferences.ScoreLead(allRows);
+        }
+        return score;
+    }
+
 
     internal short Score(MusicalPreferences musicalPreferences, Row nextLeadHead)
     {

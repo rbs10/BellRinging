@@ -18,6 +18,10 @@ namespace BellRinging
     /// <param name="noBells"></param>
     public SequenceOfPermutations(string baseNotation, int noBells)
     {
+        if ( baseNotation == null )
+        {
+            return;
+        }
       int cursor = 0;
       int startOfPerm = 0;
       string notation = baseNotation.ToLower().Replace(" ", "");
@@ -67,6 +71,8 @@ namespace BellRinging
         startOfPerm = cursor;
       }
     }
+
+    public List<Permutation> Permuations { get { return _permutations; } }
 
     public List<Row> Apply(Row startRow)
     {

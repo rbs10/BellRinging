@@ -1,13 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace BellRinging
 {
+    public static class StringExt
+    {
+        public static string Reverse(this string s)
+        {
+            return string.Join("", s.OfType<char>().Reverse());
+        }
+    }
   public class MusicalPreferences
   {
     List<IMusicalChange> _musicalChanges = new List<IMusicalChange>();
 
+      public MusicalPreferences()
+    {
+        IgnoreRounds = false;
+    }
+      public bool IgnoreRounds { get; set; }
     public void InitELF()
     {
       _musicalChanges.Add(new MusicalChange("xxxx5678",1,"Back rollups"));
@@ -30,6 +43,11 @@ namespace BellRinging
 
       //COM2, BAL2
 
+    }
+
+      public void Init()
+    {
+        Init2500();
     }
 
     /* Stephen's musical changes */
@@ -130,6 +148,136 @@ namespace BellRinging
       _musicalChanges.Add(new MusicalChange5678Together(1, "FFFFxxxx", 4));
     }
 
+      public void Init2015()
+    {
+        IgnoreRounds = true;
+
+        _musicalChanges.Add(new MusicalChange("21345678", 10, "Near miss"));
+        _musicalChanges.Add(new MusicalChange("13245678", 10, "Near miss"));
+        _musicalChanges.Add(new MusicalChange("12435678", 10, "Near miss"));
+        _musicalChanges.Add(new MusicalChange("12354678", 10, "Near miss"));
+        _musicalChanges.Add(new MusicalChange("12346578", 10, "Near miss"));
+        _musicalChanges.Add(new MusicalChange("12345768", 10, "Near miss"));
+        _musicalChanges.Add(new MusicalChange("12345687", 10, "Near miss"));
+
+        ///* queens, kings, whittingtons, tittums */
+        _musicalChanges.Add(new MusicalChange("13572468", 10, "Queens"));
+        _musicalChanges.Add(new MusicalChange("17532468", 10, "Kings"));
+        _musicalChanges.Add(new MusicalChange("12753468", 10, "Whittingtons"));
+        _musicalChanges.Add(new MusicalChange("15263748", 10, "Tittums"));
+
+        _musicalChanges.Add(new MusicalChange("xxxx2468", 5, "Queens back"));
+
+        _musicalChanges.Add(new MusicalChangeRun(1, "Run up 4", 4, 1));
+        _musicalChanges.Add(new MusicalChangeRun(1, "Run down 4", 4, -1));
+
+
+        _musicalChanges.Add(new MusicalChangeRun(4, "Run up 5", 5, 1));
+        _musicalChanges.Add(new MusicalChangeRun(4, "Run down 5", 5, -1));
+
+
+        _musicalChanges.Add(new MusicalChangeRun(6, "Run up 6", 6, 1));
+        _musicalChanges.Add(new MusicalChangeRun(6, "Run down 6", 6, -1));
+
+
+        _musicalChanges.Add(new MusicalChangeRun(8, "Run up 7", 7, 1));
+        _musicalChanges.Add(new MusicalChangeRun(8, "Run down 7", 7, -1));
+
+
+        _musicalChanges.Add(new MusicalChangeRun(10, "Run up", 8, 1));
+        _musicalChanges.Add(new MusicalChangeRun(10, "Run down", 8, -1));
+    }
+
+      public void Init2500()
+      {
+          IgnoreRounds = true;
+
+          _musicalChanges.Add(new MusicalChange("21345678", 5, "Near miss"));
+          _musicalChanges.Add(new MusicalChange("13245678", 5, "Near miss"));
+          _musicalChanges.Add(new MusicalChange("12435678", 5, "Near miss"));
+          _musicalChanges.Add(new MusicalChange("12354678", 5, "Near miss"));
+          _musicalChanges.Add(new MusicalChange("12346578", 5, "Near miss"));
+          _musicalChanges.Add(new MusicalChange("12345768", 5, "Near miss"));
+          _musicalChanges.Add(new MusicalChange("12345687", 5, "Near miss"));
+
+
+          _musicalChanges.Add(new MusicalChange("21345678".Reverse(), 5, "Near reverse miss"));
+          _musicalChanges.Add(new MusicalChange("13245678".Reverse(), 5, "Near reverse miss"));
+          _musicalChanges.Add(new MusicalChange("12435678".Reverse(), 5, "Near reverse miss"));
+          _musicalChanges.Add(new MusicalChange("12354678".Reverse(), 5, "Near reverse miss"));
+          _musicalChanges.Add(new MusicalChange("12346578".Reverse(), 5, "Near reverse miss"));
+          _musicalChanges.Add(new MusicalChange("12345768".Reverse(), 5, "Near reverse miss"));
+          _musicalChanges.Add(new MusicalChange("12345687".Reverse(), 5, "Near reverse miss"));
+
+          /////* queens, kings, whittingtons, tittums */
+          _musicalChanges.Add(new MusicalChange("13572468", 1, "Queens"));
+          _musicalChanges.Add(new MusicalChange("17532468", 1, "Kings"));
+          _musicalChanges.Add(new MusicalChange("12753468", 1, "Whittingtons"));
+          _musicalChanges.Add(new MusicalChange("15263748", 1, "Tittums"));
+
+          _musicalChanges.Add(new MusicalChange("xxxx2468", 1, "Queens back"));
+
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run up 4", 4, 1));
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run down 4", 4, -1));
+
+
+          _musicalChanges.Add(new MusicalChangeRun(2, "Run up 5", 5, 1));
+          _musicalChanges.Add(new MusicalChangeRun(2, "Run down 5", 5, -1));
+
+
+          _musicalChanges.Add(new MusicalChangeRun(3, "Run up 6", 6, 1));
+          _musicalChanges.Add(new MusicalChangeRun(3, "Run down 6", 6, -1));
+
+
+          _musicalChanges.Add(new MusicalChangeRun(4, "Run up 7", 7, 1));
+          _musicalChanges.Add(new MusicalChangeRun(4, "Run down 7", 7, -1));
+
+
+          _musicalChanges.Add(new MusicalChangeRun(5, "Run up 8", 8, 1));
+          _musicalChanges.Add(new MusicalChangeRun(5, "Run down 8", 8, -1));
+      }
+
+
+      public void InitRuns()
+      {
+          IgnoreRounds = true;
+
+          //_musicalChanges.Add(new MusicalChange("21345678", 10, "Near miss"));
+          //_musicalChanges.Add(new MusicalChange("13245678", 10, "Near miss"));
+          //_musicalChanges.Add(new MusicalChange("12435678", 10, "Near miss"));
+          //_musicalChanges.Add(new MusicalChange("12354678", 10, "Near miss"));
+          //_musicalChanges.Add(new MusicalChange("12346578", 10, "Near miss"));
+          //_musicalChanges.Add(new MusicalChange("12345768", 10, "Near miss"));
+          //_musicalChanges.Add(new MusicalChange("12345687", 10, "Near miss"));
+
+          /////* queens, kings, whittingtons, tittums */
+          //_musicalChanges.Add(new MusicalChange("13572468", 10, "Queens"));
+          //_musicalChanges.Add(new MusicalChange("17532468", 10, "Kings"));
+          //_musicalChanges.Add(new MusicalChange("12753468", 10, "Whittingtons"));
+          //_musicalChanges.Add(new MusicalChange("15263748", 10, "Tittums"));
+
+          //_musicalChanges.Add(new MusicalChange("xxxx2468", 5, "Queens back"));
+
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run up 4", 4, 1));
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run down 4", 4, -1));
+
+
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run up 5", 5, 1));
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run down 5", 5, -1));
+
+
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run up 6", 6, 1));
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run down 6", 6, -1));
+
+
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run up 7", 7, 1));
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run down 7", 7, -1));
+
+
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run up 8", 8, 1));
+          _musicalChanges.Add(new MusicalChangeRun(1, "Run down 8", 8, -1));
+      }
+  
     public void InitSJT_Old()
     {
         _musicalChanges.Add(new MusicalChange("xxxx5678", 1, "CRU"));
@@ -175,13 +323,20 @@ namespace BellRinging
       {
         score += lastRowScore;
         short rowScore = 0;
-        foreach (var c in _musicalChanges)
+        if (IgnoreRounds && r.ToNumber() == 0)
         {
-          short scoreC = c.Score(r);
-          if (scoreC > rowScore)
-          {
-            rowScore = scoreC;
-          }
+
+        }
+        else
+        {
+            foreach (var c in _musicalChanges)
+            {
+                short scoreC = c.Score(r);
+                if (scoreC > rowScore)
+                {
+                    rowScore = scoreC;
+                }
+            }
         }
         lastRowScore = rowScore;
         //Console.WriteLine(r.ToString() + " " + rowScore);
@@ -189,7 +344,7 @@ namespace BellRinging
       return score;
     }
 
-    internal IEnumerable<string> EnumerateMusic(Row r)
+    public IEnumerable<string> EnumerateMusic(Row r)
     {
       foreach (var c in _musicalChanges)
       {

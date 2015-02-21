@@ -21,6 +21,10 @@ namespace BellRinging
 
     public Problem()
     {
+
+        //musicalPreferences.InitELF();
+        MusicalPreferences = new MusicalPreferences();
+        MusicalPreferences.InitSJT();
     }
 
     public void AddMethod(Method m)
@@ -36,6 +40,8 @@ namespace BellRinging
       }
     }
 
+    public bool AllowSingles { get; set; }
+
     public bool TenorsTogether
     {
       get
@@ -47,5 +53,33 @@ namespace BellRinging
         _tenorsTogether = value;
       }
     }
+
+    public int MaxLeads
+    {
+        get
+        {
+            return _maxLeads;
+        }
+        set
+        {
+            _maxLeads = value;
+        }
+    }
+
+      /// <summary>
+      /// The choice to start thinking about first at the start of the composition
+      /// </summary>
+    public int FirstChoice { get; set; }
+
+    public MusicalPreferences MusicalPreferences { get; set; }
+
+    public int? MinLength { get; set; }
+    public int? MaxLength { get; set; }
+
+    public short MinLeads { get; set; }
+
+    public bool Reverse { get; set; }
+
+    public int BlockLength { get; set; }
   }
 }

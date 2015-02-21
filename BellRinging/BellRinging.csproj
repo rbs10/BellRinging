@@ -68,11 +68,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Composition.cs" />
+    <Compile Include="CyclicSearchSingleMethodTweak.cs" />
+    <Compile Include="CyclicSearch3.cs" />
+    <Compile Include="CyclicSearch0.cs" />
+    <Compile Include="CyclicSearch2.cs" />
+    <Compile Include="CyclicSearch.cs" />
     <Compile Include="MusicalChange5678Together.cs" />
     <Compile Include="IMusicalChange.cs" />
     <Compile Include="MusicalChangeBase.cs" />
     <Compile Include="MusicalChangeRun.cs" />
     <Compile Include="Simple900Composer.cs" />
+    <Compile Include="SimpleComposer_2500_2015 - before reverse comp.cs" />
+    <Compile Include="SimpleComposer_2015v4_ForwardBlocks.cs" />
+    <Compile Include="SimpleComposer_2500_2015.cs" />
+    <Compile Include="SimpleComposer_LPS_QP_2015.cs" />
+    <Compile Include="SimpleComposer_NoSpecialRestrictions.cs" />
     <Compile Include="SingleMethodMostMusicalComposer.cs" />
     <Compile Include="ICompositionReceiver.cs" />
     <Compile Include="MethodLibrary.cs" />

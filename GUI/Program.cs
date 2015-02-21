@@ -19,8 +19,8 @@ namespace GUI
       Form form = null;
       foreach (string method in
       new string[] { 
-
-           "Yorkshire"
+          "Yorkshire"
+           //"Yorkshire", "Superlative","Cambridge",
            //, "Superlative","Bristol",
           //"Superlative"
            //"Cray", "Yorkshire", 
@@ -42,7 +42,7 @@ namespace GUI
            })
       {
            form = new Form1(method);
-           form.Text = method;
+           form.Text = method + " (2015)";
           form.Show();
       }
 

@@ -19,7 +19,7 @@ namespace BellRinging
       Problem p = new Problem();
       foreach (string method in
         new string[] { 
-             "Yorkshire","Whalley"
+             "Yorkshire"
           
          // ,"Superlative"
          // ,"Yorkshire"
@@ -47,7 +47,7 @@ namespace BellRinging
         int index = 0;
         foreach (string method in
           new string[] { 
-             "Superlative","London"
+             "Yorkshire"
           
          // ,"Superlative"
          // ,"Yorkshire"
@@ -68,7 +68,7 @@ namespace BellRinging
             if (index > 1)
             {
                 //methodObject.FirstLeadOnly();
-                methodObject.LastLeadOnly();
+               // methodObject.LastLeadOnly();
             }
             p.AddMethod(methodObject);
         }
@@ -78,7 +78,7 @@ namespace BellRinging
     public void Initialise(string method, string notation)
     {
       Problem p = new Problem();
-      p.AddMethod(new Method(method, "",notation, 8));
+      p.AddMethod(new Method(method, method.Substring(0,1),notation, 8));
       _tables.Initialise(p);
     }
 
@@ -119,8 +119,6 @@ namespace BellRinging
     int[] bestCalls;
     int bestTotalMusic;
 
-    int totalMusic = 0;
-    int totalChoices = 0;
 
     long totalLeads;
     int maxLength;
@@ -200,6 +198,7 @@ namespace BellRinging
       get
       {
            var temp = _composition.Clone();
+           temp.rot = 0;
            temp.maxLeadIndex = (short)(temp.leads.Length - 1);
            return temp.ToString();
         //return minBackTrackPoint.ToString() + "/" + timesToPoint.ToString();
@@ -279,6 +278,7 @@ namespace BellRinging
       Int16 start = new Row(8).ToNumberExTreble();
 
       Int16 currentLead = start;
+      Int16 regenPointer = -1;
 
       int[] choices = _composition.choices;
       short[] leads = _composition.leads;
@@ -318,23 +318,25 @@ namespace BellRinging
         bool end;
 
         // if allow snap finishes
+          /*
         int snapFinish = -1;
         if (nextLead >= 0 && (snapFinish = _tables._methodsByChoice[choices[maxLeadIndex]].Lead(currentLead).ContainsRoundsAt) > 0)
         {
             Console.WriteLine("Found snap");
         }
-        end = snapFinish > 0 || nextLead == start;
-        end = snapFinish > 0 ;//|| nextLead == start;
+        end = snapFinish > 0 || nextLead == start;*/
+        //end = snapFinish > 0 ;//|| nextLead == start;
 
         // no snap version
-        //end = nextLead == start;
+        end = nextLead == start;
+
         //if (nextLead >= 0 && _tables._methodsByChoice[0].Lead(nextLead).ContainsRoundsAt > 0)
         //{
         //  Console.WriteLine("Found snap");
         //}
         if (end
             // Force a minimum touch length
-            //&& maxLeadIndex >= 62
+           //&& maxLeadIndex >= 39
             && IsNotTriviallyFalseOrRepetitive(-1 /* next lead is rounds and is a repeat - ignore that */
             , leads, choices, maxLeadIndex)
           )
@@ -345,22 +347,50 @@ namespace BellRinging
           // slippe out to 4 seconds with some bit of indirection ... - but small changes to what
           // is indirected do not change much!
           _composition.maxLeadIndex = maxLeadIndex;
-         
+          _composition.rot = 0;
+
+            //if ( _composition.ToString().StartsWith("000012112000"))
+            ////                                       000012112000202000121120002010001211200012
+            //{
+
+            //    Console.WriteLine("Hi");
+            //}
 
           short firstUnprovenLead = -1; // no false check !!! TODO:
-          var falseAt = _composition.RunsFalseAt(ref firstUnprovenLead);
+          var falseAt = _composition.RunsFalseAt5(ref firstUnprovenLead);
           int minBackTrack;
          // if (true /*falseAt < 0*/)
           
+            //if ( maxLeadIndex == 41 )
+            //{
+            //    string magic = "000012112000202000121120002010001211200012";
+            //      //"112000202000121120002010001211200012000012";
+            //    int p = 0;
+            //    foreach ( char c in magic )
+            //    {
+            //        choices[p] = c - '0';
+            //        if (p + 1 < leads.Length)
+            //        {
+            //            leads[p + 1] = _tables.leadMapping[leads[p], choices[p]];
+            //        }
+            //        ++p;
+            //    }
+            //    var str = _composition.ToString();
+
+            //    short ful2 = -1;
+            //    var false2 = _composition.RunsFalseAt(ref ful2);
+            //    Console.WriteLine("Hi");
+            //}
+
           if (falseAt < 0)
           {
-              //only want longest compositions
-              //if (maxLeadIndex == maxLeads-1)
+              for (_composition.rot = 0; _composition.rot <= maxLeadIndex; ++_composition.rot)
               {
-                  totalMusic += _tables.music[currentLead, choices[maxLeadIndex]];
-                  WriteComposition(maxLeadIndex);
-                  totalMusic -= _tables.music[currentLead, choices[maxLeadIndex]];
+                  //var music = _composition.Music;
+                  
+                  WriteComposition();
               }
+             
             // true - no need to backtrack other than because of outcome of other choices here
             minBackTrack = maxLeadIndex;
           }
@@ -373,7 +403,7 @@ namespace BellRinging
 
           // falseAt is the first lead that was false - therefore we made either a false choice of method
           // at that lead or a false call at the previous lead
-          bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, (short)minBackTrack);
+          bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, (short)minBackTrack, ref regenPointer);
           if (bDone)
           {
             return;
@@ -386,7 +416,7 @@ namespace BellRinging
           if (nextLead >= 0  // choice is allowed
 
               // avoid lots of singles
-          && ( maxLeadIndex > maxLeads - 5 || choices[maxLeadIndex] != 2 )
+          //&& ( maxLeadIndex > maxLeads - 5 || choices[maxLeadIndex] != 2 )
 
             && maxLeadIndex < maxLeads - 1 // array length (else continue from rounds)
 
@@ -405,69 +435,11 @@ namespace BellRinging
 
             && IsNotTriviallyFalseOrRepetitive(nextLead,leads,choices,maxLeadIndex)
 
-            && totalMusic >= (maxLeadIndex  * bestTotalMusic)/maxLeads - 100
+          
 
-           // && totalMusic * maxLeads >= (90 * maxLeadIndex * bestTotalMusic) / 100
-
-            // aiming for superlative score above 90)
-            //&& totalMusic >= maxLeadIndex * ( 90.0/63 * 0.8) - 5
-            //&& totalMusic >= maxLeadIndex * (260 / 63 * 0.8) - 5
-            // && totalMusic >= maxLeadIndex * (700 / 63 * 0.8) - 5 // was 473
-            //&& totalMusic >= bestMusic[maxLeads - 1] - (maxLeads - 1 - maxLeadIndex) * _tables.maxMusic // could be more miscal
-            //&& totalMusic >= bestMusic[maxLeads - 1] - (maxLeads - 1 - maxLeadIndex) * _tables.maxMusic -1 // could be more miscal
-            /*
-             * 
-             *  YORKSHIRE
-             * 
-             * got us to 5
-            && ((totalMusic >= 3) || (maxLeadIndex < 20))
-            && ((totalMusic >= 4) || (maxLeadIndex < 30))
-            && ((totalMusic >= 2) || (maxLeadIndex < 10))
-             * 
-             * 
-            
-             * also 5 quite quick
-            && ((totalMusic >= 5) || (maxLeadIndex < 36))
-            && ((totalMusic >= 4) || (maxLeadIndex < 24))
-            && ((totalMusic >= 3) || (maxLeadIndex < 16))
-            && ((totalMusic >= 2) || (maxLeadIndex < 8))
-             * 
-             *  5 all searched           
-            && ((totalMusic >= 5) || (maxLeadIndex < 28))
-            && ((totalMusic >= 4) || (maxLeadIndex < 21))
-            && ((totalMusic >= 3) || (maxLeadIndex < 14))
-
-             * 7 in 60 leads
-            && ((totalMusic >= 6) || (maxLeadIndex < 35))
-            && ((totalMusic >= 5) || (maxLeadIndex < 28))
-            && ((totalMusic >= 4) || (maxLeadIndex < 21))
-            && ((totalMusic >= 3) || (maxLeadIndex < 14))
-            
-             * * 6 in 1346 all done - nothing else
-            && ((totalMusic >= 7) || (maxLeadIndex < 42))
-            && ((totalMusic >= 6) || (maxLeadIndex < 35))
-            && ((totalMusic >= 5) || (maxLeadIndex < 28))
-            && ((totalMusic >= 4) || (maxLeadIndex < 21))
-            && ((totalMusic >= 3) || (maxLeadIndex < 14)) 
-             * 
-             * 8 at 1920 running to 60 leads
-            && ((totalMusic >= 7) || (maxLeadIndex < 48))
-            && ((totalMusic >= 6) || (maxLeadIndex < 35))
-            && ((totalMusic >= 5) || (maxLeadIndex < 28))
-            && ((totalMusic >= 4) || (maxLeadIndex < 21))
-            && ((totalMusic >= 3) || (maxLeadIndex < 14))* */
-
-            //&& ((totalMusic >= 2) || (maxLeadIndex < 14))
-            //&& ((totalMusic >= 3) || (maxLeadIndex < 21))
-            //&& ((totalMusic >= 4) || (maxLeadIndex < 28))
-            //&& ((totalMusic >= 5) || (maxLeadIndex < 35))
-            //&& ((totalMusic >= 6) || (maxLeadIndex < 48))
-            //&& ((totalMusic >= 7) || (maxLeadIndex < 54))
-            //&& ((totalMusic >= 2) || (maxLeadIndex < 7))
             )
           {
-            totalMusic += _tables.music[currentLead, choices[maxLeadIndex]];
-            totalChoices += choices[maxLeadIndex];
+            //totalChoices += choices[maxLeadIndex];
             currentLead = nextLead;
             ++maxLeadIndex;
             if (maxLeadIndex > maxLength) maxLength = maxLeadIndex;
@@ -477,6 +449,12 @@ namespace BellRinging
             //    choices[maxLeadIndex] = 2;
             //}
             //else
+            if ( regenPointer >= 0 )
+            {
+                choices[maxLeadIndex] = choices[regenPointer];
+                ++regenPointer;
+            }
+            else
             {
                 choices[maxLeadIndex] = 0;
             }
@@ -486,7 +464,8 @@ namespace BellRinging
           }
           else
           {
-            bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, short.MaxValue);
+            // not continuing on from here because not much hope
+            bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, short.MaxValue, ref regenPointer);
             if (bDone)
             {
               return;
@@ -498,8 +477,12 @@ namespace BellRinging
 
 
 
-    private bool BackTrack(ref Int16 currentLead, int[] choices, short[] leads, ref short maxLeadIndex, short lastPossiblyTrueLead)
+    private bool BackTrack(ref Int16 currentLead, int[] choices, short[] leads, ref short maxLeadIndex, short lastPossiblyTrueLead,
+        ref short regenPointer)
     {
+        // copy new changes in from the start
+        //regenPointer = 0;
+
         ++choices[maxLeadIndex];
       
 
@@ -512,8 +495,7 @@ namespace BellRinging
         {
           --maxLeadIndex;
           currentLead = leads[maxLeadIndex];
-          totalMusic -= _tables.music[currentLead, choices[maxLeadIndex]];
-          totalChoices -= choices[maxLeadIndex];
+          //totalChoices -= choices[maxLeadIndex];
           ++choices[maxLeadIndex];
 
           
@@ -588,41 +570,49 @@ namespace BellRinging
       }
   }
    
-    private void WriteComposition(int noLeads)
+    private void WriteComposition()
     {
       lock (this)
       {
      
         ++totalCompositions;
 
-        int totalScore = _composition.Score;// -_composition.Calls;
-        var quality = _composition.Quality;
+        _composition.CalcStats();
+
+        int totalScore = _composition._music;// -_composition.Calls;
+        var quality = _composition._quality;
         //quality = _composition.choices.Where((c, i) => i <= noLeads && c > 2).Count();
-        var calls = bestMusic.Length-1- _composition.Calls;
+        var calls = bestMusic.Length - 1 - _composition._calls;
         //_composition.CalcWraps();
 
        // compositionsWithMusicScore[totalScore]++;
-        int changes = _composition.Changes;
+        int changes = _composition._changes;
         var group = calls;
-        if (
-            // changes == 2015 - (6 * 7 * 32) &&
-             changes == maxLeads * 32 - 1 &&
-            changes % 32 == 31 &&
-            // _composition.Calls < 9
-            //(changes % 2 != 0 ) &&
-            //changes == 2015 && 
-            (
-          totalScore >= bestMusic[group] ||
-          quality >= bestQuality[group] 
-          //||calls >=bestCalls[changes]
-          )
+        //var group = 0; // just look for most music
+        //if ( changes == 2016 )
+           
 
-        // &&    quality > bestQuality[group] 
-            //totalScore >= 120 &&
-            // _composition.Calls < 10&&
-            // totalScore > 2&&
-            // true
-          )
+        //     if(
+        //    changes>=1250 &&
+        //    // changes == 2015 - (6 * 7 * 32) &&
+        //    // changes == maxLeads * 32 - 1 &&
+        //    //changes % 32 == 31 &&
+        //    // _composition.Calls < 9
+        //    //(changes % 2 != 0 ) &&
+        //    //changes == 2015 && 
+        //    (
+        //  totalScore >= bestMusic[group] ||
+        //  quality >= bestQuality[group] 
+        //  //||calls >=bestCalls[changes]
+        //  )
+
+        //// &&    quality > bestQuality[group] 
+        //    //totalScore >= 120 &&
+        //    // _composition.Calls < 10&&
+        //    // totalScore > 2&&
+        //    // true
+        //  )
+        if( totalScore > bestMusic[group])
         {
             if (_receiver != null)
             {
@@ -647,11 +637,7 @@ namespace BellRinging
                 bestCalls[group] = calls;
             }
             return;
-            Console.WriteLine("Leads = " + (noLeads + 1) + " ( " + (noLeads + 1) * 32 + "  changes) Total music " + totalMusic);
-            for (int i = 0; i <= noLeads; ++i)
-            {
-                Console.WriteLine(Row.FromNumber(_composition.leads[i]) + " " + "-BSZ"[_composition.choices[i]] + " " + _tables.music[_composition.leads[i], _composition.choices[i]]);
-            }
+           
         }
        
       }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using BellRinging;
 using System.Linq;
+using System.IO;
 
 namespace GUI
 {
@@ -16,22 +17,25 @@ namespace GUI
     MusicalPreferences _musicalPreferences = new MusicalPreferences();
     string method;
 
+
+    SimpleComposer_2500_2015 _composer = new SimpleComposer_2500_2015();
+
     public Form1(string method)
     {
         this.method = method;
       InitializeComponent();
       lvwColumnSorter = new ListViewColumnSorter();
       this.listView1.ListViewItemSorter = lvwColumnSorter;
-      _musicalPreferences.InitSJT();
+      _musicalPreferences.Init();
 
 
-      _composer = new SimpleComposer();
-      _composer.StartCompose(() => InitComposer());
+      _composer.StartCompose(() => InitComposer(method));
+
+        
     }
 
-    SimpleComposer _composer;
 
-    void InitComposer()
+    void InitComposer(string method)
     {
        // _composer = new SimpleComposer();
         //_composer.Initialise("X18X18X18x18-12"); // PLAIN BOB?
@@ -41,8 +45,8 @@ namespace GUI
         //_composer.Initialise("Yorkshire"); // yorkshire
        // _composer.InitialiseWithSnapStart("Yorkshire"); // yorkshire
        // _composer.InitialiseWithSnapStart(method); 
-       // _composer.Initialise(method);
-        _composer.InitialiseStandardMethods();
+       //_composer.Initialise(method);
+        //_composer.InitialiseStandardMethods();
         // _composer.Initialise("X38X14X58X16X14X38X34X18-12"); // rutland
        //_composer.Initialise("Cambridge","X38X14X1258X36X14X58X16X78-12");// cambridge
         // _composer.Initialise("X36X14X58X36X14X58X36X78-12"); // superlative
@@ -50,7 +54,7 @@ namespace GUI
         //_composer.Initialise("36X56.14.58X58.36X14X38.16X16.38-18", // glasgow
         //  "X38X14X58X16X12X38X14X78-12"); // yorkshire
 
-        //_composer.InitialiseStandardMethods();
+        _composer.Initialise(method);
 
         //_composer.Initialise("Dover");
         //_composer.Initialise("Venusium");
@@ -66,9 +70,9 @@ namespace GUI
 
     private void goButton_Click(object sender, EventArgs e)
     {
-       
-        _composer = new SimpleComposer();
-      _composer.StartCompose( () => InitComposer() );
+
+      //  _composer = new SimpleComposer_LPS_QP_2015();
+      //_composer.StartCompose( () => InitComposer() );
     }
 
     #region ICompositionReceiver Members
@@ -124,24 +128,53 @@ namespace GUI
         text += "\r\n";
 
 
-        text += "\r\nANALYSIS\r\n\r\n";
+        text += "\r\nSCORE ";
+        text += _selectedComposition.Music;
+        text += "\r\n\r\nANALYSIS\r\n\r\n";
         foreach (var rowsGroupedByMusic in (item.Tag as Composition).GetMusicalChanges(_musicalPreferences).GroupBy(x => x.Value.Name).OrderByDescending(x => x.First().Value.Points).ThenBy(x => x.First().Value.Name) )
         {
             text += string.Format("{0} {1}\r\n", rowsGroupedByMusic.First().Value.Name, rowsGroupedByMusic.Count());
         }
         text += string.Format("{0} {1}\r\n", "Wraps", _selectedComposition.CalcWraps());
 
+        var leadsInRunOrder = _selectedComposition.LeadHeadsAndChoices;
+        if (_composer.Tables.problem.Reverse)
+        {
+            // reverse the leads and skip the lead at the end that is not rung - but appears in table
+            leadsInRunOrder = leadsInRunOrder.Skip(1).Reverse();
+        }
 
         text += "\r\nLEAD HEADS\r\n\r\n";
-        foreach (KeyValuePair<short,int> kvp in _selectedComposition.LeadHeadsAndChoices)
+        var callCount = _composer.Tables.NO_CHOICES / _composer.Tables.problem.Methods.Count();
+        foreach (KeyValuePair<short, int> kvp in leadsInRunOrder)
         {
           text += Row.FromNumber(kvp.Key);
-          text += " " + " BS"[kvp.Value%3] ;
+          text += " " + " BS"[kvp.Value % callCount];
           text += "\r\n";
         }
         text +=  Row.FromNumber(0);
         text += "\r\n";
 
+        text += "\r\nLEAD HEADS WITH MUSIC\r\n\r\n";
+
+        int n = 0;
+        foreach (KeyValuePair<short, int> kvp in leadsInRunOrder)
+        {
+            text += (++n).ToString("####");
+            text += " ";
+            text += Row.FromNumber(kvp.Key);
+            //text += " " + " BS"[kvp.Value % callCount];
+            text += ",";
+            var method = _composer.Tables._methodsByChoice[kvp.Value];
+            //var lead = method.Lead(kvp.Key);
+            text += _composer.Tables.music[kvp.Key, kvp.Value];
+            text += ",";
+            var lead = method.Lead(kvp.Key);
+            text += string.Join(" " ,lead.RowsAsInts.Select(r => Row.FromNumber(r)).SelectMany(row =>  _musicalPreferences.EnumerateMusic(row)));
+            text += "\r\n";
+        }
+        text += Row.FromNumber(0);
+        text += "\r\n";
 
           
         text += "\r\n";
@@ -159,6 +192,13 @@ namespace GUI
             text += string.Format("{0:###0},{1}\r\n",++rowNo, row);
         }
 
+        text += "\r\nALL CHANGES WITH SCORES\r\n\r\n";
+        rowNo = 0;
+        foreach (var row in _selectedComposition.Rows)
+        {
+            text += string.Format("{0:###0},{1},{2}\r\n", ++rowNo, row,
+                string.Join(",",_musicalPreferences.EnumerateMusic(row)));
+        }
         text += "\r\nRAW LEAD HEADS\r\n\r\n";
         foreach (KeyValuePair<short, int> kvp in _selectedComposition.LeadHeadsAndChoices)
         {
@@ -220,19 +260,31 @@ namespace GUI
 
     LeadView leadView;
 
+    static SaveFileDialog sfd;
     private void button1_Click(object sender, EventArgs e)
     {
-      //if (_selectedComposition != null)
-      //{
-      //  _selectedComposition.Beep();
-      //}
-
-      InitComposer();
-
-      leadView = new LeadView();
-      throw new Exception("Code commented out");
-      //leadView.Composer = _composer;
-      leadView.Show();
+     try
+     {
+         if ( sfd == null )
+         {
+             sfd = new SaveFileDialog();
+             sfd.DefaultExt = ".txt";
+         }
+         if ( sfd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK )
+         {
+             using ( var sw = new StreamWriter(sfd.FileName) )
+             {
+                 sw.WriteLine("{0} changes", _selectedComposition.Changes);
+                 sw.WriteLine("{0} music", _selectedComposition.Music);
+                 sw.WriteLine();
+                 sw.WriteLine(compositionTextBox.Text);
+             }
+         }
+     }
+        catch ( Exception ex )
+     {
+         MessageBox.Show(ex.Message);
+     }
     }
   }
 }

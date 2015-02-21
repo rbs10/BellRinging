@@ -17,6 +17,8 @@ namespace BellRinging
     string _name;
     string _code;
 
+    public SequenceOfPermutations CorePermuations { get { return _corePermutations; } }
+    //public Permutation PlainLeadEndPermutation { get { return _plainLeadEndPermutation; } }
     public List<Permutation> LeadHeadChanges
     {
       get
@@ -41,28 +43,67 @@ namespace BellRinging
       }
     }
     
-    public Method(string name, string code, string changeNotation, int noBells )
+    public Method(string name, string code, string changeNotation, int noBells,bool allowSingles = true )
     {
       _name = name;
       _code = code;
 
-      int whereIsDash = changeNotation.IndexOf('-');
-      if (whereIsDash < 0)
+      if (changeNotation == null)
       {
-        throw new Exception("Only symmetric methods defined up to the half lead followed by - and the lead and are accepted - not ["
-+ changeNotation + "]");
+          _corePermutations = new SequenceOfPermutations(null, 8);
+
+          _plainLeadEndPermutation = Permutation.FromPlaceNotation("12", 8);
+          _leadHeadChanges.Add(_plainLeadEndPermutation);
+          //_leadHeadChanges.Add(Permutation.FromPlaceNotation("16", 8));
+          _leadHeadChanges.Add(Permutation.FromPlaceNotation("14", 8));
+          if (allowSingles)
+          {
+              _leadHeadChanges.Add(Permutation.FromPlaceNotation("1234", 8));
+          }
       }
-      _corePermutations = new SequenceOfPermutations(changeNotation.Substring(0, whereIsDash),noBells);
-      _corePermutations.ReflectAboutFinalPermutation();
+      else
+      {
+          int whereIsDash = changeNotation.IndexOf('-');
+          if (whereIsDash < 0)
+          {
+              throw new Exception("Only symmetric methods defined up to the half lead followed by - and the lead and are accepted - not [" + changeNotation + "]");
+              //_corePermutations = new SequenceOfPermutations(changeNotation, noBells);
+          }
+          else
+          {
+              _corePermutations = new SequenceOfPermutations(changeNotation.Substring(0, whereIsDash), noBells);
+              _corePermutations.ReflectAboutFinalPermutation();
+          }
 
-      _plainLeadEndPermutation = Permutation.FromPlaceNotation(changeNotation.Substring(whereIsDash + 1).Replace(" ", ""), noBells);
+          _plainLeadEndPermutation = Permutation.FromPlaceNotation(changeNotation.Substring(whereIsDash + 1).Replace(" ", ""), noBells);
 
-      _leadHeadChanges.Add(_plainLeadEndPermutation);
-      //_leadHeadChanges.Add(Permutation.FromPlaceNotation("16", 8));
-      _leadHeadChanges.Add(Permutation.FromPlaceNotation("14",8));
-      _leadHeadChanges.Add(Permutation.FromPlaceNotation("1234",8));
+          _leadHeadChanges.Add(_plainLeadEndPermutation);
+          //_leadHeadChanges.Add(Permutation.FromPlaceNotation("16", 8));
+          _leadHeadChanges.Add(Permutation.FromPlaceNotation("14", 8));
+          if (allowSingles)
+          {
+              _leadHeadChanges.Add(Permutation.FromPlaceNotation("1234", 8));
+          }
+      }
+
     }
 
+     public int WrongPlaceCount
+    {
+        get
+        {
+            int ret = 0;
+            for (int i = 0; i < _corePermutations.Permuations.Count; i += 2)
+            {
+                var perm = _corePermutations.Permuations[i];
+                if ( !perm.IsCross)
+                {
+                    ++ret;
+                }
+            }
+          return ret;
+        }
+    }
     /// <summary>
     /// Convert lead to one with a snap start instead
     /// </summary>
@@ -149,9 +190,14 @@ namespace BellRinging
               //_allLeads = _allLeads. Where(kvp => kvp.Value.ContainsRoundsAt == 31).
               //    ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
+              
+              //_allLeads = _allLeads.Where(kvp => kvp.Value.LeadHead().CoursingOrder() == "642357").
+              //    ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-              _allLeads = _allLeads.Where(kvp => kvp.Value.LeadHead().CoursingOrder() == "642357").
-                  ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+              _allLeads =_allLeads.Where(kvp => kvp.Value.RowsAsInts.Contains(0)).
+                 ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+
           }
       }
     }

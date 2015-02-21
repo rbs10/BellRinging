@@ -18,6 +18,22 @@ namespace BellRinging
 
         bool[] computed = new bool[8];
 
+        public bool IsCross
+        {
+            get
+            {
+                bool ret = true;
+                for (int i = 0; i < mapping.Length; ++i )
+                {
+                    if ( mapping[i] == i )
+                    {
+                        ret = false;
+                    }
+                }
+                return ret;
+            }
+        }
+
         public static Permutation GetPermutation(int[] mapping)
         {
             char[] key = new char[mapping.Length];
@@ -95,8 +111,22 @@ namespace BellRinging
                     maybePlace += 2;
                 }
             }
-            return Permutation.GetPermutation(mapping);
+            var ret = Permutation.GetPermutation(mapping);
+            permutationNames[ret] = definition;
+            return ret;
+            
         }
+
+        public override string ToString()
+        {
+            string ret;
+            if ( !permutationNames.TryGetValue(this,out ret))
+            {
+                ret = string.Join("-", mapping);
+            }
+            return ret;
+        }
+        static  Dictionary<Permutation, string> permutationNames = new Dictionary<Permutation, string>();
 
         /// <summary>
         /// Create a permutation from a single definition in the form of a set of bells to rotate within a change
@@ -138,13 +168,16 @@ namespace BellRinging
             //  }
             //  computed[n] = true;
             //}
-            int newRow = _rowMapping[number];
-            if (newRow < 0)
+            //lock (_rowMapping)
             {
-                _rowMapping[number] = newRow = Row.FromNumber(number).Apply(mapping).ToNumber();
+                int newRow = _rowMapping[number];
+                if (newRow < 0)
+                {
+                    _rowMapping[number] = newRow = Row.FromNumber(number).Apply(mapping).ToNumber();
+                }
+                return newRow;
             }
 
-            return newRow;
         }
 
         public char[] Apply(char[] text)

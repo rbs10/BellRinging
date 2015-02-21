@@ -13,8 +13,9 @@ namespace BellRinging
   {
     public  int NO_CHOICES;
     public  int NO_LEADENDS = 5040;
-    public  int MAX_LEADS = 63;// 63; //63; // 16; // 29; //42;
-    public bool bTenorsTogether = false;
+
+    public int MAX_LEADS;
+    bool modelInternalRounds = true; // set to true if looking for snap touches, must be false for rotational composer
 
     // for each lead end where the next lead given a specified choice
     public short[,] leadMapping;
@@ -48,6 +49,7 @@ namespace BellRinging
     void ComputeChoices(Problem problem)
     {
       NO_CHOICES = 0;
+      MAX_LEADS = problem.MaxLeads;
       nMethods = 0;
       foreach (Method m in problem.Methods)
       {
@@ -91,17 +93,20 @@ namespace BellRinging
       }
     }
 
+    public System.Threading.ManualResetEventSlim readyToCreateComposition = new System.Threading.ManualResetEventSlim(false);
+
     public void Initialise(Problem problem)
     {
+        this.problem = problem;
+
       DateTime startInit = DateTime.UtcNow;
 
       ComputeChoices(problem);
 
-      ClearArrays();
+      readyToCreateComposition.Set();
 
-      MusicalPreferences musicalPreferences = new MusicalPreferences();
-      musicalPreferences.InitSJT();
-      //musicalPreferences.InitELF();
+      ClearArrays();
+      MusicalPreferences musicalPreferences = problem.MusicalPreferences;
 
       int methodIndex = 0;
       foreach (Method method in problem.Methods)
@@ -113,29 +118,40 @@ namespace BellRinging
         // index the leads
         foreach (Lead l in allLeads)
         {
-          if (!bTenorsTogether || l.LeadHead().CoursingOrder().StartsWith("7"))
+          if (IncludeLeadHead(l.LeadHead(), methodIndex) || method.Name == "Null")
           {
             short num = l.ToNumber();
             for (int i = 0; i < _methodsByChoice.Length; ++i)
             {
               if (_methodsByChoice[i] == method)
               {
-                Row nextLeadHead = null;
-                if (l.ContainsRoundsAt <= 0) // does not contain rounds internally
-                {
-                  nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
-                }
-                else
-                {
-                  // note that this is a route to the end - distance = 1 as still have to choose this lead
-                  leadsToEnd[num] = 1;
-
-                  // no call where comes round internally!
-                  if (_leadHeadPermutations[i] == _methodsByChoice[i].PlainLeadEndPermutation)
+                  Row nextLeadHead = null;
+                  if (modelInternalRounds)
                   {
-                    nextLeadHead = new Row(8);
+                      if (l.ContainsRoundsAt <= 0) // does not contain rounds internally
+                      {
+                          nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
+                      }
+                      else
+                      {
+                          // note that this is a route to the end - distance = 1 as still have to choose this lead
+                          leadsToEnd[num] = 1;
+                          
+                          // at least for reverse composition when need to consider this
+                          nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
+
+                          // no call where comes round internally!
+                          if (_leadHeadPermutations[i] != _methodsByChoice[i].PlainLeadEndPermutation)
+                          {
+                              nextLeadHead = null;
+                          }
+                      }
                   }
-                }
+                  else
+                  {
+
+                      nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
+                  }
 
             //    // plain lead ends
             //if (num == 3220 || num == 4293 || num == 973 || num == 1492  || num == 4912 || num==2683)
@@ -162,6 +178,7 @@ namespace BellRinging
             }
           }
         }
+        Console.WriteLine(method.Name);
       }
 
       //Console.WriteLine("Indexed all leads " + (DateTime.UtcNow - startInit));
@@ -182,8 +199,12 @@ namespace BellRinging
     private bool IncludeLeadHead(Row nextLeadHead, int methodIndex)
     {
         // standard include all version
-        //return !bTenorsTogether || nextLeadHead.CoursingOrder().StartsWith("7");
+        return !problem.TenorsTogether || 
+            problem.Reverse?nextLeadHead.CoursingOrder().EndsWith("7"):
+            nextLeadHead.CoursingOrder().StartsWith("7");
         //return true;
+
+        // specials for date touch endings below
 
         bool ret = nextLeadHead.CoursingOrder().StartsWith("7");
         if ( !ret && methodIndex == 1 )
@@ -219,9 +240,12 @@ namespace BellRinging
         //return !bTenorsTogether || nextLeadHead.CoursingOrder().StartsWith("7");
     }
 
+    public Problem problem;
 
-    private void ComputeFalsenessTable(Problem p)
+    public void ComputeFalsenessTable()
     {
+        var p = this.problem;
+
       falseLeadHeads = new short[nMethods, nMethods, NO_LEADENDS][];
 
       foreach (Method method1 in p.Methods)
@@ -352,13 +376,15 @@ namespace BellRinging
       // Get to all counse leads in 10 with singles
       //
       // Feels like worth working out the falseness part
-      //int startOfRowAfterFinish = new Row(8).ToNumberExTreble();
-      int startOfRowAfterFinish = Row.AllRows.First(r => r.ToString() == "12436587").ToNumber();
+      int startOfRowAfterFinish = new Row(8).ToNumberExTreble();
+
+      // for touch coming round at HAND before lead end in 2nds place method
+      //int startOfRowAfterFinish = Row.AllRows.First(r => r.ToString() == "12436587").ToNumber();
       leadsToEnd[startOfRowAfterFinish] = 0;
       
 
       bool bFound = true;
-      short maxDepth = 0;
+      short maxDepth = (short)( problem.Reverse ? 1 : 0);
       int totalFound = 1; // found rounds already
       while (bFound)
       {
