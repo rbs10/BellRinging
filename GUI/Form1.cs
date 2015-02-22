@@ -18,7 +18,7 @@ namespace GUI
     string method;
 
 
-    SimpleComposer_2500_2015 _composer = new SimpleComposer_2500_2015();
+    SimpleComposer_2015v4_ForwardBlocks _composer = new SimpleComposer_2015v4_ForwardBlocks();
 
     public Form1(string method)
     {
