@@ -199,9 +199,10 @@ namespace BellRinging
     private bool IncludeLeadHead(Row nextLeadHead, int methodIndex)
     {
         // standard include all version
-        return !problem.TenorsTogether || 
-            problem.Reverse?nextLeadHead.CoursingOrder().EndsWith("7"):
-            nextLeadHead.CoursingOrder().StartsWith("7");
+        var ret1 = (!problem.TenorsTogether) || 
+            (problem.Reverse?nextLeadHead.CoursingOrder().EndsWith("7"):
+            nextLeadHead.CoursingOrder().StartsWith("7"));
+        return ret1;
         //return true;
 
         // specials for date touch endings below

@@ -48,6 +48,7 @@ namespace BellRinging
       public void Init()
     {
         Init2500();
+       // InitSJT();
     }
 
     /* Stephen's musical changes */
