@@ -119,101 +119,13 @@ namespace GUI
       string text = "";
       foreach (ListViewItem item in listView1.SelectedItems)
       {
-        _selectedComposition = item.Tag as Composition;
-        if (leadView != null)
-        {
-          leadView.Composition = _selectedComposition;
-        }
-        text += (item.Tag as Composition).ToString();
-        text += "\r\n";
-
-
-        text += "\r\nSCORE ";
-        text += _selectedComposition.Music;
-        text += "\r\n\r\nANALYSIS\r\n\r\n";
-        foreach (var rowsGroupedByMusic in (item.Tag as Composition).GetMusicalChanges(_musicalPreferences).GroupBy(x => x.Value.Name).OrderByDescending(x => x.First().Value.Points).ThenBy(x => x.First().Value.Name) )
-        {
-            text += string.Format("{0} {1}\r\n", rowsGroupedByMusic.First().Value.Name, rowsGroupedByMusic.Count());
-        }
-        text += string.Format("{0} {1}\r\n", "Wraps", _selectedComposition.CalcWraps());
-
-        var leadsInRunOrder = _selectedComposition.LeadHeadsAndChoices;
-        if (_composer.Tables.problem.Reverse)
-        {
-            // reverse the leads and skip the lead at the end that is not rung - but appears in table
-            leadsInRunOrder = leadsInRunOrder.Skip(1).Reverse();
-        }
-
-        text += "\r\nLEAD HEADS\r\n\r\n";
-        var callCount = _composer.Tables.NO_CHOICES / _composer.Tables.problem.Methods.Count();
-        foreach (KeyValuePair<short, int> kvp in leadsInRunOrder)
-        {
-          text += Row.FromNumber(kvp.Key);
-          text += " " + " BS"[kvp.Value % callCount];
-          text += "\r\n";
-        }
-        text +=  Row.FromNumber(0);
-        text += "\r\n";
-
-        text += "\r\nLEAD HEADS WITH MUSIC\r\n\r\n";
-
-        int n = 0;
-        foreach (KeyValuePair<short, int> kvp in leadsInRunOrder)
-        {
-            text += (++n).ToString("####");
-            text += " ";
-            text += Row.FromNumber(kvp.Key);
-            //text += " " + " BS"[kvp.Value % callCount];
-            text += ",";
-            var method = _composer.Tables._methodsByChoice[kvp.Value];
-            //var lead = method.Lead(kvp.Key);
-            text += _composer.Tables.music[kvp.Key, kvp.Value];
-            text += ",";
-            var lead = method.Lead(kvp.Key);
-            text += string.Join(" " ,lead.RowsAsInts.Select(r => Row.FromNumber(r)).SelectMany(row =>  _musicalPreferences.EnumerateMusic(row)));
-            text += "\r\n";
-        }
-        text += Row.FromNumber(0);
-        text += "\r\n";
-
-          
-        text += "\r\n";
-        text += "\r\\nDETAILS\r\n\r\n";
-        foreach ( KeyValuePair<Row,string> rs in (item.Tag as Composition).GetMusic(_musicalPreferences) )
-        {
-          text += string.Format("{0} {1}\r\n", rs.Key, rs.Value);
-        }
-          
-
-        text += "\r\nALL CHANGES\r\n\r\n";
-        int rowNo = 0;
-        foreach ( var row in _selectedComposition.Rows )
-        {
-            text += string.Format("{0:###0},{1}\r\n",++rowNo, row);
-        }
-
-        text += "\r\nALL CHANGES WITH SCORES\r\n\r\n";
-        rowNo = 0;
-        foreach (var row in _selectedComposition.Rows)
-        {
-            text += string.Format("{0:###0},{1},{2}\r\n", ++rowNo, row,
-                string.Join(",",_musicalPreferences.EnumerateMusic(row)));
-        }
-        text += "\r\nRAW LEAD HEADS\r\n\r\n";
-        foreach (KeyValuePair<short, int> kvp in _selectedComposition.LeadHeadsAndChoices)
-        {
-            text += kvp.Key;
-            text += " " + " BS"[kvp.Value % 3];
-            text += " ";
-            text += kvp.Value;
-            text += " ";
-            text += Row.FromNumber(kvp.Key).CoursingOrder();
-            text += "\r\n";
-        }
-        text += "\r\n";
-
+          _selectedComposition = item.Tag as Composition;
+          if (leadView != null)
+          {
+              leadView.Composition = _selectedComposition;
+          }
+          text = _selectedComposition.WriteDetails();
       }
-      text += "\r\n";
       this.compositionTextBox.Text = text;
     }
 

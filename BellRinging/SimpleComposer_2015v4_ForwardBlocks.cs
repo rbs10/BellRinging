@@ -13,35 +13,44 @@ namespace BellRinging
 
     public ICompositionReceiver Receiver { get { return _receiver; } set { _receiver = value; } }
 
+    HashSet<int> allowedPartEnds = new HashSet<int>();
+
     Problem problem;
     public void Initialise(string method2)
     {
         MethodLibrary lib = new MethodLibrary();
-        int l = 2016;// -10 * 32;
+        int l = 32*40; // 2016;// -10 * 32;
         bestTotalMusic = 0; // start looking for some music
         Problem p = new Problem()
         {
             TenorsTogether = false,
             AllowSingles = true,
+            MinLeads = (int) (l/32-1),
             MaxLeads = l/32 ,
             MinLength = l,
             MaxLength = l,
             Reverse = false,
-            BlockLength = 9
+            BlockLength = 10,
+            VariableHunt = true,
+            MusicDelta = 9999
         };
+
+        var vhCall = p.VariableHunt ? "3456" : null;
         this.problem = p;
         int index = 0;
         foreach (string method in
-          new string[] {
-              "Superlative",
-              "London", 
-              "Pudsey",
-              "Yorkshire",
-              "Glasgow" ,
-         "Cambridge" ,
-         "Bristol",
-         "Lincolnshire",
-         "Rutland"
+          new string[] { 
+             "Superlative",
+         //  , "Cambridge" , "Yorkshire",    "London", 
+         //"Lincolnshire",
+        "Glasgow" ,"Cassiobury", "Cornwall", "Ashtead",
+         //     "Pudsey",
+              "Bristol",
+         //     ,
+              "Rutland"
+         
+         
+       
               //,
               //"Bastow"
              // "Superlative",
@@ -62,16 +71,22 @@ namespace BellRinging
             char letter = method[0];
             if (method == "Lincolnshire") letter = 'N';
             if (method == "Belfast") letter = 'F';
+            if (method == "Cassiobury") letter = 'O';
+            if (method == "Cornwall") letter = 'E';
+            if (method == "Lindum") letter = 'M';
+            if (method == "Wembley") letter = 'X';
+            if (method == "Cray") letter = 'K';
+            if (method == "Preston") letter = 'H';
             Method methodObject;
             if ( method == "Bastow")
             {
 
-                methodObject = new Method(method, "β", "X12-18", 8, p.AllowSingles);
+                methodObject = new Method(method, "β", "X12-18", 8, p.AllowSingles, vhCall);
             }
             else
             {
 
-             methodObject = new Method(method, letter.ToString(), lib.GetNotation(method), 8, p.AllowSingles);
+             methodObject = new Method(method, letter.ToString(), lib.GetNotation(method), 8, p.AllowSingles,vhCall);
             }
             if (method == "Bastow")
             {
@@ -82,7 +97,7 @@ namespace BellRinging
         }
         if (p.Reverse)
         {
-            p.AddMethod(new Method("Null", " EC ", null, 8, p.AllowSingles));
+            p.AddMethod(new Method("Null", " EC ", null, 8, p.AllowSingles, vhCall));
         }
 
         // at least for Y and S then Bastow start seems to imply need to finish with bob
@@ -99,6 +114,39 @@ namespace BellRinging
         p.MusicalPreferences = new MusicalPreferences();
         p.MusicalPreferences.Init();
         _tables.Initialise(p);
+
+        var ape = "12345678";
+        //for (int i = 0; i < 7; ++i)
+        //{
+        //    ape = ape.Substring(1) + ape[0];
+        //    allowedPartEnds.Add(Row.FromString(ape).ToNumber());
+        //}
+        for (int i = 0; i < 3; ++i)
+        {
+            ape = ape.Substring(1) + ape[0];
+            ape = ape.Substring(1) + ape[0];
+            allowedPartEnds.Add(Row.FromString(ape).ToNumber());
+        }
+
+        /*
+        // cyclic part ends
+        allowedPartEnds.Add(Row.FromString("13456782").ToNumber());
+        allowedPartEnds.Add(Row.FromString("14567823").ToNumber());
+        allowedPartEnds.Add(Row.FromString("15678234").ToNumber());
+        allowedPartEnds.Add(Row.FromString("16782345").ToNumber());
+        allowedPartEnds.Add(Row.FromString("17823456").ToNumber());
+        allowedPartEnds.Add(Row.FromString("18234567").ToNumber());
+
+        // plain bob part ends
+        allowedPartEnds.Add(Row.FromString("13527486").ToNumber());
+        allowedPartEnds.Add(Row.FromString("14263857").ToNumber());
+        allowedPartEnds.Add(Row.FromString("15738264").ToNumber());
+        allowedPartEnds.Add(Row.FromString("16482735").ToNumber());
+        allowedPartEnds.Add(Row.FromString("17856342").ToNumber());
+        allowedPartEnds.Add(Row.FromString("18674523").ToNumber());  
+  */
+  
+  
     }
 
     public void InitialiseWithSnapStart(string method)
@@ -145,12 +193,14 @@ namespace BellRinging
       maxLeads = _tables.MAX_LEADS;
 
       _composition = new Composition(_tables);
+      _composition.Problem = problem;
+      _composition.Reverse = problem.Reverse;
 
       bestMusic = new int[maxLeads * 32 + 1];
       bestQuality = new int[maxLeads * 32 + 1];
       bestCalls = new int[maxLeads * 32 + 1];
 
-      int maxGroup = maxLeads * 1000 + maxLeads;
+      int maxGroup = maxLeads * 1000 + maxLeads + 1;
       bestMusic = new int[maxGroup];
       bestQuality = new int[maxGroup];
       bestCalls = new int[maxGroup];
@@ -208,7 +258,7 @@ namespace BellRinging
       {
           //return "temp stubbed";
            var temp = _composition.Clone();
-           return string.Join("", temp.choices.Select(c => c.ToString()));
+           return string.Join(".", temp.choices.Select(c => c.ToString()));
            //return temp.ToString();
         //return minBackTrackPoint.ToString() + "/" + timesToPoint.ToString();
       }
@@ -277,21 +327,22 @@ namespace BellRinging
 
     Composition _composition;
 
-    short firstUnprovenLead = 0;
+    int firstUnprovenLead = 0;
 
     int minBackTrackPoint;
     int timesToPoint;
 
-    //short maxLeadIndex = 0;
+    //int maxLeadIndex = 0;
 
     void DoCompose()
     {
-      Int16 start = new Row(8).ToNumberExTreble();
+      var start = new Row(8).ToNumber();
 
-      Int16 currentLead = start;
+      var currentLead = start;
+      int regenPointer = -1;
 
       int[] choices = _composition.choices;
-      short[] leads = _composition.leads;
+      int[] leads = _composition.leads;
 
       // lead is the lead just rung, call is the call made from that lead
       choices[0] = problem.FirstChoice;
@@ -308,19 +359,19 @@ namespace BellRinging
       minBackTrackPoint = int.MaxValue;
       timesToPoint = 0;
 
-      short maxLeadIndex = 0;
+      int maxLeadIndex = 0;
 
 
       //int[] lastCheckedComp = null;
-      //short[] lastCheckedLeads = null;
-      //short lastFalseAt;
+      //int[] lastCheckedLeads = null;
+      //int lastFalseAt;
 
       while (true)
       {
         ++totalLeads;
 
         // the start of the next lead as determined by what we do in at this choice
-        Int16 nextLead = _tables.leadMapping[currentLead, choices[maxLeadIndex]];
+        var nextLead = _tables.leadMapping[currentLead, choices[maxLeadIndex]];
  
         
         // if the next lead starts with rounds then it does not matter what the method is - we are done
@@ -357,33 +408,28 @@ namespace BellRinging
           _composition.maxLeadIndex = maxLeadIndex;
          
 
-          short firstUnprovenLead = -1; // no false check !!! TODO:
+          int firstUnprovenLead = -1; // no false check !!! TODO:
           var falseAt = _composition.RunsFalseAt5(ref firstUnprovenLead);
-          int minBackTrack;
+          int minBackTrack = maxLeadIndex;
          // if (true /*falseAt < 0*/)
-          
-          if (falseAt < 0 )
+
+          if (falseAt < 0)
           {
-              //only want longest compositions
-              //if (maxLeadIndex == maxLeads-1)
-              {
-                  totalMusic += _tables.music[currentLead, choices[maxLeadIndex]];
-                  WriteComposition(maxLeadIndex);
-                  totalMusic -= _tables.music[currentLead, choices[maxLeadIndex]];
-              }
-            // true - no need to backtrack other than because of outcome of other choices here
-            minBackTrack = maxLeadIndex;
+              totalMusic += _tables.music[currentLead, choices[maxLeadIndex]];
+              WriteComposition(maxLeadIndex, ref  minBackTrack);
+              totalMusic -= _tables.music[currentLead, choices[maxLeadIndex]];
           }
           else
           {
-            // backtrack and make another choice in the lead where ran false
-            minBackTrack = falseAt;
+              minBackTrack = falseAt;
           }
+
 
 
           // falseAt is the first lead that was false - therefore we made either a false choice of method
           // at that lead or a false call at the previous lead
-          bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, (short)minBackTrack);
+          bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, (int)minBackTrack);
+          regenPointer = 0;
           if (bDone)
           {
             return;
@@ -403,7 +449,7 @@ namespace BellRinging
 
 
            // looking likely for good music
-          // && totalMusic >= (maxLeadIndex  * bestTotalMusic)/maxLeads - 10
+            && totalMusic >= (maxLeadIndex  * bestTotalMusic)/maxLeads - problem.MusicDelta
 
             && IsNotTriviallyFalseOrRepetitive(nextLead, leads, choices, maxLeadIndex)
 
@@ -414,7 +460,15 @@ namespace BellRinging
               //)
               //)
 
-          && _composition.Imbalance < 2
+              // cannot check part ends here because part ends are not preserved by rotation
+              // nice part ends
+              //&& ( (maxLeadIndex != problem.BlockLength-1) || allowedPartEnds.Contains(nextLead)) 
+
+              // use all the methods
+          //&& (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
+
+
+
           //&& _composition.Calls < 21
               // avoid lots of singles
           //&& ( maxLeadIndex > maxLeads - 5 || choices[maxLeadIndex] != 2 )
@@ -423,7 +477,8 @@ namespace BellRinging
             // this is expensive - better to work out once got something that comes round
             //&&  IsTrue(nextLead, leads, maxLeadIndex)  // next lead is true against what got so far
 
-             && maxLeadIndex + _tables.leadsToEnd[nextLead] < maxLeads // could come round in time
+            // obsoleted by allowed part ends for cyclic composition
+            // && maxLeadIndex + _tables.leadsToEnd[nextLead] < maxLeads // could come round in time
 
             // constraint to go through Cambridge group sBIM finish
             //&& (nextLead == 3910 || maxLeadIndex != maxLeads - 5 ) // 63 - 5 = 58
@@ -506,7 +561,15 @@ namespace BellRinging
             //else
             if ( maxLeadIndex < problem.BlockLength)
             {
-                choices[maxLeadIndex] = 0;
+                if (regenPointer >= 0)
+                {
+                    choices[maxLeadIndex] = choices[regenPointer];
+                    ++regenPointer;
+                }
+                else
+                {
+                    choices[maxLeadIndex] = 0;
+                }
             }
             else
             {
@@ -518,7 +581,8 @@ namespace BellRinging
           }
           else
           {
-            bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, short.MaxValue);
+            bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, int.MaxValue);
+            regenPointer = 0;
             if (bDone)
             {
               return;
@@ -530,7 +594,7 @@ namespace BellRinging
 
 
 
-    private bool BackTrack(ref Int16 currentLead, int[] choices, short[] leads, ref short maxLeadIndex, short lastPossiblyTrueLead)
+    private bool BackTrack(ref int currentLead, int[] choices, int[] leads, ref int maxLeadIndex, int lastPossiblyTrueLead)
     {
         //if (maxLeadIndex < problem.BlockLength)
         {
@@ -579,16 +643,16 @@ namespace BellRinging
       return false;
     }
 
-    private bool IsTrue(short nextLead, short[] leads, short noLeads)
+    private bool IsTrue(int nextLead, int[] leads, int noLeads)
     {
-      short firstUnprovenLead = noLeads;
+      int firstUnprovenLead = noLeads;
       _composition.maxLeadIndex = noLeads;
-      short falseAt = _composition.RunsFalseAt5(ref firstUnprovenLead);
+      int falseAt = _composition.RunsFalseAt5(ref firstUnprovenLead);
       return falseAt < 0;
     }
 
 
-    private bool IsNotTriviallyFalseOrRepetitive(short nextLead, short[] leads, int[] choices, short maxLeadIndex)
+    private bool IsNotTriviallyFalseOrRepetitive(int nextLead, int[] leads, int[] choices, int maxLeadIndex)
     {
       Method m = _tables._methodsByChoice[choices[maxLeadIndex]];
       for (int i = 0; i <= maxLeadIndex; ++i)
@@ -610,7 +674,7 @@ namespace BellRinging
       return true;
     }
 
-    private bool IsNotTriviallyFalse(short nextLead, short[] leads, short maxLeadIndex)
+    private bool IsNotTriviallyFalse(int nextLead, int[] leads, int maxLeadIndex)
     {
       for (int i = 0; i <= maxLeadIndex; ++i)
       {
@@ -627,82 +691,104 @@ namespace BellRinging
       }
   }
    
-    private void WriteComposition(int noLeads)
+    private void WriteComposition(int noLeads, ref int minBackTrack)
     {
       lock (this)
       {
-     
-        ++totalCompositions;
+          bool proven = true;
 
-        _composition.CalcStats();
+          var rotMax = 0;
+          if ( problem.BlockLength > 0 )
+          {
+              rotMax = Math.Min(problem.BlockLength,_composition.maxLeadIndex);
+          }
+          for (_composition.rot = 0; _composition.rot < rotMax; ++_composition.rot)
+          {
+              ++totalCompositions;
 
-        int totalScore = _composition.Score;// -_composition.Calls;
-        var quality = _composition.COM;
-        //quality = _composition.choices.Where((c, i) => i <= noLeads && c > 2).Count();
-        var calls = bestMusic.Length-1- _composition.Calls;
-        //_composition.CalcWraps();
+              _composition.CalcStats();
+              if (maxLeads <= problem.BlockLength || allowedPartEnds.Count == 0 || allowedPartEnds.Contains(_composition._partEnd))
+              {
+                  int totalScore = _composition.Score;// -_composition.Calls;
+                  var quality = _composition.COM;
+                  //quality = _composition.choices.Where((c, i) => i <= noLeads && c > 2).Count();
+                  var calls = bestMusic.Length - 1 - _composition.Calls;
+                  //_composition.CalcWraps();
 
-       // compositionsWithMusicScore[totalScore]++;
-        int changes = _composition.Changes;
-        //var group = calls;
-        var group = _composition.COM * 1000 + _composition.Calls; // just look for most music
-        //if ( changes == 2016 )
+                  // compositionsWithMusicScore[totalScore]++;
+                  int changes = _composition.Changes;
+                  //var group = calls;
+                  var group = _composition.COM * 1000 + _composition.Calls; // just look for most music
+                  //if ( changes == 2016 )
 
 
-        if (//true ||
-      !(changes< problem.MinLength) &&
-           !(changes > problem.MaxLength) &&
-//_composition.COM> 10&&
- //_composition.Imbalance < 10&&
-            // changes == 2015 - (6 * 7 * 32) &&
-            // changes == maxLeads * 32 - 1 &&
-            //changes % 32 == 31 &&
-            // _composition.Calls < 9
-            //(changes % 2 != 0 ) &&
-            //changes == 2015 && 
-            (
-          totalScore > bestMusic[group] ||
-          quality > bestQuality[group] 
-          //||calls >=bestCalls[changes]
-          )
+                  if (//true ||
+                !(changes < problem.MinLength) &&
+                     !(changes > problem.MaxLength) &&
+                      //_composition.COM> 10&&
+                      //_composition.Imbalance < 10&&
+                      // changes == 2015 - (6 * 7 * 32) &&
+                      // changes == maxLeads * 32 - 1 &&
+                      //changes % 32 == 31 &&
+                      // _composition.Calls < 9
+                      //(changes % 2 != 0 ) &&
+                      //changes == 2015 && 
+                      (
+                    totalScore > bestMusic[group] ||
+                    quality > bestQuality[group]
+                      //||calls >=bestCalls[changes]
+                    )
 
-        // &&    quality > bestQuality[group] 
-            //totalScore >= 120 &&
-            // _composition.Calls < 10&&
-            // totalScore > 2&&
-            // true
-          )
-        {
-            if (_receiver != null)
-            {
-                _composition.TimeToFind = DateTime.UtcNow - _startTime;
-                _receiver.AddComposition(_composition.Clone());
-            }
+                  // &&    quality > bestQuality[group] 
+                      //totalScore >= 120 &&
+                      // _composition.Calls < 10&&
+                      // totalScore > 2&&
+                      // true
+                    )
+                  {
+                      if ( !proven )
+                      {
+                        
+                          var falseAt = _composition.RunsFalseAt5(ref firstUnprovenLead);
+                          if ( falseAt >= 0 )
+                          {
+                              minBackTrack = falseAt;
+                              return;
+                          }
+                          proven = true;
+                      }
+                      if (_receiver != null)
+                      {
+                          _composition.TimeToFind = DateTime.UtcNow - _startTime;
+                          _receiver.AddComposition(_composition.Clone());
+                      }
 
-            if (totalScore > bestMusic[group])
-            {
-                bestMusic[group] = totalScore;
-            }
-            if (totalScore > bestTotalMusic)
-            {
-                bestTotalMusic = totalScore;
-            }
-            if (quality > bestQuality[group])
-            {
-                bestQuality[group] = quality;
-            }
-            if (calls > bestCalls[group])
-            {
-                bestCalls[group] = calls;
-            }
-            return;
-            Console.WriteLine("Leads = " + (noLeads + 1) + " ( " + (noLeads + 1) * 32 + "  changes) Total music " + totalMusic);
-            for (int i = 0; i <= noLeads; ++i)
-            {
-                Console.WriteLine(Row.FromNumber(_composition.leads[i]) + " " + "-BSZ"[_composition.choices[i]] + " " + _tables.music[_composition.leads[i], _composition.choices[i]]);
-            }
-        }
-       
+                      if (totalScore > bestMusic[group])
+                      {
+                          bestMusic[group] = totalScore;
+                      }
+                      if (totalScore > bestTotalMusic)
+                      {
+                          bestTotalMusic = totalScore;
+                      }
+                      if (quality > bestQuality[group])
+                      {
+                          bestQuality[group] = quality;
+                      }
+                      if (calls > bestCalls[group])
+                      {
+                          bestCalls[group] = calls;
+                      }
+                      //return;
+                      //Console.WriteLine("Leads = " + (noLeads + 1) + " ( " + (noLeads + 1) * 32 + "  changes) Total music " + totalMusic);
+                      //for (int i = 0; i <= noLeads; ++i)
+                      //{
+                      //    Console.WriteLine(Row.FromNumber(_composition.leads[i]) + " " + "-BSZ"[_composition.choices[i]] + " " + _tables.music[_composition.leads[i], _composition.choices[i]]);
+                      //}
+                  }
+              }
+          }
+          _composition.rot = 0;
       }
     }
   }

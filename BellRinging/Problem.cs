@@ -21,10 +21,6 @@ namespace BellRinging
 
     public Problem()
     {
-
-        //musicalPreferences.InitELF();
-        MusicalPreferences = new MusicalPreferences();
-        MusicalPreferences.InitSJT();
     }
 
     public void AddMethod(Method m)
@@ -76,10 +72,14 @@ namespace BellRinging
     public int? MinLength { get; set; }
     public int? MaxLength { get; set; }
 
-    public short MinLeads { get; set; }
+    public int MinLeads { get; set; }
 
     public bool Reverse { get; set; }
 
     public int BlockLength { get; set; }
+
+    public bool VariableHunt { get; set; }
+
+    public int MusicDelta { get; set; }
   }
 }

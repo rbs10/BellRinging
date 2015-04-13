@@ -45,9 +45,15 @@ namespace BellRinging
 
     }
 
+    int[] scores = new int[40320];
       public void Init()
     {
         Init2500();
+
+          foreach ( var row in Row.AllRows)
+          {
+              scores[row.ToNumber()] = Score(row);
+          }
        // InitSJT();
     }
 
@@ -308,22 +314,31 @@ namespace BellRinging
         _musicalChanges.Add(new MusicalChange("45678xxx", 1, "Rollup/down off front"));
         _musicalChanges.Add(new MusicalChange("345678xx", 1, "Rollup/down off front"));
     }
-    internal short ScoreLead(List<Row> allRows)
+    internal int ScoreLead(List<Row> allRows)
     {
       // accumulate the simple score skipping the final row which is modelled as part of the
       // next lead
-      short score = 0;
+      int score = 0;
       //if (allRows[0].CoursingOrder().StartsWith("7"))
       //{
       //   score = 10;
       //}
       //return score;
 
-      short lastRowScore = 0;
+      int lastRowScore = 0;
       foreach (Row r in allRows)
       {
         score += lastRowScore;
-        short rowScore = 0;
+        int rowScore = this.scores[r.ToNumber()];
+        lastRowScore = rowScore;
+        //Console.WriteLine(r.ToString() + " " + rowScore);
+      }
+      return score;
+    }
+
+    private int Score(Row r)
+    {
+        int rowScore = 0;
         if (IgnoreRounds && r.ToNumber() == 0)
         {
 
@@ -332,17 +347,14 @@ namespace BellRinging
         {
             foreach (var c in _musicalChanges)
             {
-                short scoreC = c.Score(r);
+                int scoreC = c.Score(r);
                 if (scoreC > rowScore)
                 {
                     rowScore = scoreC;
                 }
             }
         }
-        lastRowScore = rowScore;
-        //Console.WriteLine(r.ToString() + " " + rowScore);
-      }
-      return score;
+        return rowScore;
     }
 
     public IEnumerable<string> EnumerateMusic(Row r)

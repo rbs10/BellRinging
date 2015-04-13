@@ -10,7 +10,7 @@ namespace BellRinging
     /// </summary>
     public class MusicalChangeRun :MusicalChangeBase
     {
-        public MusicalChangeRun( short score, string name, int runLength, int runDelta)
+        public MusicalChangeRun( int score, string name, int runLength, int runDelta)
             : base(score, name)
     {
         this.runDelta = runDelta;
@@ -20,7 +20,7 @@ namespace BellRinging
         int runLength;
         int runDelta;
 
-    public override short Score(Row row)
+    public override int Score(Row row)
     {
         var change = row.ToString().Select(c => int.Parse(c.ToString())).ToArray();
         for (int i = 0; i <= change.Length - runLength; ++i)

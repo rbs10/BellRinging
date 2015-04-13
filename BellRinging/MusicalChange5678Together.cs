@@ -10,7 +10,7 @@ namespace BellRinging
     /// </summary>
     public class MusicalChange5678Together :MusicalChangeBase
     {
-        public MusicalChange5678Together( short score, string name, int offset)
+        public MusicalChange5678Together( int score, string name, int offset)
             : base(score, name)
     {
         this.offset = offset;
@@ -18,7 +18,7 @@ namespace BellRinging
 
         int offset;
 
-        public override short Score(Row row)
+        public override int Score(Row row)
         {
             var change = row.ToString().Select(c => int.Parse(c.ToString())).ToArray();
             int total = 0;
@@ -27,7 +27,7 @@ namespace BellRinging
 
                 total += change[i];
             }
-            return (total == 5 + 6 + 7 + 8) ? Points : (short)0;
+            return (total == 5 + 6 + 7 + 8) ? Points : (int)0;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace BellRinging
     Method _method;
     List<Row> _rows;
     int[] _rowInts;
-    short _number;
+    int _number;
     int _containsRoundsAt = -1;
 
     // thinking index leads by the lead head and method
@@ -37,7 +37,7 @@ namespace BellRinging
       }
 
       // precompute for speed
-      _number = (short)_rowInts[0];
+      _number = (int)_rowInts[0];
 
       //_containsRoundsAt = -1;
     }
@@ -111,7 +111,7 @@ namespace BellRinging
     /// Convert lead to a number
     /// </summary>
     /// <returns></returns>
-    public Int16 ToNumber()
+    public int ToNumber()
     {
       return _number;
     }
@@ -228,7 +228,7 @@ namespace BellRinging
     }
 
 
-    internal short Score(MusicalPreferences musicalPreferences, Row nextLeadHead)
+    internal int Score(MusicalPreferences musicalPreferences, Row nextLeadHead)
     {
       // the nextLeadHead lead is only relevant for cross change music (wraprounds)
 
@@ -250,7 +250,7 @@ namespace BellRinging
 
       return baseScore;
 
-      //return (short)(baseScore + 10 * CalcWraps());
+      //return (int)(baseScore + 10 * CalcWraps());
       //return musicalPreferences.Score(_rows);
     }
 

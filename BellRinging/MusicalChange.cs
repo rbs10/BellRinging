@@ -12,13 +12,13 @@ namespace BellRinging
   {
     Regex _regex;
 
-    public MusicalChange(string pattern, short score, string name) : base(score,name)
+    public MusicalChange(string pattern, int score, string name) : base(score,name)
     {
       _regex = new Regex(pattern.ToUpper().Replace("X","."));
     }
 
 
-    public override short Score(Row row)
+    public override int Score(Row row)
     {
       if (_regex.Matches(row.ToString()).Count > 0 )
       {

@@ -7,8 +7,8 @@ namespace BellRinging
 {
     public interface IMusicalChange
     {
-        short Score(Row row);
+        int Score(Row row);
         string Name { get; }
-        short Points { get; }
+        int Points { get; }
     }
 }

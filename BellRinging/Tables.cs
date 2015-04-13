@@ -13,29 +13,29 @@ namespace BellRinging
   public class Tables
   {
     public  int NO_CHOICES;
-    public  int NO_LEADENDS = 5040;
+    public  int NO_LEADENDS;
 
     public int MAX_LEADS;
     bool modelInternalRounds = true; // set to true if looking for snap touches, must be false for rotational composer
 
     // for each lead end where the next lead given a specified choice
-    public short[,] leadMapping;
+    public int[,] leadMapping;
     // for each lend end the previous lead end via a specifed choice
-    public short[,] reverseLeadMapping;
+    public int[,] reverseLeadMapping;
     // for each lead end and choice the musical score (depends weakly on the bob/single aspect
     // of the choice
-    public short[,] music;
+    public int[,] music;
 
     // for each leadHead the other leadHeads it is false against
-    public short[,,][] falseLeadHeads;
-    public short[,,][] falseMethods;
+    public int[,,][] falseLeadHeads;
+    public int[,,][] falseMethods;
     //public int[] falseCount;
 
     // for each lead head how many leads until rounds (= 0 for rounds)
-    public short[] leadsToEnd;
+    public int[] leadsToEnd;
 
     // the maximum music in any lead
-    public short maxMusic = 0;
+    public int maxMusic = 0;
 
     // the method index associated with each choice
     public int[] methodIndexByChoice;
@@ -49,6 +49,7 @@ namespace BellRinging
     int nMethods;
     void ComputeChoices(Problem problem)
     {
+        NO_LEADENDS = problem.VariableHunt ? 40320 : 5040;
       NO_CHOICES = 0;
       MAX_LEADS = problem.MaxLeads;
       nMethods = 0;
@@ -146,7 +147,7 @@ namespace BellRinging
         {
             if (IncludeLeadHead(l.LeadHead(), methodIndex) || method.Name == "Null")
             {
-                short num = l.ToNumber();
+                int num = l.ToNumber();
                 for (int i = 0; i < _methodsByChoice.Length; ++i)
                 {
                     if (_methodsByChoice[i] == method)
@@ -188,16 +189,16 @@ namespace BellRinging
                         if (nextLeadHead != null && (IncludeLeadHead(nextLeadHead, methodIndex)))
                         {
 
-                            // music[num, i] = (short)l.CalcWraps(); // Wraps hunt version
+                            // music[num, i] = (int)l.CalcWraps(); // Wraps hunt version
                             music[num, i] = l.Score(musicalPreferences, nextLeadHead); // normal scoring
-                            //music[num, i] = (short)(10 - (short)i); // favour simplicity
-                            // music[num, i] = (short)(l.Score(musicalPreferences, nextLeadHead) - (i > 0 ? 10 : 0)); - odd is hit - note need take out WriteMusicalChanges
+                            //music[num, i] = (int)(10 - (int)i); // favour simplicity
+                            // music[num, i] = (int)(l.Score(musicalPreferences, nextLeadHead) - (i > 0 ? 10 : 0)); - odd is hit - note need take out WriteMusicalChanges
 
-                            leadMapping[num, i] = nextLeadHead.ToNumberExTreble();
+                            leadMapping[num, i] = nextLeadHead.ToNumber();
                             // ignore mapping back from nextLeadHead=rounds when this lead contains snap finish
                             //if (l.ContainsRoundsAt <= 0)
                             {
-                                reverseLeadMapping[nextLeadHead.ToNumberExTreble(), i] = num;
+                                reverseLeadMapping[nextLeadHead.ToNumber(), i] = num;
                             }
                         }
                     }
@@ -258,7 +259,7 @@ namespace BellRinging
     {
         var p = this.problem;
 
-      falseLeadHeads = new short[nMethods, nMethods, NO_LEADENDS][];
+      falseLeadHeads = new int[nMethods, nMethods, NO_LEADENDS][];
 
       foreach (Method method1 in p.Methods)
       {
@@ -309,14 +310,14 @@ namespace BellRinging
           foreach (Lead l in method1.AllLeads)
           {
             bool l1isSnap = l.ContainsRoundsAt > 0;
-            falseLeadHeads[methIdx1,methIdx2,l.ToNumber()] = new short[permutations.Count];
+            falseLeadHeads[methIdx1,methIdx2,l.ToNumber()] = new int[permutations.Count];
             for (int i = 0; i < permutations.Count; ++i)
             {
               Row falseLeadHead = l.LeadHead().Apply(permutations[i]);
               Lead l2 = method2.Lead(falseLeadHead);
               if (l2.ContainsRoundsAt <= 0 || l.IsFalseAgainstIgnoringSnapCompletion(l2))
               {
-                falseLeadHeads[methIdx1, methIdx2, l.ToNumber()][i] = falseLeadHead.ToNumberExTreble();
+                falseLeadHeads[methIdx1, methIdx2, l.ToNumber()][i] = falseLeadHead.ToNumber();
               }
               else
               {
@@ -333,11 +334,11 @@ namespace BellRinging
     private void ClearArrays()
     {
       
-    leadMapping = new short[NO_LEADENDS, NO_CHOICES];
-   reverseLeadMapping = new short[NO_LEADENDS, NO_CHOICES];
-   music = new short[NO_LEADENDS, NO_CHOICES];
+    leadMapping = new int[NO_LEADENDS, NO_CHOICES];
+   reverseLeadMapping = new int[NO_LEADENDS, NO_CHOICES];
+   music = new int[NO_LEADENDS, NO_CHOICES];
 
-   leadsToEnd = new short[NO_LEADENDS];
+   leadsToEnd = new int[NO_LEADENDS];
 
     //public int[] falseCount = new int[NO_LEADENDS];
 
@@ -352,13 +353,13 @@ namespace BellRinging
 
       for (int i = 0; i < leadsToEnd.Length; ++i)
       {
-        leadsToEnd[i] = short.MaxValue;
+        leadsToEnd[i] = int.MaxValue;
       }
     }
 
     private void WriteMusicalChanges()
     {
-      foreach (short score in music)
+      foreach (int score in music)
       {
         if (score > maxMusic)
         {
@@ -368,7 +369,7 @@ namespace BellRinging
 
       int[] boxes = new int[maxMusic + 1];
       int total = 0;
-      foreach (short score in music)
+      foreach (int score in music)
       {
         ++boxes[score];
         total += score;
@@ -388,7 +389,7 @@ namespace BellRinging
       // Get to all counse leads in 10 with singles
       //
       // Feels like worth working out the falseness part
-      int startOfRowAfterFinish = new Row(8).ToNumberExTreble();
+      int startOfRowAfterFinish = new Row(8).ToNumber();
 
       // for touch coming round at HAND before lead end in 2nds place method
       //int startOfRowAfterFinish = Row.AllRows.First(r => r.ToString() == "12436587").ToNumber();
@@ -396,7 +397,7 @@ namespace BellRinging
       
 
       bool bFound = true;
-      short maxDepth = (short)( problem.Reverse ? 1 : 0);
+      int maxDepth = (int)( problem.Reverse ? 1 : 0);
       int totalFound = 1; // found rounds already
       while (bFound)
       {
@@ -412,7 +413,7 @@ namespace BellRinging
               if (backLead >= 0 && leadsToEnd[backLead] > maxDepth + 1)
               {
                 bFound = true;
-                leadsToEnd[backLead] = (short)(maxDepth + 1);
+                leadsToEnd[backLead] = (int)(maxDepth + 1);
                 ++countAtDepth;
                 ++totalFound;
               }
@@ -425,7 +426,7 @@ namespace BellRinging
      Console.WriteLine("Total leads found = " + totalFound);
    }
 
-    public IEnumerable<Row> Rows(short lead, int choice)
+    public IEnumerable<Row> Rows(int lead, int choice)
     {
       Method m = _methodsByChoice[choice];
       return m.Rows(lead);

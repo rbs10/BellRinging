@@ -235,6 +235,10 @@ namespace BellRinging
       return swaps % 2 == 0;
     }
 
+    public bool StartsWithTreble()
+    {
+        return _row[0]== _rounds[0];
+    }
     public string CoursingOrder()
     {
       if (_row[0] != _rounds[0] )
@@ -293,18 +297,7 @@ namespace BellRinging
 
  
 
-    /// <summary>
-    /// Return an integer that uniquely identifies the row. Stable within program execution.
-    /// 
-    /// For 8 bells number with treble at front is 0...5039
-    /// </summary>
-    /// <returns></returns>
-    internal Int16 ToNumberExTreble()
-    {
-     
-      return (short)_number;
-    }
-
+    // Return number that uniquely identifies row
     public int ToNumber()
     {
       return _number;

@@ -42,24 +42,21 @@ namespace BellRinging
         return _code;
       }
     }
+
+    string _variableHuntCall;
     
-    public Method(string name, string code, string changeNotation, int noBells,bool allowSingles = true )
+    public Method(string name, string code, string changeNotation, int noBells,bool allowSingles = true, string variableHuntCall = null )
     {
       _name = name;
       _code = code;
+      _variableHuntCall = variableHuntCall;
 
       if (changeNotation == null)
       {
           _corePermutations = new SequenceOfPermutations(null, 8);
 
           _plainLeadEndPermutation = Permutation.FromPlaceNotation("12", 8);
-          _leadHeadChanges.Add(_plainLeadEndPermutation);
-          //_leadHeadChanges.Add(Permutation.FromPlaceNotation("16", 8));
-          _leadHeadChanges.Add(Permutation.FromPlaceNotation("14", 8));
-          if (allowSingles)
-          {
-              _leadHeadChanges.Add(Permutation.FromPlaceNotation("1234", 8));
-          }
+         
       }
       else
       {
@@ -77,13 +74,21 @@ namespace BellRinging
 
           _plainLeadEndPermutation = Permutation.FromPlaceNotation(changeNotation.Substring(whereIsDash + 1).Replace(" ", ""), noBells);
 
-          _leadHeadChanges.Add(_plainLeadEndPermutation);
-          //_leadHeadChanges.Add(Permutation.FromPlaceNotation("16", 8));
+
+      }
+      _leadHeadChanges.Add(_plainLeadEndPermutation);
+      //_leadHeadChanges.Add(Permutation.FromPlaceNotation("16", 8));
+      if (variableHuntCall == null)
+      {
           _leadHeadChanges.Add(Permutation.FromPlaceNotation("14", 8));
-          if (allowSingles)
+      }
+        if (allowSingles)
           {
               _leadHeadChanges.Add(Permutation.FromPlaceNotation("1234", 8));
           }
+      if (variableHuntCall != null)
+      {
+          _leadHeadChanges.Add(Permutation.FromPlaceNotation(variableHuntCall, 8));
       }
 
     }
@@ -180,6 +185,13 @@ namespace BellRinging
         if (IsSnapStart||IsFirstLead)
         {
             GenerateFirstLead(new Row(8), _allLeads);
+        }
+        else if ( _variableHuntCall != null )
+        {
+            foreach (var row in Row.AllRows )
+            {
+                _allLeads.Add(row.ToNumber(), GenerateLead(row));
+            }
         }
         else
         {
@@ -281,7 +293,7 @@ namespace BellRinging
             return new Lead(this, restOfCourse);
     }
 
-    public IEnumerable<Row> Rows(short lead)
+    public IEnumerable<Row> Rows(int lead)
     {
       Row row = Row.FromNumber(lead);
       // the first row is always included

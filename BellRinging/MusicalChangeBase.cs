@@ -7,9 +7,9 @@ namespace BellRinging
 {
     public abstract class MusicalChangeBase : IMusicalChange
     {
-        short _score;
+        int _score;
         string _name;
-        public MusicalChangeBase(short score, string name)
+        public MusicalChangeBase(int score, string name)
         {
             _name = name;
             _score = score;
@@ -24,7 +24,7 @@ namespace BellRinging
 
 
 
-        public short Points
+        public int Points
         {
             get
             {
@@ -33,6 +33,6 @@ namespace BellRinging
         }
 
 
-        public abstract short Score(Row row);
+        public abstract int Score(Row row);
     }
 }

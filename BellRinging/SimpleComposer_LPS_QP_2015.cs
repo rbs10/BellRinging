@@ -165,7 +165,7 @@ namespace BellRinging
       get
       {
            var temp = _composition.Clone();
-           temp.maxLeadIndex = (short)(temp.leads.Length - 1);
+           temp.maxLeadIndex = (int)(temp.leads.Length - 1);
            return temp.ToString();
         //return minBackTrackPoint.ToString() + "/" + timesToPoint.ToString();
       }
@@ -232,21 +232,21 @@ namespace BellRinging
 
     Composition _composition;
 
-    short firstUnprovenLead = 0;
+    int firstUnprovenLead = 0;
 
     int minBackTrackPoint;
     int timesToPoint;
 
-    //short maxLeadIndex = 0;
+    //int maxLeadIndex = 0;
 
     void DoCompose()
     {
-      Int16 start = new Row(8).ToNumberExTreble();
+      var start = new Row(8).ToNumber();
 
-      Int16 currentLead = start;
+      var currentLead = start;
 
       int[] choices = _composition.choices;
-      short[] leads = _composition.leads;
+      int[] leads = _composition.leads;
 
       // lead is the lead just rung, call is the call made from that lead
       choices[0] = 0;
@@ -263,19 +263,19 @@ namespace BellRinging
       minBackTrackPoint = int.MaxValue;
       timesToPoint = 0;
 
-      short maxLeadIndex = 0;
+      int maxLeadIndex = 0;
 
 
       //int[] lastCheckedComp = null;
-      //short[] lastCheckedLeads = null;
-      //short lastFalseAt;
+      //int[] lastCheckedLeads = null;
+      //int lastFalseAt;
 
       while (true)
       {
         ++totalLeads;
 
         // the start of the next lead as determined by what we do in at this choice
-        Int16 nextLead = _tables.leadMapping[currentLead, choices[maxLeadIndex]];
+        var nextLead = _tables.leadMapping[currentLead, choices[maxLeadIndex]];
  
         
         // if the next lead starts with rounds then it does not matter what the method is - we are done
@@ -312,7 +312,7 @@ namespace BellRinging
           _composition.maxLeadIndex = maxLeadIndex;
          
 
-          short firstUnprovenLead = -1; // no false check !!! TODO:
+          int firstUnprovenLead = -1; // no false check !!! TODO:
           var falseAt = _composition.RunsFalseAt5(ref firstUnprovenLead);
           int minBackTrack;
          // if (true /*falseAt < 0*/)
@@ -338,7 +338,7 @@ namespace BellRinging
 
           // falseAt is the first lead that was false - therefore we made either a false choice of method
           // at that lead or a false call at the previous lead
-          bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, (short)minBackTrack);
+          bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, (int)minBackTrack);
           if (bDone)
           {
             return;
@@ -455,7 +455,7 @@ namespace BellRinging
           }
           else
           {
-            bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, short.MaxValue);
+            bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, int.MaxValue);
             if (bDone)
             {
               return;
@@ -467,7 +467,7 @@ namespace BellRinging
 
 
 
-    private bool BackTrack(ref Int16 currentLead, int[] choices, short[] leads, ref short maxLeadIndex, short lastPossiblyTrueLead)
+    private bool BackTrack(ref int currentLead, int[] choices, int[] leads, ref int maxLeadIndex, int lastPossiblyTrueLead)
     {
         ++choices[maxLeadIndex];
       
@@ -509,16 +509,16 @@ namespace BellRinging
       return false;
     }
 
-    private bool IsTrue(short nextLead, short[] leads, short noLeads)
+    private bool IsTrue(int nextLead, int[] leads, int noLeads)
     {
-      short firstUnprovenLead = noLeads;
+      int firstUnprovenLead = noLeads;
       _composition.maxLeadIndex = noLeads;
-      short falseAt = _composition.RunsFalseAt5(ref firstUnprovenLead);
+      int falseAt = _composition.RunsFalseAt5(ref firstUnprovenLead);
       return falseAt < 0;
     }
 
 
-    private bool IsNotTriviallyFalseOrRepetitive(short nextLead, short[] leads, int[] choices, short maxLeadIndex)
+    private bool IsNotTriviallyFalseOrRepetitive(int nextLead, int[] leads, int[] choices, int maxLeadIndex)
     {
       Method m = _tables._methodsByChoice[choices[maxLeadIndex]];
       for (int i = 0; i <= maxLeadIndex; ++i)
@@ -540,7 +540,7 @@ namespace BellRinging
       return true;
     }
 
-    private bool IsNotTriviallyFalse(short nextLead, short[] leads, short maxLeadIndex)
+    private bool IsNotTriviallyFalse(int nextLead, int[] leads, int maxLeadIndex)
     {
       for (int i = 0; i <= maxLeadIndex; ++i)
       {

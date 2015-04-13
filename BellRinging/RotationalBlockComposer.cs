@@ -9,12 +9,12 @@ namespace BellRinging
     const int NO_CALLS = 2;
     const int NO_LEADENDS = 5040;
     const int MAX_LEADS = 160;
-    short[,] leadMapping = new short[NO_LEADENDS, NO_CALLS];
-    short[,] reverseLeadMapping = new short[NO_LEADENDS, NO_CALLS];
-    short[,] music = new short[NO_LEADENDS, NO_CALLS];
-    short[][] falseMapping;
+    int[,] leadMapping = new int[NO_LEADENDS, NO_CALLS];
+    int[,] reverseLeadMapping = new int[NO_LEADENDS, NO_CALLS];
+    int[,] music = new int[NO_LEADENDS, NO_CALLS];
+    int[][] falseMapping;
     int[] falseCount = new int[NO_LEADENDS];
-    short[] leadsToEnd = new short[NO_LEADENDS];
+    int[] leadsToEnd = new int[NO_LEADENDS];
     bool[] courseEnds = new bool[NO_LEADENDS];
     bool bTenorsTogether = true;
 
@@ -36,7 +36,7 @@ namespace BellRinging
       // index the leads
       foreach (Lead l in allLeads)
       {
-        short num = l.ToNumber();
+        int num = l.ToNumber();
 
         for (int i = 0; i < leadHeadChanges.Count; ++i)
         {
@@ -44,8 +44,8 @@ namespace BellRinging
           if (!bTenorsTogether || nextLeadHead.CoursingOrder().StartsWith("7"))
           {
             music[num, i] = l.Score(musicalPreferences, nextLeadHead);
-            leadMapping[num, i] = nextLeadHead.ToNumberExTreble();
-            reverseLeadMapping[nextLeadHead.ToNumberExTreble(), i] = num;
+            leadMapping[num, i] = nextLeadHead.ToNumber();
+            reverseLeadMapping[nextLeadHead.ToNumber(), i] = num;
           }
         }
       }
@@ -89,14 +89,14 @@ namespace BellRinging
         permutations.Add(Permutation.GetPermutation(l.LeadHead().AsIntMapping()));
       }
 
-      falseMapping = new short[NO_LEADENDS][];
+      falseMapping = new int[NO_LEADENDS][];
       foreach (Lead l in allLeads)
       {
-        falseMapping[l.ToNumber()] = new short[permutations.Count];
+        falseMapping[l.ToNumber()] = new int[permutations.Count];
         for (int i = 0; i < permutations.Count; ++i)
         {
           Row falseLeadHead = l.LeadHead().Apply(permutations[i]);
-          falseMapping[l.ToNumber()][i] = falseLeadHead.ToNumberExTreble();
+          falseMapping[l.ToNumber()][i] = falseLeadHead.ToNumber();
         }
       }
 
@@ -114,13 +114,13 @@ namespace BellRinging
         }
       }
     }
-    short maxMusic = 0;
+    int maxMusic = 0;
 
     int[] compositionsWithMusicScore;
     int[] trimByMusic = new int[MAX_LEADS];
     private void WriteMusicalChanges()
     {
-      foreach (short score in music)
+      foreach (int score in music)
       {
         if (score > maxMusic)
         {
@@ -129,7 +129,7 @@ namespace BellRinging
       }
 
       int[] boxes = new int[maxMusic + 1];
-      foreach (short score in music)
+      foreach (int score in music)
       {
         ++boxes[score];
       }
@@ -148,15 +148,15 @@ namespace BellRinging
       // Get to all counse leads in 10 with singles
       //
       // Feels like worth working out the falseness part
-      int rounds = new Row(8).ToNumberExTreble();
+      int rounds = new Row(8).ToNumber();
       for (int i = 0; i < leadsToEnd.Length; ++i)
       {
-        leadsToEnd[i] = short.MaxValue;
+        leadsToEnd[i] = int.MaxValue;
       }
       leadsToEnd[rounds] = 0;
 
       bool bFound = true;
-      short maxDepth = 0;
+      int maxDepth = 0;
       int totalFound = 1; // found rounds already
       while (bFound)
       {
@@ -172,7 +172,7 @@ namespace BellRinging
               if (backLead >= 0 && leadsToEnd[backLead] > maxDepth + 1)
               {
                 bFound = true;
-                leadsToEnd[backLead] = (short)(maxDepth + 1);
+                leadsToEnd[backLead] = (int)(maxDepth + 1);
                 ++countAtDepth;
                 ++totalFound;
               }
@@ -186,7 +186,7 @@ namespace BellRinging
     }
 
     int[] calls = new int[MAX_LEADS];
-    short[] leads = new short[MAX_LEADS];
+    int[] leads = new int[MAX_LEADS];
     int totalMusic = 0;
     int regenPointer = int.MinValue;
 
@@ -257,10 +257,10 @@ namespace BellRinging
       unchecked // makes arguable difference - not obvious!
       {
         long lastRegenTotalLeads = 0;
-        Int16 start = new Row(8).ToNumberExTreble();
+        var start = new Row(8).ToNumber();
 
-        Int16 currentLead = start;
-        Int16 noLeads = 0;
+        var currentLead = start;
+        int noLeads = 0;
 
         //fixed(int * c = &calls[0]){};
 
@@ -280,7 +280,7 @@ namespace BellRinging
         {
           char c = "1112212121122111221221112211121211122122"[noLeads];
           calls[noLeads] = c - '1';
-          short nextLead = leadMapping[leads[noLeads], calls[noLeads]];
+          int nextLead = leadMapping[leads[noLeads], calls[noLeads]];
           leads[(noLeads + 1) % leads.Length] = nextLead;
           bool isTrue = IsTrue(nextLead, leads, noLeads);
           int toEnd = leadsToEnd[nextLead];
@@ -328,7 +328,7 @@ namespace BellRinging
           //  s += "";
           //}
 
-          Int16 nextLead = leadMapping[currentLead, calls[noLeads]];
+          int nextLead = leadMapping[currentLead, calls[noLeads]];
 
           //{
           //  int m = 0;
@@ -363,7 +363,7 @@ namespace BellRinging
             // regenPointer 
             if (true)
             {
-              // suppress short compositions
+              // suppress int compositions
               if (noLeads + 1 >= 5000 / 32)
               {
 
@@ -394,7 +394,7 @@ namespace BellRinging
                 for (int rot = 0; rot <= noLeads; ++rot)
                 {
                   int lead = rot;
-                  short leadHead = start;
+                  int leadHead = start;
                   totalMusic = 0;
                   for (int i = 0; i <= noLeads && leadHead >= 0; ++i)
                   {
@@ -517,7 +517,7 @@ namespace BellRinging
       }
     }
 
-    private bool IsTrue(short nextLead, short[] leads, short noLeads)
+    private bool IsTrue(int nextLead, int[] leads, int noLeads)
     {
       for (int i = 0; i <= noLeads; ++i)
       {

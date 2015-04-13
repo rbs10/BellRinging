@@ -58,35 +58,35 @@ namespace Exe
                     case 0:
                         for ( int rep = 0; rep < REPS; ++rep )
                         {
-                            short ful = -1;
+                            int ful = -1;
                             at = comp.RunsFalseAt(ref ful);
                         }
                         break;
                     case 1:
                         for (int rep = 0; rep < REPS; ++rep)
                         {
-                            short ful = -1;
+                            int ful = -1;
                             at = comp.RunsFalseAt2(ref ful);
                         }
                         break;
                     case 2:
                         for (int rep = 0; rep < REPS; ++rep)
                         {
-                            short ful = -1;
+                            int ful = -1;
                             at = comp.RunsFalseAt3(ref ful);
                         }
                         break;
                     case 3:
                         for (int rep = 0; rep < REPS; ++rep)
                         {
-                            short ful = -1;
+                            int ful = -1;
                             at = comp.RunsFalseAt4(ref ful);
                         }
                         break;
                     case 4:
                         for (int rep = 0; rep < REPS; ++rep)
                         {
-                            short ful = -1;
+                            int ful = -1;
                             at = comp.RunsFalseAt5(ref ful);
                         }
                         break;
@@ -94,7 +94,7 @@ namespace Exe
                         // falseness tables
                         for (int rep = 0; rep < REPS; ++rep)
                         {
-                            short ful = -1;
+                            int ful = -1;
                             at = comp.RunsFalseAt1(ref ful);
                         }
                         break;
@@ -110,7 +110,7 @@ namespace Exe
 
         //    var str = _composition.ToString();
 
-        //    short ful2 = -1;
+        //    int ful2 = -1;
         //    var false2 = _composition.RunsFalseAt(ref ful2);
         //    Console.WriteLine("Hi");
       ////{

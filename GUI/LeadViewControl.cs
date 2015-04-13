@@ -130,7 +130,7 @@ namespace GUI
       if (c.Checked)
       {
         int lead = leadControlToLead[c];
-        foreach (short falseLead in _tables.falseLeadHeads[0, 0, lead])
+        foreach (int falseLead in _tables.falseLeadHeads[0, 0, lead])
         {
           if (falseLead > 0)
           {
@@ -181,9 +181,9 @@ namespace GUI
           c.Enabled = true;
           c.ForeColor = Color.Black;
         }
-        foreach (KeyValuePair<Int16,int> lh in _composition.LeadHeadsAndChoices)
+        foreach (KeyValuePair<int,int> lh in _composition.LeadHeadsAndChoices)
         {
-          Control ctrl = leadToLeadControl[(Int16)(lh.Key)];
+          Control ctrl = leadToLeadControl[(int)(lh.Key)];
           _compositionControls.Add(ctrl);
           (ctrl as CheckBox).Checked = true;
         }

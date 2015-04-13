@@ -31,7 +31,7 @@ namespace BellRingingTest
       Method m = new Method("Glasgow","g","36X56.14.58X58.36X14X38.16X16.38-18", 8);
       foreach (Lead l in m.GeneratePlainCourse(new Row(8)))
       {
-        foreach ( Row r in m.Rows((short)l.LeadHead().ToNumber() ) )
+        foreach ( Row r in m.Rows((int)l.LeadHead().ToNumber() ) )
         {
           Console.WriteLine(r);
         }

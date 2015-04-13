@@ -172,21 +172,21 @@ namespace BellRinging
 
     Composition _composition;
 
-    short firstUnprovenLead = 0;
+    int firstUnprovenLead = 0;
 
     int minBackTrackPoint;
     int timesToPoint;
 
-    //short maxLeadIndex = 0;
+    //int maxLeadIndex = 0;
 
     void DoCompose()
     {
-      Int16 start = new Row(8).ToNumberExTreble();
+      var start = new Row(8).ToNumber();
 
-      Int16 currentLead = start;
+      var currentLead = start;
 
       int[] choices = _composition.choices;
-      short[] leads = _composition.leads;
+      int[] leads = _composition.leads;
 
       // lead is the lead just rung, call is the call made from that lead
       choices[0] = 0;
@@ -195,18 +195,18 @@ namespace BellRinging
       minBackTrackPoint = int.MaxValue;
       timesToPoint = 0;
 
-      short maxLeadIndex = 0;
+      int maxLeadIndex = 0;
 
 
       //int[] lastCheckedComp = null;
-      //short[] lastCheckedLeads = null;
-      //short lastFalseAt;
+      //int[] lastCheckedLeads = null;
+      //int lastFalseAt;
 
       while (true)
       {
         ++totalLeads;
 
-        Int16 nextLead = _tables.leadMapping[currentLead, choices[maxLeadIndex]];
+        var nextLead = _tables.leadMapping[currentLead, choices[maxLeadIndex]];
 
         //if (nextLead >= 0 && _tables._methodsByChoice[0].Lead(nextLead).ContainsRoundsAt > 0)
         //{
@@ -241,7 +241,7 @@ namespace BellRinging
           //  }
           //}
 
-          short falseAt = _composition.RunsFalseAt(ref firstUnprovenLead);
+          int falseAt = _composition.RunsFalseAt(ref firstUnprovenLead);
           int minBackTrack;
           if (falseAt < 0)
           {
@@ -258,12 +258,12 @@ namespace BellRinging
           }
 
           //lastCheckedComp = choices.Clone() as int[];
-          //lastCheckedLeads = leads.Clone() as short[];
+          //lastCheckedLeads = leads.Clone() as int[];
           //lastFalseAt = falseAt;
 
           // falseAt is the first lead that was false - therefore we made either a false choice of method
           // at that lead or a false call at the previous lead
-          bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, (short)minBackTrack);
+          bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, (int)minBackTrack);
           if (bDone)
           {
             return;
@@ -342,7 +342,7 @@ namespace BellRinging
           }
           else
           {
-            bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, short.MaxValue);
+            bool bDone = BackTrack(ref currentLead, choices, leads, ref maxLeadIndex, int.MaxValue);
             if (bDone)
             {
               return;
@@ -353,7 +353,7 @@ namespace BellRinging
     }
 
 
-    private bool BackTrack(ref Int16 currentLead, int[] choices, short[] leads, ref short maxLeadIndex, short lastPossiblyTrueLead)
+    private bool BackTrack(ref int currentLead, int[] choices, int[] leads, ref int maxLeadIndex, int lastPossiblyTrueLead)
     {
       ++choices[maxLeadIndex];
 
@@ -393,7 +393,7 @@ namespace BellRinging
   
 
 
-    private bool IsNotTriviallyFalse(short nextLead, short[] leads, short maxLeadIndex)
+    private bool IsNotTriviallyFalse(int nextLead, int[] leads, int maxLeadIndex)
     {
       for (int i = 0; i <= maxLeadIndex; ++i)
       {
