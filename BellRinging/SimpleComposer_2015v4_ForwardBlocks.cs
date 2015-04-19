@@ -40,13 +40,18 @@ namespace BellRinging
         this.problem = p;
         int index = 0;
         foreach (string method in
-          new string[] {  "Rutland","Cassiobury",
-             "Superlative",
+          new string[] { // "Rutland", 
+              //"Lindum",
+             "Uxbridge", 
+             //"London",
+              "Cassiobury",
+             "Preston"
+             //"Superlative",
          //  , "Cambridge" , "Yorkshire",    "London", 
          //"Lincolnshire",
-        "Glasgow" ,"Cornwall", "Ashtead",
+        //"Glasgow" ,"Cornwall", "Ashtead",
          //     "Pudsey",
-              "Bristol"
+         //     "Bristol"
          //     ,
               
          
