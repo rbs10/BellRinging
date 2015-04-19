@@ -78,9 +78,9 @@
     <Compile Include="MusicalChangeBase.cs" />
     <Compile Include="MusicalChangeRun.cs" />
     <Compile Include="Simple900Composer.cs" />
+    <Compile Include="SimpleComposer_2016_2015_SingleMethodReverse.cs" />
     <Compile Include="SimpleComposer_2500_2015 - before reverse comp.cs" />
     <Compile Include="SimpleComposer_2015v4_ForwardBlocks.cs" />
-    <Compile Include="SimpleComposer_2016_2015_SingleMethodReverse.cs" />
     <Compile Include="SimpleComposer_2500_2015.cs" />
     <Compile Include="SimpleComposer_LPS_QP_2015.cs" />
     <Compile Include="SimpleComposer_NoSpecialRestrictions.cs" />

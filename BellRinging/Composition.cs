@@ -739,7 +739,22 @@ namespace BellRinging
                 return calls;
             }
         }
+        public int Singles
+        {
+            get
+            {
+                int calls = 0;
+                for (int i = 0; i <= this.maxLeadIndex; ++i)
+                {
+                    //if (_tables.IsCall (choices[i])) ++calls;
 
+                    var grp = choices[i] % 3;
+                    //if (grp == 1) ++calls;
+                    if (grp == 2) ++calls;
+                }
+                return calls;
+            }
+        }
         public int Changes
         {
             get
@@ -1041,6 +1056,14 @@ namespace BellRinging
                     text += "\r\n\r\nPART END\r\n\r\n";
                     text += Row.FromNumber(partEnd.Key);
                 }
+            }
+
+            text += "\r\n\r\nMETHODS\r\n\r\n";
+            var methods = LeadHeadsAndChoices.Select(kvp => _tables._methodsByChoice[kvp.Value]).Distinct();
+            foreach ( var m in methods )
+            {
+                text += m.DetailsString;
+                text += "\r\n";
             }
 
             text += "\r\n\r\nANALYSIS\r\n\r\n";

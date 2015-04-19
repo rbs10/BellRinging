@@ -35,7 +35,7 @@ namespace BellRinging
             MusicDelta = 9999
         };
 
-        var vhCall = p.VariableHunt ? "3456" : null;
+        var vhCall = p.VariableHunt ? "34" : null;
         this.problem = p;
         int index = 0;
         foreach (string method in
@@ -468,8 +468,9 @@ namespace BellRinging
           //&& (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
 
 
+          && (maxLeadIndex > problem.BlockLength || _composition.Singles < 2)
 
-          //&& _composition.Calls < 21
+         // && _composition.Calls < 21
               // avoid lots of singles
           //&& ( maxLeadIndex > maxLeads - 5 || choices[maxLeadIndex] != 2 )
 

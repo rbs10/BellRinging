@@ -84,13 +84,30 @@ namespace BellRinging
       }
         if (allowSingles)
           {
-              _leadHeadChanges.Add(Permutation.FromPlaceNotation("1234", 8));
+             // _leadHeadChanges.Add(Permutation.FromPlaceNotation("1234", 8));
+              _leadHeadChanges.Add(Permutation.FromPlaceNotation("14", 8));
           }
       if (variableHuntCall != null)
       {
           _leadHeadChanges.Add(Permutation.FromPlaceNotation(variableHuntCall, 8));
       }
 
+    }
+
+      public string DetailsString
+    {
+          get
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(Name);
+              foreach ( var lec in _leadHeadChanges )
+              {
+
+            sb.Append(" ");
+            sb.Append(lec.ToString());
+              }
+            return sb.ToString();
+        }
     }
 
      public int WrongPlaceCount
