@@ -81,5 +81,7 @@ namespace BellRinging
     public bool VariableHunt { get; set; }
 
     public int MusicDelta { get; set; }
+
+    public bool RotateCompositions { get; set; }
   }
 }

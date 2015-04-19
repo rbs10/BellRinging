@@ -15,11 +15,13 @@ namespace BellRinging
   public class MusicalPreferences
   {
     List<IMusicalChange> _musicalChanges = new List<IMusicalChange>();
+    string partMapping = null;
 
-      public MusicalPreferences()
+    public MusicalPreferences()
     {
         IgnoreRounds = false;
     }
+
       public bool IgnoreRounds { get; set; }
     public void InitELF()
     {
@@ -48,7 +50,7 @@ namespace BellRinging
     int[] scores = new int[40320];
       public void Init()
     {
-        Init2500();
+        InitCyclic4part();
 
           foreach ( var row in Row.AllRows)
           {
@@ -56,6 +58,13 @@ namespace BellRinging
           }
        // InitSJT();
     }
+
+      void
+        InitCyclic4part()
+      {
+          Init2500();
+          partMapping = "34567812";
+      }
 
     /* Stephen's musical changes */
     public void InitSJT()
@@ -335,8 +344,34 @@ namespace BellRinging
       }
       return score;
     }
-
     private int Score(Row r)
+    {
+        int ret = 0;
+        if ( !string.IsNullOrEmpty(partMapping) )
+        {
+            var rs = r.ToString();
+            do
+            {
+                var newRow = string.Empty;
+                for (int i = 0; i < partMapping.Length; ++i)
+                {
+                    var oldBell = rs[i];
+                    char newBell = partMapping[oldBell - '1'];
+                    newRow += newBell;
+                }
+                ret += Score0(Row.FromString(newRow));
+                rs = newRow;
+            }
+            while (rs != r.ToString());
+        }
+        else
+        {
+        ret = Score0(r);
+        }
+        
+        return ret;
+    }
+    private int Score0(Row r)
     {
         int rowScore = 0;
         if (IgnoreRounds && r.ToNumber() == 0)

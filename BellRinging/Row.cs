@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace BellRinging
 {
@@ -14,13 +15,19 @@ namespace BellRinging
     static int[] factorials = new int[] { Factorial(1), Factorial(2), Factorial(3), Factorial(4), Factorial(5), Factorial(6), 
       Factorial(7), Factorial(8), Factorial(9), Factorial(10), Factorial(11), Factorial(12) };
 
-    static Row[] _allRows = GenerateAllRows();
+    static Row[] _allRows;
+    static Dictionary<string, Row> rowsByString;
 
     static public string RoundsString()
     {
       return _rounds;
     }
 
+      static Row()
+    {
+        _allRows = GenerateAllRows();
+        rowsByString = _allRows.ToDictionary(r=>r.ToString(), r => r);
+    }
     static Row[] GenerateAllRows()
     {
       Row[] allRows = new Row[40320];
@@ -335,14 +342,15 @@ namespace BellRinging
 
     internal static Row FromString(string change)
     {
-       for ( int index = 0; index < _allRows.Length; ++index )
-       {
-           if ( _allRows[index].ToString() == change )
-           {
-               return _allRows[index];
-           }
-       }
-       throw new Exception("Row not found: " + change);
+        return rowsByString[change];
+       //for ( int index = 0; index < _allRows.Length; ++index )
+       //{
+       //    if ( _allRows[index].ToString() == change )
+       //    {
+       //        return _allRows[index];
+       //    }
+       //}
+       //throw new Exception("Row not found: " + change);
     }
   }
 }

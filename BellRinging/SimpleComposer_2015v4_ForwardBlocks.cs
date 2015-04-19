@@ -32,22 +32,23 @@ namespace BellRinging
             Reverse = false,
             BlockLength = 10,
             VariableHunt = true,
-            MusicDelta = 9999
+            MusicDelta = 10,
+            RotateCompositions = false
         };
 
         var vhCall = p.VariableHunt ? "34" : null;
         this.problem = p;
         int index = 0;
         foreach (string method in
-          new string[] { 
+          new string[] {  "Rutland","Cassiobury",
              "Superlative",
          //  , "Cambridge" , "Yorkshire",    "London", 
          //"Lincolnshire",
-        "Glasgow" ,"Cassiobury", "Cornwall", "Ashtead",
+        "Glasgow" ,"Cornwall", "Ashtead",
          //     "Pudsey",
-              "Bristol",
+              "Bristol"
          //     ,
-              "Rutland"
+              
          
          
        
@@ -127,6 +128,7 @@ namespace BellRinging
             ape = ape.Substring(1) + ape[0];
             allowedPartEnds.Add(Row.FromString(ape).ToNumber());
         }
+        //allowedPartEnds.Add(Row.FromString("42316857").ToNumber());
 
         /*
         // cyclic part ends
@@ -470,6 +472,8 @@ namespace BellRinging
 
           && (maxLeadIndex > problem.BlockLength || _composition.Singles < 2)
 
+          && ( maxLeadIndex != problem.BlockLength-1 || allowedPartEnds.Contains(nextLead))
+
          // && _composition.Calls < 21
               // avoid lots of singles
           //&& ( maxLeadIndex > maxLeads - 5 || choices[maxLeadIndex] != 2 )
@@ -562,7 +566,7 @@ namespace BellRinging
             //else
             if ( maxLeadIndex < problem.BlockLength)
             {
-                if (regenPointer >= 0)
+                if ( problem.RotateCompositions && regenPointer >= 0)
                 {
                     choices[maxLeadIndex] = choices[regenPointer];
                     ++regenPointer;
@@ -698,8 +702,8 @@ namespace BellRinging
       {
           bool proven = true;
 
-          var rotMax = 0;
-          if ( problem.BlockLength > 0 )
+          var rotMax = 1;
+          if ( problem.BlockLength > 0 && problem.RotateCompositions)
           {
               rotMax = Math.Min(problem.BlockLength,_composition.maxLeadIndex);
           }
