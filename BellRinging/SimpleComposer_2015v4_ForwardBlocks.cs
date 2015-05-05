@@ -19,39 +19,60 @@ namespace BellRinging
     public void Initialise(string method2)
     {
         MethodLibrary lib = new MethodLibrary();
-        int l = 32*40; // 2016;// -10 * 32;
+        int blockLength = 14;
+        int parts = 3;
+        int l = 32 * parts * blockLength; // 2016;// -10 * 32;
         bestTotalMusic = 0; // start looking for some music
+        //Problem p = new Problem()
+        //{
+        //    TenorsTogether = false,
+        //    AllowSingles = true,
+        //    MinLeads = (int) (l/32-1),
+        //    MaxLeads = l/32 ,
+        //    MinLength = l,
+        //    MaxLength = l,
+        //    Reverse = false,
+        //    BlockLength = blockLength,
+        //    VariableHunt = true,
+        //    MusicDelta = 10,
+        //    RotateCompositions = false
+        //};
+
         Problem p = new Problem()
         {
-            TenorsTogether = false,
-            AllowSingles = true,
-            MinLeads = (int) (l/32-1),
-            MaxLeads = l/32 ,
+            TenorsTogether = true,
+            AllowSingles = false,
+            MinLeads = (int)(l / 32 - 1),
+            MaxLeads = l / 32,
             MinLength = l,
             MaxLength = l,
             Reverse = false,
-            BlockLength = 10,
-            VariableHunt = true,
-            MusicDelta = 10,
-            RotateCompositions = false
+            BlockLength = blockLength,
+            VariableHunt = false,
+            MusicDelta = 9999,
+            RotateCompositions = true
         };
 
         var vhCall = p.VariableHunt ? "34" : null;
         this.problem = p;
         int index = 0;
         foreach (string method in
-          new string[] { // "Rutland", 
-              //"Lindum",
-             "Uxbridge", 
-             //"London",
-              "Cassiobury",
-             "Preston"
-             //"Superlative",
-         //  , "Cambridge" , "Yorkshire",    "London", 
-         //"Lincolnshire",
-        //"Glasgow" ,"Cornwall", "Ashtead",
-         //     "Pudsey",
-         //     "Bristol"
+          new string[] { 
+              "Rutland", 
+             // "Lessness",
+             "Lindum",
+           // "Uxbridge", 
+            "London",
+             "Cassiobury",
+             //"Preston",
+             "Superlative",
+             //"Cornwall", 
+             "Yorkshire",
+            "Cambridge" ,     "London", 
+        "Lincolnshire",
+        //"Glasgow" ,"Ashtead",
+           //   "Pudsey",
+              "Bristol"
          //     ,
               
          
@@ -121,17 +142,26 @@ namespace BellRinging
         p.MusicalPreferences.Init();
         _tables.Initialise(p);
 
-        var ape = "12345678";
-        //for (int i = 0; i < 7; ++i)
-        //{
-        //    ape = ape.Substring(1) + ape[0];
-        //    allowedPartEnds.Add(Row.FromString(ape).ToNumber());
-        //}
-        for (int i = 0; i < 3; ++i)
+        if (false)
         {
-            ape = ape.Substring(1) + ape[0];
-            ape = ape.Substring(1) + ape[0];
-            allowedPartEnds.Add(Row.FromString(ape).ToNumber());
+            var ape = "12345678";
+            //for (int i = 0; i < 7; ++i)
+            //{
+            //    ape = ape.Substring(1) + ape[0];
+            //    allowedPartEnds.Add(Row.FromString(ape).ToNumber());
+            //}
+            for (int i = 1; i < 8; ++i)
+            {
+                ape = ape.Substring(1) + ape[0];
+                // 8-part
+                if (i == 1 || i == 3 || i == 5 || i == 7)
+                // 4 - part
+
+                // if (i == 2 || i == 6)
+                {
+                    allowedPartEnds.Add(Row.FromString(ape).ToNumber());
+                }
+            }
         }
         //allowedPartEnds.Add(Row.FromString("42316857").ToNumber());
 
@@ -472,12 +502,12 @@ namespace BellRinging
               //&& ( (maxLeadIndex != problem.BlockLength-1) || allowedPartEnds.Contains(nextLead)) 
 
               // use all the methods
-          //&& (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
+          && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
 
 
           && (maxLeadIndex > problem.BlockLength || _composition.Singles < 2)
 
-          && ( maxLeadIndex != problem.BlockLength-1 || allowedPartEnds.Contains(nextLead))
+          && ( maxLeadIndex != problem.BlockLength-1 || allowedPartEnds.Count == 0 || allowedPartEnds.Contains(nextLead))
 
          // && _composition.Calls < 21
               // avoid lots of singles

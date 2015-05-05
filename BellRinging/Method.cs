@@ -84,8 +84,9 @@ namespace BellRinging
       }
         if (allowSingles)
           {
-             // _leadHeadChanges.Add(Permutation.FromPlaceNotation("1234", 8));
-              _leadHeadChanges.Add(Permutation.FromPlaceNotation("14", 8));
+            
+           _leadHeadChanges.Add(Permutation.FromPlaceNotation("1234", 8));
+            //  _leadHeadChanges.Add(Permutation.FromPlaceNotation("14", 8));
           }
       if (variableHuntCall != null)
       {

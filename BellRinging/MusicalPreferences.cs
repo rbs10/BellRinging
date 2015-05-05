@@ -50,7 +50,10 @@ namespace BellRinging
     int[] scores = new int[40320];
       public void Init()
     {
-        InitCyclic4part();
+
+        Init2500();
+
+        //InitCyclic4part();
 
           foreach ( var row in Row.AllRows)
           {
@@ -64,6 +67,12 @@ namespace BellRinging
       {
           Init2500();
           partMapping = "34567812";
+      }
+      void
+        InitCyclic8part()
+      {
+          Init2500();
+          partMapping = "23456781";
       }
 
     /* Stephen's musical changes */
