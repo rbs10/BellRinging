@@ -38,19 +38,35 @@ namespace BellRinging
         //    RotateCompositions = false
         //};
 
+        //Problem p = new Problem()
+        //{
+        //    TenorsTogether = true,
+        //    AllowSingles = false,
+        //    MinLeads = (int)(l / 32 - 1),
+        //    MaxLeads = l / 32,
+        //    MinLength = l,
+        //    MaxLength = l,
+        //    Reverse = false,
+        //    BlockLength = blockLength,
+        //    VariableHunt = false,
+        //    MusicDelta = 9999,
+        //    RotateCompositions = true
+        //};
+
         Problem p = new Problem()
         {
             TenorsTogether = true,
             AllowSingles = false,
-            MinLeads = (int)(l / 32 - 1),
-            MaxLeads = l / 32,
-            MinLength = l,
-            MaxLength = l,
+            MinLeads = 11,
+            MaxLeads = 12,
+            MinLength = 0,
+            MaxLength = 9999,
             Reverse = false,
             BlockLength = blockLength,
             VariableHunt = false,
-            MusicDelta = 9999,
-            RotateCompositions = true
+            MusicDelta = 0,
+            RotateCompositions = false,
+            ExcludeUnrungMethodsFromBalance= true
         };
 
         var vhCall = p.VariableHunt ? "34" : null;
@@ -61,17 +77,18 @@ namespace BellRinging
               "Rutland", 
              // "Lessness",
              "Lindum",
-           // "Uxbridge", 
+           "Uxbridge", 
             "London",
              "Cassiobury",
              //"Preston",
              "Superlative",
              //"Cornwall", 
              "Yorkshire",
-            "Cambridge" ,     "London", 
+            "Cambridge" ,     
         "Lincolnshire",
-        //"Glasgow" ,"Ashtead",
-           //   "Pudsey",
+        //"Glasgow" 
+        "Ashtead","Cornwall",
+             "Pudsey",
               "Bristol"
          //     ,
               
@@ -502,7 +519,7 @@ namespace BellRinging
               //&& ( (maxLeadIndex != problem.BlockLength-1) || allowedPartEnds.Contains(nextLead)) 
 
               // use all the methods
-          && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
+          && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 1)
 
 
           && (maxLeadIndex > problem.BlockLength || _composition.Singles < 2)
@@ -733,6 +750,10 @@ namespace BellRinging
    
     private void WriteComposition(int noLeads, ref int minBackTrack)
     {
+        if (_composition.Imbalance >= 1 )
+        {
+            return;
+        }
       lock (this)
       {
           bool proven = true;
@@ -750,7 +771,7 @@ namespace BellRinging
               if (maxLeads <= problem.BlockLength || allowedPartEnds.Count == 0 || allowedPartEnds.Contains(_composition._partEnd))
               {
                   int totalScore = _composition.Score;// -_composition.Calls;
-                  var quality = _composition.COM;
+                  var quality = _composition.Quality;
                   //quality = _composition.choices.Where((c, i) => i <= noLeads && c > 2).Count();
                   var calls = bestMusic.Length - 1 - _composition.Calls;
                   //_composition.CalcWraps();

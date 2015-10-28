@@ -83,5 +83,7 @@ namespace BellRinging
     public int MusicDelta { get; set; }
 
     public bool RotateCompositions { get; set; }
+
+    public bool ExcludeUnrungMethodsFromBalance { get; set; }
   }
 }
