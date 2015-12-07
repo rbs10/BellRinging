@@ -858,7 +858,8 @@ namespace BellRinging
             //}
             // reverse composition so earlier is better
             //_quality = 100 - _centreOfMusic;
-            _quality = (int)(100 * q);
+            //_quality = (int)(100 * q);
+            _quality = 100 * _music / maxLeadIndex;
         }
         public int Music
         {
@@ -877,19 +878,25 @@ namespace BellRinging
                 int ret = 0;
                 int leadIndex = 0; // imbalence is not affected by rot and check this before rotated method necessarily valid
                 var lead = new Row(8).ToNumber();
-                foreach (var method in _tables._methodsByChoice)
+
+                if (!this.Problem.ExcludeUnrungMethodsFromBalance)
                 {
-                    if (method.Name != "Null")
+                    foreach (var method in _tables._methodsByChoice)
                     {
-                        counts[method] = 0;
+                        if (method.Name != "Null")
+                        {
+                            counts[method] = 0;
+                        }
                     }
                 }
+
                 for (int i = 0; i <= this.maxLeadIndex; ++i)
                 {
 
                     var method = _tables._methodsByChoice[choices[leadIndex]];
                     if (method.Name != "Null")
                     {
+                        if (!counts.ContainsKey(method)) counts[method] = 0;
                         ++counts[method];
 
 
