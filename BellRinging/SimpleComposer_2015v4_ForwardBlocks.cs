@@ -19,8 +19,8 @@ namespace BellRinging
     public void Initialise(string method2)
     {
         MethodLibrary lib = new MethodLibrary();
-        int blockLength = 14;
-        int parts = 3;
+        int blockLength = 40;
+        int parts = 1;
         int l = 32 * parts * blockLength; // 2016;// -10 * 32;
         bestTotalMusic = 0; // start looking for some music
         //Problem p = new Problem()
@@ -30,7 +30,7 @@ namespace BellRinging
         //    MinLeads = (int) (l/32-1),
         //    MaxLeads = l/32 ,
         //    MinLength = l,
-        //    MaxLength = l,
+        //    MaxLength = l,5
         //    Reverse = false,
         //    BlockLength = blockLength,
         //    VariableHunt = true,
@@ -41,10 +41,10 @@ namespace BellRinging
         Problem p = new Problem()
         {
             TenorsTogether = true,
-            AllowSingles = false,
+            AllowSingles = true,
             MinLeads = (int)(l / 32 - 1),
             MaxLeads = l / 32,
-            MinLength = l,
+            MinLength = 1250,
             MaxLength = l,
             Reverse = false,
             BlockLength = blockLength,
@@ -58,21 +58,21 @@ namespace BellRinging
         int index = 0;
         foreach (string method in
           new string[] { 
-              "Rutland", 
+             
              // "Lessness",
-             "Lindum",
+             //"Lindum",
            // "Uxbridge", 
-            "London",
-             "Cassiobury",
+           // "London",
+           //  "Cassiobury",
              //"Preston",
-             "Superlative",
+             //"Superlative",
              //"Cornwall", 
-             "Yorkshire",
-            "Cambridge" ,     "London", 
-        "Lincolnshire",
+             "Yorkshire"//,
+           // "Cambridge" ,   "Rutland",    
+        //"Lincolnshire"//,
         //"Glasgow" ,"Ashtead",
            //   "Pudsey",
-              "Bristol"
+            //  "Bristol"
          //     ,
               
          
