@@ -150,6 +150,7 @@ namespace ManualCheck
                                 lineNo, line, ex);
                         }
                     }
+                    comp.Problem.BlockLength = lineNo;
                 }
             }
 

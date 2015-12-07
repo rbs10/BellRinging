@@ -19,9 +19,9 @@ namespace BellRinging
     public void Initialise(string method2)
     {
         MethodLibrary lib = new MethodLibrary();
-        int blockLength = 40;
-        int parts = 1;
-        int l = 32 * parts * blockLength; // 2016;// -10 * 32;
+        int blockLength = 9;
+        int parts = 7;
+        int l = 2016; // 32 * parts * blockLength; // 2016;// -10 * 32;
         bestTotalMusic = 0; // start looking for some music
         //Problem p = new Problem()
         //{
@@ -40,8 +40,8 @@ namespace BellRinging
 
         Problem p = new Problem()
         {
-            TenorsTogether = true,
-            AllowSingles = true,
+            TenorsTogether = false,
+            AllowSingles = false,
             MinLeads = (int)(l / 32 - 1),
             MaxLeads = l / 32,
             MinLength = 1250,
@@ -50,7 +50,8 @@ namespace BellRinging
             BlockLength = blockLength,
             VariableHunt = false,
             MusicDelta = 9999,
-            RotateCompositions = true
+            RotateCompositions = true,
+            ExcludeUnrungMethodsFromBalance = false
         };
 
         var vhCall = p.VariableHunt ? "34" : null;
@@ -62,17 +63,19 @@ namespace BellRinging
              // "Lessness",
              //"Lindum",
            // "Uxbridge", 
-           // "London",
+            "London",
            //  "Cassiobury",
              //"Preston",
-             //"Superlative",
+             "Superlative",
              //"Cornwall", 
-             "Yorkshire"//,
-           // "Cambridge" ,   "Rutland",    
-        //"Lincolnshire"//,
-        //"Glasgow" ,"Ashtead",
-           //   "Pudsey",
-            //  "Bristol"
+             "Yorkshire",
+            "Cambridge" , 
+        "Rutland",    
+        "Lincolnshire",
+        "Glasgow" ,
+        //,"Ashtead",
+              "Pudsey",
+              "Bristol"
          //     ,
               
          
@@ -502,7 +505,7 @@ namespace BellRinging
               //&& ( (maxLeadIndex != problem.BlockLength-1) || allowedPartEnds.Contains(nextLead)) 
 
               // use all the methods
-          && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
+          && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 2)
 
 
           && (maxLeadIndex > problem.BlockLength || _composition.Singles < 2)

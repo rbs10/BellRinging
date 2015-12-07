@@ -1096,22 +1096,25 @@ namespace BellRinging
                 text += "\r\n";
             }
 
-            text += "\r\nPART ENDS\r\n\r\n";
+            if (this.Problem.BlockLength > 0)
             {
-                var callCount = _tables.NO_CHOICES / _tables.problem.Methods.Count();
-                int i = 0;
-                foreach (KeyValuePair<int, int> kvp in leadsInRunOrder)
+                text += "\r\nPART ENDS\r\n\r\n";
                 {
-                    if (i % this.Problem.BlockLength == 0)
+                    var callCount = _tables.NO_CHOICES / _tables.problem.Methods.Count();
+                    int i = 0;
+                    foreach (KeyValuePair<int, int> kvp in leadsInRunOrder)
                     {
-                        text += Row.FromNumber(kvp.Key);
-                        text += "\r\n";
+                        if (i % this.Problem.BlockLength == 0)
+                        {
+                            text += Row.FromNumber(kvp.Key);
+                            text += "\r\n";
+                        }
+                        ++i;
                     }
-                    ++i;
+                    text += Row.FromNumber(0);
                 }
-                text += Row.FromNumber(0);
+                text += "\r\n";
             }
-            text += "\r\n";
 
 
             text += "\r\nLEAD HEADS WITH MUSIC\r\n\r\n";
