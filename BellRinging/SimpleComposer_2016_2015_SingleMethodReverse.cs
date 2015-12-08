@@ -16,14 +16,14 @@ namespace BellRinging
     public void Initialise(string method2)
     {
         MethodLibrary lib = new MethodLibrary();
-        int l = 1280;// -10 * 32;
+        int l = 2016;// -10 * 32;
         bestTotalMusic = 1; //225 * l / 2500; // start looking for some music
         Problem p = new Problem()
         {
             TenorsTogether = true,
             AllowSingles = true,
             MaxLeads = l/32 +1,
-            MinLength = 1250,
+            MinLength = l,
             MaxLength = l,
             Reverse = true
         };
@@ -33,12 +33,13 @@ namespace BellRinging
             // "Glasgow"
              // "London", 
               //"Pudsey"
-              //,"Yorkshire"
+              //,
+              "Superlative"
               //,
               //"Bastow"
              // ,
             // "Bastow"//,
-          "Superlative"
+          //"Superlative"
          // ,"Superlative"
          // 
          // ,"London"

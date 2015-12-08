@@ -19,9 +19,9 @@ namespace BellRinging
     public void Initialise(string method2)
     {
         MethodLibrary lib = new MethodLibrary();
-        int blockLength = 9;
-        int parts = 7;
-        int l = 2016; // 32 * parts * blockLength; // 2016;// -10 * 32;
+        int blockLength = 63;
+        int parts = 1;
+        int l = 32 * parts * blockLength; // 2016;// -10 * 32;
         bestTotalMusic = 0; // start looking for some music
         //Problem p = new Problem()
         //{
@@ -40,16 +40,16 @@ namespace BellRinging
 
         Problem p = new Problem()
         {
-            TenorsTogether = false,
+            TenorsTogether = true,
             AllowSingles = false,
-            MinLeads = (int)(l / 32 - 1),
+            MinLeads = (l/32)-1,
             MaxLeads = l / 32,
-            MinLength = 1250,
+            MinLength = l/2,
             MaxLength = l,
-            Reverse = false,
+            Reverse = true,
             BlockLength = blockLength,
             VariableHunt = false,
-            MusicDelta = 9999,
+            MusicDelta = 0,
             RotateCompositions = true,
             ExcludeUnrungMethodsFromBalance = false
         };
@@ -60,6 +60,9 @@ namespace BellRinging
         foreach (string method in
           new string[] { 
              
+              "Yorkshire"
+
+              /*
              // "Lessness",
              //"Lindum",
            // "Uxbridge", 
@@ -94,7 +97,7 @@ namespace BellRinging
          //, "Pudsey", "Lincolnshire"
          // ,"Rutland"
           //"Belfast", //"Glasgow",
-          //"Londonderry",
+          //"Londonderry",*/
            })
         {
             ++index;
@@ -127,7 +130,11 @@ namespace BellRinging
         }
         if (p.Reverse)
         {
-            p.AddMethod(new Method("Null", " EC ", null, 8, p.AllowSingles, vhCall));
+            var start = new Method("Null", " EC ", null, 8, p.AllowSingles);
+            //start.LastLeadOnly();
+            p.AddMethod(start);
+            p.FirstChoice = 3;
+            start.FirstLeadOnly();
         }
 
         // at least for Y and S then Bastow start seems to imply need to finish with bob
