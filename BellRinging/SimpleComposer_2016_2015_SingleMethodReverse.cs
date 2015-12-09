@@ -17,7 +17,7 @@ namespace BellRinging
     {
         MethodLibrary lib = new MethodLibrary();
         int l = 2016;// -10 * 32;
-        bestTotalMusic = 1; //225 * l / 2500; // start looking for some music
+        bestTotalMusic = 0; //225 * l / 2500; // start looking for some music
         Problem p = new Problem()
         {
             TenorsTogether = true,
@@ -25,7 +25,9 @@ namespace BellRinging
             MaxLeads = l/32 +1,
             MinLength = l,
             MaxLength = l,
-            Reverse = true
+            Reverse = true,
+            MusicDelta = 10,
+            MaxCalls = 10
         };
         this.problem = p;
         int index = 0;
@@ -100,7 +102,7 @@ namespace BellRinging
             var start = new Method("Null", " EC ", null, 8, p.AllowSingles);
             //start.LastLeadOnly();
             p.AddMethod(start);
-            p.FirstChoice = 3;
+            p.FirstChoice = p.AllowSingles ? 3 : 2;
             start.FirstLeadOnly();
         }
 
@@ -420,7 +422,7 @@ namespace BellRinging
 
 
            // looking likely for good music
-           //&& totalMusic >= (maxLeadIndex  * bestTotalMusic)/maxLeads - 10
+           && totalMusic >= (maxLeadIndex  * bestTotalMusic)/maxLeads - problem.MusicDelta
 
             && IsNotTriviallyFalseOrRepetitive(nextLead, leads, choices, maxLeadIndex)
 
@@ -432,8 +434,9 @@ namespace BellRinging
           //    )
 
           //&& _composition.Imbalance < 5
-         // && _composition.Calls < 18
+          && _composition.Calls <= problem.MaxCalls
 
+         // && ( maxLeadIndex != 16 ||)
               // avoid lots of singles
           //&& ( maxLeadIndex > maxLeads - 5 || choices[maxLeadIndex] != 2 )
 

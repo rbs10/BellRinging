@@ -85,5 +85,7 @@ namespace BellRinging
     public bool RotateCompositions { get; set; }
 
     public bool ExcludeUnrungMethodsFromBalance { get; set; }
+
+    public int MaxCalls { get; set; }
   }
 }
