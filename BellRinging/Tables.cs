@@ -145,7 +145,7 @@ namespace BellRinging
         // index the leads
         foreach (Lead l in allLeads)
         {
-            if (IncludeLeadHead(l.LeadHead(), methodIndex) || method.Name == "Null")
+            if (IncludeLeadHead(l.LeadHead(), methodIndex) || method.Name == "Null" )
             {
                 int num = l.ToNumber();
                 for (int i = 0; i < _methodsByChoice.Length; ++i)
@@ -186,7 +186,7 @@ namespace BellRinging
                         //  Console.WriteLine(num);
                         //}
 
-                        if (nextLeadHead != null && (IncludeLeadHead(nextLeadHead, methodIndex)))
+                        if (nextLeadHead != null && (IncludeLeadHead(nextLeadHead, methodIndex)) && ((i%3)==0 || nextLeadHead.CoursingOrder().StartsWith("7")))
                         {
 
                             // music[num, i] = (int)l.CalcWraps(); // Wraps hunt version
@@ -212,6 +212,7 @@ namespace BellRinging
     {
         // standard include all version
         var ret1 = (!problem.TenorsTogether) || 
+            nextLeadHead.CoursingOrder() == "642357" || // allow start from plain lead end at back course 12436587
             (problem.Reverse?nextLeadHead.CoursingOrder().EndsWith("7"):
             nextLeadHead.CoursingOrder().StartsWith("7"));
         return ret1;

@@ -1090,6 +1090,7 @@ namespace BellRinging
                     text += Row.FromNumber(kvp.Key);
                     text += " " + " BSXYZ"[kvp.Value % callCount];
                     text += " " + _tables._methodsByChoice[kvp.Value].Name;
+                    text += " #" + Row.FromNumber(kvp.Key).CoursingOrder();
                     text += "\r\n";
                 }
                 text += Row.FromNumber(0);

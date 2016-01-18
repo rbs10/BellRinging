@@ -16,18 +16,19 @@ namespace BellRinging
     public void Initialise(string method2)
     {
         MethodLibrary lib = new MethodLibrary();
-        int l = 2016;// -10 * 32;
-        bestTotalMusic = 0; //225 * l / 2500; // start looking for some music
+        int l = 7 * 32 * 9 +1;// -10 * 32;
+        bestTotalMusic = 200; //225 * l / 2500; // start looking for some music
+        var backstrokeStart = true;
         Problem p = new Problem()
         {
             TenorsTogether = true,
             AllowSingles = true,
-            MaxLeads = l/32 +1,
+            MaxLeads = l/32 +2,
             MinLength = l,
-            MaxLength = l,
-            Reverse = true,
-            MusicDelta = 10,
-            MaxCalls = 10
+            MaxLength = l, //10*32*7,
+            Reverse = false,
+            MusicDelta = 40,
+            MaxCalls = 16
         };
         this.problem = p;
         int index = 0;
@@ -36,7 +37,7 @@ namespace BellRinging
              // "London", 
               //"Pudsey"
               //,
-              "Superlative"
+              "Ashtead"
               //,
               //"Bastow"
              // ,
@@ -97,12 +98,13 @@ namespace BellRinging
             }
             p.AddMethod(methodObject);
         }
-        if (p.Reverse)
+        if (p.Reverse || backstrokeStart)
         {
             var start = new Method("Null", " EC ", null, 8, p.AllowSingles);
             //start.LastLeadOnly();
             p.AddMethod(start);
             p.FirstChoice = p.AllowSingles ? 3 : 2;
+            //p.FirstChoice = p.AllowSingles ? 5 : 4;
             start.FirstLeadOnly();
         }
 
@@ -419,7 +421,10 @@ namespace BellRinging
 
             && maxLeadIndex < maxLeads - 1 // array length (else continue from rounds)
             // change of method only at a bob
-
+/* Prime Cam/York/Super out of start
+ *          && (maxLeadIndex != 1 || choices[maxLeadIndex] == 0)
+            && (maxLeadIndex != 2 || choices[maxLeadIndex] == 2)
+            //&& (maxLeadIndex != 3 || choices[maxLeadIndex] == 2)*/
 
            // looking likely for good music
            && totalMusic >= (maxLeadIndex  * bestTotalMusic)/maxLeads - problem.MusicDelta
