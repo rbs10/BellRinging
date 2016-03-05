@@ -50,6 +50,7 @@ namespace ManualCheck
             problem.TenorsTogether = false;
             problem.AllowSingles = true;
             problem.MaxLeads = 5040 / 32; // need this so have choices in tables
+            problem.BlockLength = 0;
         }
         void  InitTables()
         {
@@ -119,7 +120,7 @@ namespace ManualCheck
             comp.Problem = problem;
 
             comp.maxLeadIndex = -1;
-            for (int i = 0; i < 7; ++i)
+            //for (int i = 0; i < 7; ++i)
             {
                 using (var sr = new StringReader(p))
                 {
@@ -150,7 +151,8 @@ namespace ManualCheck
                                 lineNo, line, ex);
                         }
                     }
-                    comp.Problem.BlockLength = lineNo;
+                    comp.Problem.BlockLength = lineNo; // for block compositions
+                    comp.Problem.BlockLength = 1;
                 }
             }
 

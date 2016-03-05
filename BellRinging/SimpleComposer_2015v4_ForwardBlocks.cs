@@ -19,8 +19,8 @@ namespace BellRinging
     public void Initialise(string method2)
     {
         MethodLibrary lib = new MethodLibrary();
-        int blockLength = 63;
-        int parts = 1;
+        int blockLength = 14;
+        int parts = 3;
         int l = 32 * parts * blockLength; // 2016;// -10 * 32;
         bestTotalMusic = 0; // start looking for some music
         //Problem p = new Problem()
@@ -46,7 +46,7 @@ namespace BellRinging
             MaxLeads = l / 32,
             MinLength = l/2,
             MaxLength = l,
-            Reverse = true,
+            Reverse = false,
             BlockLength = blockLength,
             VariableHunt = false,
             MusicDelta = 0,

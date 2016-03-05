@@ -141,6 +141,7 @@ namespace BellRinging
     {
         IEnumerable<Lead> allLeads = method.AllLeads;
         //Console.WriteLine("Generated all leads " + (DateTime.UtcNow - startInit));
+        int callsPerMethod = problem.AllowSingles ? 3 : 2;
 
         // index the leads
         foreach (Lead l in allLeads)
@@ -186,7 +187,10 @@ namespace BellRinging
                         //  Console.WriteLine(num);
                         //}
 
-                        if (nextLeadHead != null && (IncludeLeadHead(nextLeadHead, methodIndex)) && ((i%3)==0 || nextLeadHead.CoursingOrder().StartsWith("7")))
+                        if (nextLeadHead != null && (IncludeLeadHead(nextLeadHead, methodIndex))
+                            // restrict only to things which go into tenors together - for 2017 composition and only consistent forward ?
+                            //&& ((i % callsPerMethod) == 0 || nextLeadHead.CoursingOrder().StartsWith("7"))
+                            )
                         {
 
                             // music[num, i] = (int)l.CalcWraps(); // Wraps hunt version

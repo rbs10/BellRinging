@@ -87,5 +87,7 @@ namespace BellRinging
     public bool ExcludeUnrungMethodsFromBalance { get; set; }
 
     public int MaxCalls { get; set; }
+
+    public int MaxSingles { get; set; }
   }
 }
