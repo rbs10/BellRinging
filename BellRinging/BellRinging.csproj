@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Composition.cs" />
+    <Compile Include="CompositionTokenizer.cs" />
     <Compile Include="CyclicSearchSingleMethodTweak.cs" />
     <Compile Include="CyclicSearch3.cs" />
     <Compile Include="CyclicSearch0.cs" />

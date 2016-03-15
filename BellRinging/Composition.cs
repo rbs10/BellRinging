@@ -942,8 +942,23 @@ namespace BellRinging
         {
             get
             {
-                EnsureStats();
-                return _com;
+                //EnsureStats();
+//return _com;
+
+
+                int calls = 0;
+                int lastGroup = -1;
+                for (int i = 0; i <= this.maxLeadIndex; ++i)
+                {
+                    //if (_tables.IsCall (choices[i])) ++calls;
+
+                    var grp = choices[i] / (Problem.AllowSingles ? 3:2);
+                    //if (grp == 1) ++calls;
+                    if (grp!= lastGroup) ++calls;
+                    lastGroup = grp;
+                }
+                return calls-1;
+            
             }
         }
 
@@ -1033,6 +1048,14 @@ namespace BellRinging
             var _selectedComposition = this;
 
             string text = "";
+            
+            if ( _selectedComposition.Rows.Select(r => r.ToString()).GroupBy(x=>x).Any(g => g.Count() > 1) )
+            {
+                text += "#### FALSE ###";
+                text += "\r\n";
+                text += "\r\n";
+
+            }
 
             text += string.Join("", choices.Take(maxLeadIndex + 1).Select(c => c.ToString()));
             text += "\r\n";

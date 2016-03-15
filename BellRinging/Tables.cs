@@ -95,7 +95,16 @@ namespace BellRinging
       }
     }
 
+    /// <summary>
+    /// Event set when done just minimum of setup so can create composition object
+    /// </summary>
     public System.Threading.ManualResetEventSlim readyToCreateComposition = new System.Threading.ManualResetEventSlim(false);
+
+    /// <summary>
+    /// Event set when all set up
+    /// </summary>
+    public System.Threading.ManualResetEventSlim readyToCompose = new System.Threading.ManualResetEventSlim(false);
+
 
     public void Initialise(Problem problem)
     {
@@ -132,6 +141,8 @@ namespace BellRinging
       //Console.WriteLine("Complete falseness table " + (DateTime.UtcNow - startInit));
 
       ComputeLeadsToEnd();
+
+      readyToCompose.Set();
 
 
       //Console.WriteLine("Done leads to end count " + (DateTime.UtcNow - startInit));

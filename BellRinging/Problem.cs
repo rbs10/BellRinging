@@ -89,5 +89,9 @@ namespace BellRinging
     public int MaxCalls { get; set; }
 
     public int MaxSingles { get; set; }
+
+    public int MaxBobs { get; set; }
+
+    public HashSet<int> allowedPartEnds = new HashSet<int>();
   }
 }

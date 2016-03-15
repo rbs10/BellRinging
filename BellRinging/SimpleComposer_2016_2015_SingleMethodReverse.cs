@@ -17,21 +17,22 @@ namespace BellRinging
     {
         MethodLibrary lib = new MethodLibrary();
         //int l = 7 * 32 * 9 +1;// -10 * 32;
-        int l = 1250;
+        int l = 2017;
         bestTotalMusic = 0; //225 * l / 2500; // start looking for some music
         var backstrokeStart = true;
-        backstrokeStart = false;
+        //backstrokeStart = false;
         Problem p = new Problem()
         {
             TenorsTogether = true,
             AllowSingles = true,
             MaxLeads = l/32 +2,
-            MinLength = 1250,
+            MinLength = l,
             MaxLength = l, //10*32*7,
             Reverse = false,
             MusicDelta = 40,
-            MaxCalls = 9,
-            MaxSingles = 999
+            MaxCalls = 15,
+            MaxSingles = 999,
+            MaxBobs=1
         };
         this.problem = p;
         int index = 0;
@@ -40,7 +41,7 @@ namespace BellRinging
              // "London", 
               //"Pudsey"
               //,
-              "Yorkshire"
+              "Superlative"
               //,
               //"Bastow"
              // ,
@@ -444,6 +445,7 @@ namespace BellRinging
           //&& _composition.Imbalance < 5
           && _composition.Calls <= problem.MaxCalls
           && _composition.Singles <= problem.MaxSingles
+          && _composition.Calls - _composition.Singles <= problem.MaxBobs
 
          // && ( maxLeadIndex != 16 ||)
               // avoid lots of singles

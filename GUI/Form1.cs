@@ -18,8 +18,8 @@ namespace GUI
     string method;
 
 
-   //SimpleComposer_2015v4_ForwardBlocks _composer = new SimpleComposer_2015v4_ForwardBlocks();
-    SimpleComposer_2016_2015_SingleMethodReverse _composer = new SimpleComposer_2016_2015_SingleMethodReverse();
+   SimpleComposer_2015v4_ForwardBlocks _composer = new SimpleComposer_2015v4_ForwardBlocks();
+   // SimpleComposer_2016_2015_SingleMethodReverse _composer = new SimpleComposer_2016_2015_SingleMethodReverse();
 
     public Form1(string method)
     {
@@ -30,44 +30,44 @@ namespace GUI
       _musicalPreferences.Init();
 
 
-      _composer.StartCompose(() => InitComposer(method));
+      _composer.Receiver = this;
+      _composer.StartCompose(() => _composer.Initialise(method));
 
         
     }
 
 
-    void InitComposer(string method)
-    {
-       // _composer = new SimpleComposer();
-        //_composer.Initialise("X18X18X18x18-12"); // PLAIN BOB?
-         // _composer.Initialise("Glasgow","36X56.14.58X58.36X14X38.16X16.38-18"); // glasgow
-       // _composer.Initialise("Lessness","X38X14X56X16X12X58X14X58-12"); // lessness
-       //_composer.Initialise("X58X14.58X58.36.14X14.58X14X18-18"); // bristol
-        //_composer.Initialise("Yorkshire"); // yorkshire
-       // _composer.InitialiseWithSnapStart("Yorkshire"); // yorkshire
-       // _composer.InitialiseWithSnapStart(method); 
-       //_composer.Initialise(method);
-        //_composer.InitialiseStandardMethods();
-        // _composer.Initialise("X38X14X58X16X14X38X34X18-12"); // rutland
-       //_composer.Initialise("Cambridge","X38X14X1258X36X14X58X16X78-12");// cambridge
-        // _composer.Initialise("X36X14X58X36X14X58X36X78-12"); // superlative
+    //void InitComposer(string method)
+    //{
+    //   // _composer = new SimpleComposer();
+    //    //_composer.Initialise("X18X18X18x18-12"); // PLAIN BOB?
+    //     // _composer.Initialise("Glasgow","36X56.14.58X58.36X14X38.16X16.38-18"); // glasgow
+    //   // _composer.Initialise("Lessness","X38X14X56X16X12X58X14X58-12"); // lessness
+    //   //_composer.Initialise("X58X14.58X58.36.14X14.58X14X18-18"); // bristol
+    //    //_composer.Initialise("Yorkshire"); // yorkshire
+    //   // _composer.InitialiseWithSnapStart("Yorkshire"); // yorkshire
+    //   // _composer.InitialiseWithSnapStart(method); 
+    //   //_composer.Initialise(method);
+    //    //_composer.InitialiseStandardMethods();
+    //    // _composer.Initialise("X38X14X58X16X14X38X34X18-12"); // rutland
+    //   //_composer.Initialise("Cambridge","X38X14X1258X36X14X58X16X78-12");// cambridge
+    //    // _composer.Initialise("X36X14X58X36X14X58X36X78-12"); // superlative
 
-        //_composer.Initialise("36X56.14.58X58.36X14X38.16X16.38-18", // glasgow
-        //  "X38X14X58X16X12X38X14X78-12"); // yorkshire
+    //    //_composer.Initialise("36X56.14.58X58.36X14X38.16X16.38-18", // glasgow
+    //    //  "X38X14X58X16X12X38X14X78-12"); // yorkshire
 
-        _composer.Initialise(method);
+    //   ;
 
-        //_composer.Initialise("Dover");
-        //_composer.Initialise("Venusium");
+    //    //_composer.Initialise("Dover");
+    //    //_composer.Initialise("Venusium");
 
-        //_composer.Initialise("Cambridge", "C", "X38X14X1258X36X14X58X16X78-12", "Bastow", "B", "X12-12");
-    //    _composer.Initialise("Yorkshire", "Y", "X38X14X58X16X12X38X14X78-12", "Bastow", "B", "X12-12");
-     //   _composer.Initialise("Ely", "E", "X38X14X56X16.34X14.58.14X14.58-12", "Bastow", "B", "X12-12");
-     //   _composer.Initialise("Bristol", "B", "X58X14.58X58.36.14X14.58X14X18-18", "Bastow", "b", "X12-12");
-      //  _composer.Initialise("Little Bob", "X18X14-12");
-        _composer.Receiver = this;
+    //    //_composer.Initialise("Cambridge", "C", "X38X14X1258X36X14X58X16X78-12", "Bastow", "B", "X12-12");
+    ////    _composer.Initialise("Yorkshire", "Y", "X38X14X58X16X12X38X14X78-12", "Bastow", "B", "X12-12");
+    // //   _composer.Initialise("Ely", "E", "X38X14X56X16.34X14.58.14X14.58-12", "Bastow", "B", "X12-12");
+    // //   _composer.Initialise("Bristol", "B", "X58X14.58X58.36.14X14.58X14X18-18", "Bastow", "b", "X12-12");
+    //  //  _composer.Initialise("Little Bob", "X18X14-12");
       
-    }
+    //}
 
     private void goButton_Click(object sender, EventArgs e)
     {
@@ -163,11 +163,13 @@ namespace GUI
     {
       if (_composer != null)
       {
-        long count = _composer.TotalLeads;
-        leadsCheckedTextBox.Text = _composer.TotalLeads.ToString();
-        leadsPerSecondTextBox.Text = (count - lastLeadCount).ToString(); // c.LeadsPerSecond.ToString();
-        lastLeadCount = count;
-        minBackTrackTextBox.Text = _composer.MinBackTrackDescription;
+        //long count = _composer.TotalLeads;
+        //leadsCheckedTextBox.Text = _composer.TotalLeads.ToString();
+        //leadsPerSecondTextBox.Text = (count - lastLeadCount).ToString(); // c.LeadsPerSecond.ToString();
+        //lastLeadCount = count;
+        //minBackTrackTextBox.Text = _composer.MinBackTrackDescription;
+
+          minBackTrackTextBox.Text = _composer.DescribeState();
       }
     }
 

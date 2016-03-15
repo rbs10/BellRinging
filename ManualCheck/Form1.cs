@@ -122,38 +122,34 @@ namespace ManualCheck
             comp.maxLeadIndex = -1;
             //for (int i = 0; i < 7; ++i)
             {
-                using (var sr = new StringReader(p))
+                int lineNo = 0;
+                foreach (var token in CompositionTokenizer.Tokenize(p))
                 {
-                    string line;
-                    int lineNo = 0;
-                    while ((line = sr.ReadLine()) != null)
+                    ++lineNo;
+                    try
                     {
-                        ++lineNo;
-                        try
+                        var methChar = token[0];
+                        var method = problem.Methods.FirstOrDefault(m => m.Letter == methChar.ToString());
+                        int methodIndex = problem.Methods.ToList().IndexOf(method);
+                        int choice = methodIndex * 3;
+                        if (token.EndsWith("-"))
                         {
-                          var methChar = line[0];
-                          var method = problem.Methods.FirstOrDefault(m => m.Letter == methChar.ToString());
-                          int methodIndex = problem.Methods.ToList().IndexOf(method);
-                            int choice = methodIndex * 3;
-                          if ( line.EndsWith("-"))
-                          {
-                              ++choice;
-                          }
-                          if (line.EndsWith("s"))
-                          {
-                              choice += 2;
-                          }
-                          comp.choices[++comp.maxLeadIndex] = choice;
+                            ++choice;
                         }
-                        catch ( Exception ex )
+                        if (token.EndsWith("s"))
                         {
-                            return string.Format("Error at line {0} : '{1}'\r\n\r\n{2}",
-                                lineNo, line, ex);
+                            choice += 2;
                         }
+                        comp.choices[++comp.maxLeadIndex] = choice;
                     }
-                    comp.Problem.BlockLength = lineNo; // for block compositions
-                    comp.Problem.BlockLength = 1;
+                    catch (Exception ex)
+                    {
+                        return string.Format("Error at token {0} : '{1}'\r\n\r\n{2}",
+                            lineNo, token, ex);
+                    }
                 }
+                comp.Problem.BlockLength = lineNo; // for block compositions
+                comp.Problem.BlockLength = 1;
             }
 
             return comp.WriteDetails();
