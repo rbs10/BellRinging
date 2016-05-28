@@ -74,6 +74,7 @@
     <Compile Include="CyclicSearch0.cs" />
     <Compile Include="CyclicSearch2.cs" />
     <Compile Include="CyclicSearch.cs" />
+    <Compile Include="MicroSirilFormatter.cs" />
     <Compile Include="MusicalChange5678Together.cs" />
     <Compile Include="IMusicalChange.cs" />
     <Compile Include="MusicalChangeBase.cs" />

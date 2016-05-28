@@ -593,7 +593,7 @@ namespace BellRinging
                         && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
 
 
-                        && (maxLeadIndex > problem.BlockLength || _composition.Calls <5)
+                        && (maxLeadIndex > problem.BlockLength || _composition.Calls <4)
 
                         && (maxLeadIndex > problem.BlockLength || _composition.COM < Math.Min(9,1 + 9 *maxLeadIndex/problem.BlockLength))
 
