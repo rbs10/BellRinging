@@ -12,6 +12,13 @@ namespace BellRinging
 
     public ICompositionReceiver Receiver { get { return _receiver; } set { _receiver = value; } }
 
+
+    public string DescribeState()
+    {
+        return _composition.ToString();
+        
+    }
+
     Problem problem;
     public void Initialise(string method2)
     {
@@ -25,14 +32,15 @@ namespace BellRinging
         {
             TenorsTogether = true,
             AllowSingles = true,
+            
             MaxLeads = l/32 +2,
             MinLength = l,
             MaxLength = l, //10*32*7,
             Reverse = false,
             MusicDelta = 40,
-            MaxCalls = 15,
+            MaxCalls = 20,
             MaxSingles = 999,
-            MaxBobs=1
+            MaxBobs=999
         };
         this.problem = p;
         int index = 0;

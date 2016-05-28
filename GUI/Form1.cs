@@ -18,8 +18,8 @@ namespace GUI
     string method;
 
 
-   SimpleComposer_2015v4_ForwardBlocks _composer = new SimpleComposer_2015v4_ForwardBlocks();
-   // SimpleComposer_2016_2015_SingleMethodReverse _composer = new SimpleComposer_2016_2015_SingleMethodReverse();
+   //SimpleComposer_2015v4_ForwardBlocks _composer = new SimpleComposer_2015v4_ForwardBlocks();
+   SimpleComposer_2016_2015_SingleMethodReverse _composer = new SimpleComposer_2016_2015_SingleMethodReverse();
 
     public Form1(string method)
     {
