@@ -246,6 +246,15 @@ namespace BellRinging
     {
         return _row[0]== _rounds[0];
     }
+
+
+    internal bool EndsWithTenor()
+    {
+        return _row.Last() == Tenor;
+    }
+
+    internal static char Tenor { get { return _allRows[0]._row.Last(); } }
+
     public string CoursingOrder()
     {
       if (_row[0] != _rounds[0] )
@@ -352,5 +361,6 @@ namespace BellRinging
        //}
        //throw new Exception("Row not found: " + change);
     }
+
   }
 }

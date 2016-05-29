@@ -14,8 +14,10 @@ namespace BellRinging
     Permutation _plainLeadEndPermutation;
 
     List<Permutation> _leadHeadChanges = new List<Permutation>();
+    List<string> _leadHeadCallNames = new List<string>();
     string _name;
     string _code;
+    string _changeNotation;
 
     public SequenceOfPermutations CorePermuations { get { return _corePermutations; } }
     //public Permutation PlainLeadEndPermutation { get { return _plainLeadEndPermutation; } }
@@ -50,6 +52,7 @@ namespace BellRinging
       _name = name;
       _code = code;
       _variableHuntCall = variableHuntCall;
+      _changeNotation = changeNotation;
 
       if (changeNotation == null)
       {
@@ -78,20 +81,24 @@ namespace BellRinging
 
       }
       _leadHeadChanges.Add(_plainLeadEndPermutation);
+      _leadHeadCallNames.Add(" ");
       //_leadHeadChanges.Add(Permutation.FromPlaceNotation("16", 8));
       if (variableHuntCall == null)
       {
           _leadHeadChanges.Add(Permutation.FromPlaceNotation("14", 8));
+          _leadHeadCallNames.Add("b");
       }
         if (allowSingles)
           {
-            
-           _leadHeadChanges.Add(Permutation.FromPlaceNotation("1234", 8));
+
+              _leadHeadChanges.Add(Permutation.FromPlaceNotation("1234", 8));
+              _leadHeadCallNames.Add("s");
             //  _leadHeadChanges.Add(Permutation.FromPlaceNotation("14", 8));
           }
       if (variableHuntCall != null)
       {
           _leadHeadChanges.Add(Permutation.FromPlaceNotation(variableHuntCall, 8));
+          _leadHeadCallNames.Add("x");
       }
 
     }
@@ -330,5 +337,56 @@ namespace BellRinging
         }
       }
     }
+
+    internal void WriteMicroSiril(StringBuilder sb)
+    {
+        if (_changeNotation != null)
+        {
+            int i = 0;
+            foreach ( var leadEndName in _leadHeadCallNames )
+            {
+                sb.AppendLine(string.Format("{0}{1} = {2}, +{3}",this.Letter, leadEndName, Name, _leadHeadChanges[i++].ToString()));
+            }
+
+            var leadEndBreak = _changeNotation.IndexOf('-');
+            string microSirilNotation = "&" + _changeNotation.Replace("X", "-").Substring(0, leadEndBreak);
+            // Cambridge = &-3-4-25-36-4-5-6-7
+            sb.AppendLine(string.Format("{0} = {1}", Name, microSirilNotation));
+        }
+        else
+        {
+            string microSirilNotation = "12";
+            sb.AppendLine(string.Format("{0} = +{1}", Name, microSirilNotation));
+        }
+    }
+
+      internal string WriteChoiceMicroSiril(int call)
+    {
+        string ret;
+        if (_changeNotation != null)
+        {
+            ret = Letter + _leadHeadCallNames[call];
+        }
+        else
+        {
+            ret = Name;
+        }
+        return ret;
+    }
+
+      internal string CallName(int call)
+      {
+          string ret;
+          if (_changeNotation != null)
+          {
+              ret = _leadHeadCallNames[call];
+          }
+          else
+          {
+              // "start at hand"
+              ret = "@";
+          }
+          return ret;
+      }
   }
 }

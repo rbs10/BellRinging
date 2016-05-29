@@ -36,6 +36,10 @@ namespace BellRinging
         /// </summary>
         public Problem Problem { get; set; }
 
+        /// <summary>
+        /// The tables by which to interpret the composition
+        /// </summary>
+        public Tables Tables { get { return _tables;  } }
 
         public bool Reverse { get; set; }
 
