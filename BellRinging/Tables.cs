@@ -157,7 +157,7 @@ namespace BellRinging
         // index the leads
         foreach (Lead l in allLeads)
         {
-            if (IncludeLeadHead(l.LeadHead(), methodIndex) || method.Name == "Null" )
+            if (IncludeLeadHead(l.LeadHead(), methodIndex) || method.Name == "Null" || method.Name == "PlainLeadEnd")
             {
                 int num = l.ToNumber();
                 for (int i = 0; i < _methodsByChoice.Length; ++i)

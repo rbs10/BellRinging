@@ -30,7 +30,7 @@ namespace BellRinging
             get
             {
                 string ret = string.Empty;
-                if ( !string.IsNullOrWhiteSpace(Call) )
+                if ( HasCall)
                 {
                     var callBit = Call;
                     var posBit = Position;
@@ -38,22 +38,19 @@ namespace BellRinging
                     {
                         callBit = string.Empty;
                     }
-                    if (Position == "I/2")
+                    if (Position == "2nds")
                     {
                         if (Call == "s")
                         {
-                            posBit = "U"; // "unaffected" - 2 gets used as a repeater in MicroSiril I thinkMicro
+                            posBit = "T"; // "two"- 2 gets used as a repeater in MicroSiril I think
                         }
                         else
                         {
                             posBit = "I";
                         }
                     }
-                    if ( callBit == "@")
-                    {
-                        callBit = "";
-                    }
-                    else if ( Call == "@" )
+                   
+                    if ( Call == "@" )
                     {
                         callBit = "handstrokeStart";
                     }
@@ -62,5 +59,7 @@ namespace BellRinging
                 return ret;           
             }
         }
+
+        public bool HasCall { get { return !string.IsNullOrWhiteSpace(Call); } }
     }
 }

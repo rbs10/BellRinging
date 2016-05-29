@@ -20,18 +20,46 @@ namespace BellRinging
             var bells = composition.Rows.First().ToString().Length;
             sb.AppendFormat("{0} bells", bells);
             sb.AppendLine();
-            sb.AppendLine();
             List<Course> courses = MakeCourseList(composition);
 
-           
-            sb.AppendLine("touch = " + string.Join(",", courses.Select(c => c.Name)));
+
+            sb.AppendLine("touch = callingPositions, separator, " + string.Join(",", courses.Select(c => c.Name)) + ",suffix");
+
+            // work out positions where calls happen
+            var positionsWithCalls = courses.SelectMany(c => c.Leads).Where(l => l.HasCall).Select(l => l.Position).Distinct().ToList();
+            // work out what order we want them in - want them in the order that the leads come up in the plain course
+            var keyMethod = composition.Problem.Methods.First();
+            var plainCourse = keyMethod.GeneratePlainCourse(Row.FromNumber(0));
+            var positionsInOrder = plainCourse.Select(lead => CallingPosition(lead.NextLeadHead(keyMethod.PlainLeadEndPermutation))).ToList();
+            // Home always wants to be 
+            var orderedPositions = positionsInOrder.Where(p => positionsWithCalls.Contains(p)).ToList();
+
+            // write out line with ordered positions
+            var positionsString = string.Join("", orderedPositions.Select(p => p.PadRight(ColumnWidth(p), ' ')));
+            sb.AppendLine(string.Format("callingPositions = \"12345678  {0}\"", positionsString));
+            sb.AppendLine(string.Format("separator = \"========  {0}\"", 
+                string.Empty.PadRight(positionsString.TrimEnd().Length,'=')));
+
+            // write out line with separator
 
             // write out each distinct course
             foreach (var course in courses.GroupBy(c => c.Name).Select(g => g.First()))
             {
                 sb.Append(course.Name + " = ");
                 sb.Append(string.Join(",", course.Leads.Select(c => c.LeadDefinition)));
-                sb.AppendLine(",\"@\"");
+                sb.Append(",\"@  ");
+                var lineBuilder = new StringBuilder();
+                foreach ( var callingPosition in orderedPositions )
+                {
+                    int columnWidth = ColumnWidth(callingPosition);
+                    var leadsEndingInPosition = course.Leads.Where(c => c.Position == callingPosition);
+                    var callsAtPosition = leadsEndingInPosition.Select(l => l.Call);
+                    var callsString = string.Join("", callsAtPosition).Replace("b","-");
+                    callsString = callsString.PadRight(columnWidth, ' ');
+                    lineBuilder.Append(callsString.Replace("@", "\\@"));
+                }
+                sb.Append(lineBuilder.ToString().TrimEnd());
+                sb.AppendLine("\"");
             }
 
             // write out definitions of all the methods
@@ -40,7 +68,19 @@ namespace BellRinging
                 method.WriteMicroSiril(sb);
             }
 
+            var suffix = string.Empty;
+            if ( courses.First().Leads.First().Call == "@") 
+            {
+                suffix = "\\@ = Start at handstroke bringing up the wrong after the first change.";
+            }
+            sb.AppendLine(string.Format("suffix = \"{0}\"",suffix));
             return sb.ToString();
+        }
+
+        private int ColumnWidth(string positionName)
+        {
+            //return positionName.Length + 2;
+            return 6;
         }
 
         private List<Course> MakeCourseList(Composition composition)
@@ -84,7 +124,7 @@ namespace BellRinging
         Dictionary<int, string> positions = new Dictionary<int, string>
         {
             { 1, "?! "},
-            { 2, "I/2" },
+            { 2, "2nds" },
             { 3 ,"B"},
             { 4, "4"},
             {5, "V"},
