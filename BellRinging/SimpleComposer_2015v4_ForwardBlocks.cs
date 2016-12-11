@@ -27,7 +27,8 @@ namespace BellRinging
             for (int firstChoice = 0; firstChoice < _tables.NO_CHOICES; ++firstChoice)
             {
                 var solver = new Solver(sharedStats, _tables, problem, _receiver, firstChoice);
-                var thread = new System.Threading.Thread(() => {
+                var thread = new System.Threading.Thread(() =>
+                {
                     try
                     {
                         lock (activeSolvers)
@@ -38,7 +39,7 @@ namespace BellRinging
                     }
                     finally
                     {
-                        lock ( activeSolvers)
+                        lock (activeSolvers)
                         {
                             activeSolvers.Remove(solver);
                         }
@@ -128,14 +129,16 @@ namespace BellRinging
             foreach (string method in
               new string[] { 
              
+             // "Lincolnshire","Rutland"
               
-              
-             "Rutland"
-              , "London"
+             "Rutland",
+               "London"
               , "Superlative"
               , "Pudsey"
            , "Cambridge"
-             , "Lincolnshire", "Yorkshire" , "Bristol"
+             , "Lincolnshire"
+            , "Yorkshire" 
+             , "Bristol"
               /*
              // "Lessness",
              //"Lindum",
@@ -243,7 +246,7 @@ namespace BellRinging
 
                     // if (i == 2 || i == 6)
                     {
-                       problem.allowedPartEnds.Add(Row.FromString(ape).ToNumber());
+                        problem.allowedPartEnds.Add(Row.FromString(ape).ToNumber());
                     }
                 }
             }
@@ -283,8 +286,8 @@ namespace BellRinging
         }
 
         class SharedStats
-        {            
-          public volatile int bestTotalMusic;
+        {
+            public volatile int bestTotalMusic;
         }
 
         class Solver
@@ -467,7 +470,7 @@ namespace BellRinging
 
                 // lead is the lead just rung, call is the call made from that lead
                 choices[0] = firstChoice;
-                if ( problem.FirstChoice != 0 )
+                if (problem.FirstChoice != 0)
                 {
                     throw new Exception("First choice for problem not supported");
                 }
@@ -593,14 +596,19 @@ namespace BellRinging
                         && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
 
 
-                        && (maxLeadIndex > problem.BlockLength || _composition.Calls <4)
+                       //&& (maxLeadIndex > problem.BlockLength || _composition.Calls < 7)
+                            //&& (maxLeadIndex > problem.BlockLength|| _composition.COM < 9)
 
-                        && (maxLeadIndex > problem.BlockLength || _composition.COM < Math.Min(9,1 + 9 *maxLeadIndex/problem.BlockLength))
+                       // && (maxLeadIndex > problem.BlockLength || _composition.COM < Math.Min(9,1 + 9 *maxLeadIndex/problem.BlockLength))
 
-                        && (maxLeadIndex != problem.BlockLength - 1 || 
-                          problem.allowedPartEnds.Count == 0 || problem.allowedPartEnds.Contains(nextLead))
+                        && (maxLeadIndex != problem.BlockLength - 1 ||
+                          (
+                            //problem.allowedPartEnds.Count == 0 || problem.allowedPartEnds.Contains(nextLead)  &&
+                           _composition.Calls < 7 && _composition.COM < 10))
 
-                       // && _composition.Calls < 21
+                       //     && _composition.Calls + _composition.COM < 45
+                            //    && _composition.Calls + _composition.COM < 45 * maxLeadIndex/maxLeads + 5
+                            // && _composition.Calls < 21
                             // avoid lots of singles
                             //&& ( maxLeadIndex > maxLeads - 5 || choices[maxLeadIndex] != 2 )
 
@@ -840,92 +848,229 @@ namespace BellRinging
                         ++totalCompositions;
 
                         _composition.CalcStats();
-                        if (maxLeads <= problem.BlockLength || problem.allowedPartEnds.Count == 0 || 
+                        if (maxLeads <= problem.BlockLength || problem.allowedPartEnds.Count == 0 ||
                             problem.allowedPartEnds.Contains(_composition._partEnd))
                         {
+
+                                var quality = _composition.Quality;
                             int totalScore = _composition.Score;// -_composition.Calls;
-                            var quality = _composition.COM;
-                            //quality = _composition.choices.Where((c, i) => i <= noLeads && c > 2).Count();
-                            var calls = bestMusic.Length - 1 - _composition.Calls;
-                            //_composition.CalcWraps();
-
-                            // compositionsWithMusicScore[totalScore]++;
-                            int changes = _composition.Changes;
-                            //var group = calls;
-                            var group = _composition.COM * 1000 + _composition.Calls; // just look for most music
-                            //if ( changes == 2016 )
-
-
-                            if (//true ||
-                          !(changes < problem.MinLength) &&
-                               !(changes > problem.MaxLength) &&
-                                //_composition.COM> 10&&
-                                //_composition.Imbalance < 10&&
-                                // changes == 2015 - (6 * 7 * 32) &&
-                                // changes == maxLeads * 32 - 1 &&
-                                //changes % 32 == 31 &&
-                                // _composition.Calls < 9
-                                //(changes % 2 != 0 ) &&
-                                //changes == 2015 && 
-                                (
-                              totalScore > bestMusic[group] ||
-                              quality > bestQuality[group]
-                                //||calls >=bestCalls[changes]
-                              )
-
-                            // &&    quality > bestQuality[group] 
-                                //totalScore >= 120 &&
-                                // _composition.Calls < 10&&
-                                // totalScore > 2&&
-                                // true
-                              )
+                            // quaqlity is total zero leads - ask for something good before we consider optimisation
+                                if (quality >= 90 && totalScore >= 97)
                             {
-                                if (!proven)
-                                {
 
-                                    var falseAt = _composition.RunsFalseAt5(ref firstUnprovenLead);
-                                    if (falseAt >= 0)
-                                    {
-                                        minBackTrack = falseAt;
-                                        return;
-                                    }
-                                    proven = true;
-                                }
-                                if (_receiver != null)
-                                {
-                                    _composition.TimeToFind = DateTime.UtcNow - _startTime;
-                                    _receiver.AddComposition(_composition.Clone());
-                                }
+                                //quality = _composition.choices.Where((c, i) => i <= noLeads && c > 2).Count();
+                                var calls = bestMusic.Length - 1 - _composition.Calls;
+                                //_composition.CalcWraps();
 
-                                if (totalScore > bestMusic[group])
+                                // compositionsWithMusicScore[totalScore]++;
+                                int changes = _composition.Changes;
+                                //var group = calls;
+                                var group = _composition.COM * 1000 + _composition.Calls; // just look for most music
+                                //if ( changes == 2016 )
+
+
+                                if (//true ||
+                              !(changes < problem.MinLength) &&
+                                   !(changes > problem.MaxLength) &&
+                                    //_composition.COM> 10&&
+                                    //_composition.Imbalance < 10&&
+                                    // changes == 2015 - (6 * 7 * 32) &&
+                                    // changes == maxLeads * 32 - 1 &&
+                                    //changes % 32 == 31 &&
+                                    // _composition.Calls < 9
+                                    //(changes % 2 != 0 ) &&
+                                    //changes == 2015 && 
+                                    (
+                                  totalScore > bestMusic[group] ||
+                                  quality > bestQuality[group]
+                                    //||calls >=bestCalls[changes]
+                                  )
+
+                                // &&    quality > bestQuality[group] 
+                                    //totalScore >= 120 &&
+                                    // _composition.Calls < 10&&
+                                    // totalScore > 2&&
+                                    // true
+                                  )
                                 {
-                                    bestMusic[group] = totalScore;
-                                }
-                                lock (sharedStats)
-                                {
-                                    if (totalScore > sharedStats.bestTotalMusic)
+                                    if (!proven)
                                     {
-                                        sharedStats.bestTotalMusic = totalScore;
+
+                                        var falseAt = _composition.RunsFalseAt5(ref firstUnprovenLead);
+                                        if (falseAt >= 0)
+                                        {
+                                            minBackTrack = falseAt;
+                                            return;
+                                        }
+                                        proven = true;
                                     }
+                                    if (_receiver != null)
+                                    {
+                                        _composition.TimeToFind = DateTime.UtcNow - _startTime;
+                                        _receiver.AddComposition(_composition.Clone());
+                                        Optimise(_composition, _receiver);
+                                    }
+
+                                    if (totalScore > bestMusic[group])
+                                    {
+                                        bestMusic[group] = totalScore;
+                                    }
+                                    lock (sharedStats)
+                                    {
+                                        if (totalScore > sharedStats.bestTotalMusic)
+                                        {
+                                            sharedStats.bestTotalMusic = totalScore;
+                                        }
+                                    }
+                                    if (quality > bestQuality[group])
+                                    {
+                                        bestQuality[group] = quality;
+                                    }
+                                    if (calls > bestCalls[group])
+                                    {
+                                        bestCalls[group] = calls;
+                                    }
+                                    //return;
+                                    //Console.WriteLine("Leads = " + (noLeads + 1) + " ( " + (noLeads + 1) * 32 + "  changes) Total music " + totalMusic);
+                                    //for (int i = 0; i <= noLeads; ++i)
+                                    //{
+                                    //    Console.WriteLine(Row.FromNumber(_composition.leads[i]) + " " + "-BSZ"[_composition.choices[i]] + " " + _tables.music[_composition.leads[i], _composition.choices[i]]);
+                                    //}
                                 }
-                                if (quality > bestQuality[group])
-                                {
-                                    bestQuality[group] = quality;
-                                }
-                                if (calls > bestCalls[group])
-                                {
-                                    bestCalls[group] = calls;
-                                }
-                                //return;
-                                //Console.WriteLine("Leads = " + (noLeads + 1) + " ( " + (noLeads + 1) * 32 + "  changes) Total music " + totalMusic);
-                                //for (int i = 0; i <= noLeads; ++i)
-                                //{
-                                //    Console.WriteLine(Row.FromNumber(_composition.leads[i]) + " " + "-BSZ"[_composition.choices[i]] + " " + _tables.music[_composition.leads[i], _composition.choices[i]]);
-                                //}
                             }
                         }
                     }
                     _composition.rot = 0;
+                }
+            }
+
+            private void MaybeWriteComposition(Composition comp, ref bool proven, ref int minBackTrack, bool fromOpt)
+            {
+                int totalScore = comp.Score;// -_composition.Calls;
+                var quality = comp.Quality;
+                //quality = _composition.choices.Where((c, i) => i <= noLeads && c > 2).Count();
+                var calls = bestMusic.Length - 1 - comp.Calls;
+                //_composition.CalcWraps();
+
+                // compositionsWithMusicScore[totalScore]++;
+                int changes = comp.Changes;
+                //var group = calls;
+                var group = comp.COM * 1000 + comp.Calls; // just look for most music
+                //if ( changes == 2016 )
+
+
+                if (//true ||
+              !(changes < problem.MinLength) &&
+                   !(changes > problem.MaxLength) &&
+                    //_composition.COM> 10&&
+                    //_composition.Imbalance < 10&&
+                    // changes == 2015 - (6 * 7 * 32) &&
+                    // changes == maxLeads * 32 - 1 &&
+                    //changes % 32 == 31 &&
+                    // _composition.Calls < 9
+                    //(changes % 2 != 0 ) &&
+                    //changes == 2015 && 
+                    (
+                  totalScore > bestMusic[group] ||
+                  quality > bestQuality[group]
+                    //||calls >=bestCalls[changes]
+                  )
+
+                // &&    quality > bestQuality[group] 
+                    //totalScore >= 120 &&
+                    // _composition.Calls < 10&&
+                    // totalScore > 2&&
+                    // true
+                  )
+                {
+                    if (!proven)
+                    {
+
+                        var falseAt = comp.RunsFalseAt5(ref firstUnprovenLead);
+                        if (falseAt >= 0)
+                        {
+                            minBackTrack = falseAt;
+                            return;
+                        }
+                        proven = true;
+                    }
+                    if (_receiver != null)
+                    {
+                        comp.TimeToFind = DateTime.UtcNow - _startTime;
+                        _receiver.AddComposition(comp.Clone());
+                        if (!fromOpt)
+                        {
+                            Optimise(comp, _receiver);
+                        }
+                    }
+
+                    if (totalScore > bestMusic[group])
+                    {
+                        bestMusic[group] = totalScore;
+                    }
+                    lock (sharedStats)
+                    {
+                        if (totalScore > sharedStats.bestTotalMusic)
+                        {
+                            sharedStats.bestTotalMusic = totalScore;
+                        }
+                    }
+                    if (quality > bestQuality[group])
+                    {
+                        bestQuality[group] = quality;
+                    }
+                    if (calls > bestCalls[group])
+                    {
+                        bestCalls[group] = calls;
+                    }
+                }
+            }
+            /// <summary>
+            /// See if we can tweak composition to get something even better
+            /// </summary>
+            private void Optimise(Composition baseComposition, ICompositionReceiver _receiver)
+            {
+                var compositionToOptimise = baseComposition.Clone();
+                compositionToOptimise.InitFalsenessCheckSupport();
+
+                var musicTable = _tables.music;
+                var leadMapping = _tables.leadMapping;
+                for (int i = 0; i < compositionToOptimise.maxLeadIndex; ++i)
+                {
+                    var lead = compositionToOptimise.leads[i];
+
+                    var originalChoice = compositionToOptimise.choices[i];
+                    var thisMusic = musicTable[lead, originalChoice];
+                    if (thisMusic == 0)
+                    {
+                        var oldMapping = _tables.leadMapping[lead, originalChoice];
+                        for (int newChoice = 0; newChoice < _tables.NO_CHOICES; ++newChoice)
+                        {
+                            // if we have a more musical lead with the same lead end
+                            if (musicTable[lead, newChoice] > thisMusic && _tables.leadMapping[lead, newChoice] == oldMapping)
+                            {
+
+                                compositionToOptimise.choices[i] = newChoice;
+
+                                int firstUnprovenLeadInOpt = -1;
+                                if (compositionToOptimise.RunsFalseAt5(ref firstUnprovenLeadInOpt) < 0)
+                                {
+                                    //_receiver.AddComposition(compositionToOptimise.Clone());
+                                    bool proven = true;
+                                    int minBackTrack = -1;
+                                    MaybeWriteComposition(compositionToOptimise, ref proven, ref minBackTrack, true);
+
+                                    // consider other duff leads rather than worry too much about other alternatives for this one
+                                    break;
+                                }
+                                else
+                                {
+
+                                    compositionToOptimise.choices[i] = originalChoice;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

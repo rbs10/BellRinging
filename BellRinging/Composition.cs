@@ -51,7 +51,7 @@ namespace BellRinging
             }
         }
 
-        private void InitFalsenessCheckSupport()
+        internal void InitFalsenessCheckSupport()
         {
             rowCount = new int[40320];
             toClear = new int[5040];
@@ -791,7 +791,7 @@ namespace BellRinging
             {
                 //return Music;
                 //return Music - Calls;
-                return Music; // CalcWraps();
+                return _maxGap; // CalcWraps();
                 //CalcWraps();// 100 - Calls;
             }
         }
@@ -803,6 +803,7 @@ namespace BellRinging
         public int _changes;
         public int _centreOfMusic;
         public int _partEnd;
+        public int _maxGap;
 
         public void CalcStats()
         {
@@ -811,6 +812,9 @@ namespace BellRinging
             _com = 0;
             _changes = 0;
             _centreOfMusic = 0;
+            var gap = 0;
+            var maxGap = 0;
+            var totGap = 0;
             float q = 0;
             int _centreOfMusicDenominator = 0;
 
@@ -832,6 +836,18 @@ namespace BellRinging
                 {
                     var thisMusic = musicTable[lead, choices[leadIndex]];
                     _music += thisMusic;
+                    if (thisMusic == 0 )
+                    {
+                        ++gap; ++totGap;
+                        if ( gap > maxGap )
+                        {
+                            maxGap = gap;
+                        }
+                    }
+                    else
+                    {
+                        gap = 0;
+                    }
                     q += thisMusic * w;
                     _centreOfMusic += thisMusic * i;
                     _centreOfMusicDenominator += i;
@@ -863,7 +879,9 @@ namespace BellRinging
             // reverse composition so earlier is better
             //_quality = 100 - _centreOfMusic;
             //_quality = (int)(100 * q);
-            _quality = 100 * _music / maxLeadIndex;
+            //_quality = 100 * _music / maxLeadIndex;
+            _quality = 100 - totGap;
+            _maxGap = 100 - maxGap;
         }
         public int Music
         {
@@ -1073,7 +1091,13 @@ namespace BellRinging
             text += "\r\nCHANGES ";
             text += _selectedComposition.Changes;
             text += "\r\nSCORE ";
-            text += _selectedComposition.Music;
+            text += _selectedComposition.Music; 
+            text += "\r\nCOM ";
+            text += _selectedComposition.COM;
+            text += "\r\nCALLS ";
+            text += _selectedComposition.Calls;
+            text += "\r\nTHREAD CHOICE ";
+            text += _selectedComposition.choices[0];
 
             var leadsInRunOrder = _selectedComposition.LeadHeadsAndChoices;
             if (Reverse)
