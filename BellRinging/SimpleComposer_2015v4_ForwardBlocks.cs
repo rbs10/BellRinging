@@ -131,7 +131,7 @@ namespace BellRinging
              
              // "Lincolnshire","Rutland"
               
-             "Rutland",
+             "Uxbridge",
                "London"
               , "Superlative"
               , "Pudsey"
@@ -855,6 +855,7 @@ namespace BellRinging
                                 var quality = _composition.Quality;
                             int totalScore = _composition.Score;// -_composition.Calls;
                             // quaqlity is total zero leads - ask for something good before we consider optimisation
+                           // if (quality >= 90 && totalScore >= 97)
                                 if (quality >= 90 && totalScore >= 97)
                             {
 
