@@ -79,8 +79,8 @@ namespace BellRinging
         public void Initialise(string method2)
         {
             MethodLibrary lib = new MethodLibrary();
-            int blockLength = 14;
-            int parts = 3;
+            int blockLength = 8;
+            int parts = 5;
             int l = 32 * parts * blockLength; // 2016;// -10 * 32;
             sharedStats.bestTotalMusic = 0; // start looking for some music
             //Problem p = new Problem()
@@ -131,32 +131,32 @@ namespace BellRinging
              
              // "Lincolnshire","Rutland"
               
-             "Uxbridge",
-               "London"
-              , "Superlative"
-              , "Pudsey"
-           , "Cambridge"
-             , "Lincolnshire"
-            , "Yorkshire" 
-             , "Bristol"
-              /*
-             // "Lessness",
+             //"Rutland",
+               "London", "Uxbridge", "Lincolnshire", "Double Dublin", "Yorkshire"
+              //, "Superlative"
+           //   , "Pudsey"
+           //, "Cassiobury"
+           //  , "Ashtead"
+           // , "Yorkshire" 
+           //  , "Bristol"
+           //   /*
+           //  // "Lessness",
              //"Lindum",
-           // "Uxbridge", 
-            "London",
-           //  "Cassiobury",
-             //"Preston",
-             "Superlative",
-             //"Cornwall", 
-             "Yorkshire",
-            "Cambridge" , 
-        "Rutland",    
-        "Lincolnshire",
-        "Glasgow" ,
-        //,"Ashtead",
-              "Pudsey",
-              "Bristol"
-         //     ,
+        //   // "Uxbridge", 
+        //    "London",
+        //   //  "Cassiobury",
+        //     //"Preston",
+        //     "Superlative",
+        //     //"Cornwall", 
+        //     "Yorkshire",
+        //    "Cambridge" , 
+        //"Rutland",    
+        //"Lincolnshire",
+        //"Glasgow" ,
+        ////,"Ashtead",
+        //      "Pudsey",
+        //      "Bristol"
+        // //     ,
               
          
          
@@ -601,10 +601,10 @@ namespace BellRinging
 
                        // && (maxLeadIndex > problem.BlockLength || _composition.COM < Math.Min(9,1 + 9 *maxLeadIndex/problem.BlockLength))
 
-                        && (maxLeadIndex != problem.BlockLength - 1 ||
-                          (
-                            //problem.allowedPartEnds.Count == 0 || problem.allowedPartEnds.Contains(nextLead)  &&
-                           _composition.Calls < 7 && _composition.COM < 10))
+                        //&& (maxLeadIndex != problem.BlockLength - 1 ||
+                        //  (
+                        //    //problem.allowedPartEnds.Count == 0 || problem.allowedPartEnds.Contains(nextLead)  &&
+                        //   _composition.Calls < 7 && _composition.COM < 10))
 
                        //     && _composition.Calls + _composition.COM < 45
                             //    && _composition.Calls + _composition.COM < 45 * maxLeadIndex/maxLeads + 5
@@ -856,7 +856,7 @@ namespace BellRinging
                             int totalScore = _composition.Score;// -_composition.Calls;
                             // quaqlity is total zero leads - ask for something good before we consider optimisation
                            // if (quality >= 90 && totalScore >= 97)
-                                if (quality >= 90 && totalScore >= 97)
+                               // if (quality >= 90 && totalScore >= 97)
                             {
 
                                 //quality = _composition.choices.Where((c, i) => i <= noLeads && c > 2).Count();

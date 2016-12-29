@@ -791,8 +791,9 @@ namespace BellRinging
             {
                 //return Music;
                 //return Music - Calls;
-                return _maxGap; // CalcWraps();
+                //return _maxGap; // CalcWraps();
                 //CalcWraps();// 100 - Calls;
+                return _seqNess;
             }
         }
 
@@ -804,6 +805,7 @@ namespace BellRinging
         public int _centreOfMusic;
         public int _partEnd;
         public int _maxGap;
+        public int _seqNess;
 
         public void CalcStats()
         {
@@ -812,6 +814,7 @@ namespace BellRinging
             _com = 0;
             _changes = 0;
             _centreOfMusic = 0;
+            _seqNess = 0;
             var gap = 0;
             var maxGap = 0;
             var totGap = 0;
@@ -862,6 +865,12 @@ namespace BellRinging
                 leadIndex++;
                 if (leadIndex > maxLeadIndex) leadIndex = 0;
 
+                if ( i > 0 )
+                {
+                    var choicesPerMethod = Problem.AllowSingles?3:2;
+                    var target = choices[i - 1] + choicesPerMethod;
+                    if (target / choicesPerMethod == choices[i] / choicesPerMethod) ++_seqNess;
+                }
                 // calls
                 if (_tables.IsCall(choices[i])) ++_calls;
 
