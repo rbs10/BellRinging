@@ -620,6 +620,8 @@ namespace BellRinging
                         int choice = choices[leadIndex];
                         int lead = leads[leadIndex];
 
+                        if (choice >= _tables.NO_CHOICES) break;
+
                         Method method = _tables._methodsByChoice[choice];
                         int methodIndex = _tables.methodIndexByChoice[choice];
                         //int nextLead = _tables.reverseLeadMapping[thisLead, choice];
@@ -684,6 +686,8 @@ namespace BellRinging
                     {
                         int leadIndex = (i + rot) % (maxLeadIndex + 1);
                         int choice = choices[leadIndex];
+
+                        if (choice >= _tables.NO_CHOICES) break;
 
                         // handle snapshots of in progress touches
                         if (choice >= _tables._methodsByChoice.Length) break;
