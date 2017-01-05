@@ -16,8 +16,8 @@ namespace BellRinging
         public void Initialise(string method2)
         {
             MethodLibrary lib = new MethodLibrary();
-            int l = 2016;// -10 * 32;
-            bestTotalMusic = 0; //225 * l / 2500; // start looking for some music
+            int l = 2018;// -10 * 32;
+            bestTotalMusic = 150; //225 * l / 2500; // start looking for some music
             Problem p = new Problem()
             {
                 TenorsTogether = true,
@@ -27,7 +27,7 @@ namespace BellRinging
                 MaxLength = l,
                 Reverse = true,
                 MusicDelta = 10,
-                MaxCalls = 10
+                MaxCalls = 20
             };
             this.problem = p;
             int index = 0;
@@ -100,6 +100,11 @@ namespace BellRinging
             if (p.Reverse)
             {
                 var start = new Method("Null", " EC ", null, 8, p.AllowSingles);
+                foreach ( var perm in p.Methods.First().CorePermuations.Permuations.Take(2).Reverse())
+                {
+                    // first two changes are x 36 - we want to start 36 x
+                    start.CorePermuations.Permuations.Add(perm);
+                }
                 //start.LastLeadOnly();
                 p.AddMethod(start);
                 p.FirstChoice = p.AllowSingles ? 3 : 2;
