@@ -24,7 +24,7 @@ namespace BellRinging
     {
         MethodLibrary lib = new MethodLibrary();
         //int l = 7 * 32 * 9 +1;// -10 * 32;
-        int l = 2017;
+        int l = 2019;
         bestTotalMusic = 200; //225 * l / 2500; // start looking for some music
         var backstrokeStart = true;
         //backstrokeStart = false;
@@ -38,7 +38,7 @@ namespace BellRinging
             MaxLength = l, //10*32*7,
             Reverse = false,
             MusicDelta = 40,
-            MaxCalls = 11,
+            MaxCalls = 20,
             MaxSingles = 999,
             MaxBobs=999
         };
