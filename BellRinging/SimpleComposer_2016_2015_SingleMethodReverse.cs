@@ -16,15 +16,15 @@ namespace BellRinging
         public void Initialise(string method2)
         {
             MethodLibrary lib = new MethodLibrary();
-            int l = 2018;// -10 * 32;
-            bestTotalMusic = 100; //225 * l / 2500; // start looking for some music
+            int l = 2019 - 224*7;// -10 * 32;
+            bestTotalMusic = 0; //225 * l / 2500; // start looking for some music
             Problem p = new Problem()
             {
-                TenorsTogether = true,
+                TenorsTogether = false,
                 AllowSingles = true,
-                MaxLeads = l / 32 + 1,
-                MinLength = l,
-                MaxLength = l,
+                MaxLeads = 1251 / 32 + 3,
+                MinLength = 1251,
+                MaxLength = 1251,
                 Reverse = true,
                 MusicDelta = 10,
                 MaxCalls = 20
@@ -36,7 +36,7 @@ namespace BellRinging
              // "London", 
               //"Pudsey"
               //,
-              "Cambridge"
+              "Yorkshire"
               //,
               //"Bastow"
              // ,
@@ -100,16 +100,25 @@ namespace BellRinging
             if (p.Reverse)
             {
                 var start = new Method("Null", " EC ", null, 8, p.AllowSingles);
+
+
+                // addition of snap finish
+                // first two changes are x 36 - we want to start 36 x
                 foreach ( var perm in p.Methods.First().CorePermuations.Permuations.Take(2).Reverse())
                 {
-                    // first two changes are x 36 - we want to start 36 x
                     start.CorePermuations.Permuations.Add(perm);
                 }
                 //start.LastLeadOnly();
                 p.AddMethod(start);
                 p.FirstChoice = p.AllowSingles ? 3 : 2;
                 start.FirstLeadOnly();
+
+                // and backstroke start
+                var bsEnd = new Method("N2", " EC2 ", null, 8, p.AllowSingles);
+                p.AddMethod(bsEnd);
+                bsEnd.LastLeadOnly();
             }
+
 
             if (methods.Contains("Bastow"))
             {
@@ -382,7 +391,7 @@ namespace BellRinging
 
 
                     int firstUnprovenLead = -1; // no false check !!! TODO:
-                    var falseAt = _composition.RunsFalseAt5(ref firstUnprovenLead);
+                    var falseAt = -1;// _composition.RunsFalseAt5(ref firstUnprovenLead);
                     int minBackTrack;
                     // if (true /*falseAt < 0*/)
 
