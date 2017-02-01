@@ -1049,7 +1049,7 @@ namespace BellRinging
                     yield return new KeyValuePair<Row, string>(r, s);
                 }
             }
-            Console.WriteLine(i);
+            //Console.WriteLine(i);
         }
 
         public IEnumerable<KeyValuePair<Row, IMusicalChange>> GetMusicalChanges(MusicalPreferences preferences)

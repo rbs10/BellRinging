@@ -132,7 +132,7 @@ namespace BellRinging
       Task.WaitAll(initErs);
 
       //Console.WriteLine("Indexed all leads " + (DateTime.UtcNow - startInit));
-      WriteMusicalChanges();
+      //WriteMusicalChanges();
 
       //Console.WriteLine("Written music " + (DateTime.UtcNow - startInit));
 
@@ -220,7 +220,7 @@ namespace BellRinging
                 }
             }
         }
-        Console.WriteLine(method.Name);
+        //Console.WriteLine(method.Name);
     }
 
     private bool IncludeLeadHead(Row nextLeadHead, int methodIndex)
@@ -436,10 +436,10 @@ namespace BellRinging
             }
           }
         }
-        Console.WriteLine("Depth = " + maxDepth + " Count = " + countAtDepth + " " + "Total = " + totalFound );
+        //Console.WriteLine("Depth = " + maxDepth + " Count = " + countAtDepth + " " + "Total = " + totalFound );
         ++maxDepth;
       }
-     Console.WriteLine("Total leads found = " + totalFound);
+     //Console.WriteLine("Total leads found = " + totalFound);
    }
 
     public IEnumerable<Row> Rows(int lead, int choice)
