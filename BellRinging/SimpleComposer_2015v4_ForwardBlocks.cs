@@ -79,8 +79,8 @@ namespace BellRinging
         public void Initialise(string method2)
         {
             MethodLibrary lib = new MethodLibrary();
-            int blockLength = 8;
-            int parts = 5;
+            int blockLength = 42;
+            int parts = 42/blockLength;
             int l = 32 * parts * blockLength; // 2016;// -10 * 32;
             sharedStats.bestTotalMusic = 0; // start looking for some music
             //Problem p = new Problem()
@@ -128,11 +128,12 @@ namespace BellRinging
             int index = 0;
             foreach (string method in
               new string[] { 
-             
+             //"Bristol"//,
+             "Double Dublin"
              // "Lincolnshire","Rutland"
               
              //"Rutland",
-               "London", "Uxbridge", "Lincolnshire", "Double Dublin", "Yorkshire"
+             //  "London", "Uxbridge", "Lincolnshire", "Double Dublin", "Yorkshire"
               //, "Superlative"
            //   , "Pudsey"
            //, "Cassiobury"
@@ -593,10 +594,10 @@ namespace BellRinging
                             //&& ( (maxLeadIndex != problem.BlockLength-1) || allowedPartEnds.Contains(nextLead)) 
 
                             // use all the methods
-                        && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
+                        && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 4)
 
 
-                       //&& (maxLeadIndex > problem.BlockLength || _composition.Calls < 7)
+                       && (maxLeadIndex > problem.BlockLength || _composition.Calls < 12)
                             //&& (maxLeadIndex > problem.BlockLength|| _composition.COM < 9)
 
                        // && (maxLeadIndex > problem.BlockLength || _composition.COM < Math.Min(9,1 + 9 *maxLeadIndex/problem.BlockLength))
