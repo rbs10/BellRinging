@@ -70,7 +70,20 @@ namespace ManualCheck
          "Bristol",
          "Lincolnshire",
          "Rutland",
-         "Belfast"
+         "Belfast",
+         "Double Dublin",
+         "Cassiobury",
+         "Cornwall",
+         "Ipswich",
+         "Uxbridge",
+         "Whalley",
+         "Watford",
+         "Wembley",
+         "Lindum",
+         "Cray",
+         "Jersey",
+         "Preston",
+         "Ashtead", "Tavistock"
               //,
               //"Bastow"
              // "Superlative",
@@ -90,6 +103,12 @@ namespace ManualCheck
                 char letter = method[0];
                 if (method == "Lincolnshire") letter = 'N';
                 if (method == "Belfast") letter = 'F';
+                if (method == "Cray") letter = 'K';
+                if (method == "Lindum") letter = 'M';
+                if (method == "Wembley") letter = 'X';
+                if (method == "Cassiobury") letter = 'O';
+                if (method == "Whalley") letter = 'V';
+                if (method == "Cornwall") letter = 'E';
                 Method methodObject;
                 if (method == "Bastow")
                 {
