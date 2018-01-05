@@ -58,8 +58,8 @@ namespace BellRinging
       {
           _corePermutations = new SequenceOfPermutations(null, 8);
 
-          //_plainLeadEndPermutation = Permutation.FromPlaceNotation("12", 8);
-          _plainLeadEndPermutation = Permutation.FromPlaceNotation("18", 8);
+          _plainLeadEndPermutation = Permutation.FromPlaceNotation("12", 8);
+          //_plainLeadEndPermutation = Permutation.FromPlaceNotation("18", 8);
          
       }
       else
