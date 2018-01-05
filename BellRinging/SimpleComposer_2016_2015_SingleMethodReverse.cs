@@ -17,7 +17,7 @@ namespace BellRinging
         {
             MethodLibrary lib = new MethodLibrary();
             int l = 2018;// -10 * 32;
-            bestTotalMusic = 100; //225 * l / 2500; // start looking for some music
+            bestTotalMusic = 150; //225 * l / 2500; // start looking for some music
             Problem p = new Problem()
             {
                 TenorsTogether = true,
@@ -36,7 +36,7 @@ namespace BellRinging
              // "London", 
               //"Pudsey"
               //,
-              "Cambridge"
+              "Superlative"
               //,
               //"Bastow"
              // ,
