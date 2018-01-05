@@ -39,7 +39,7 @@ namespace BellRinging
             Reverse = false,
             MusicDelta = 20,
             MaxCalls = 999,
-            MaxSingles = 2,
+            MaxSingles = 999,
             MaxBobs=999
         };
         this.problem = p;
