@@ -20,10 +20,10 @@ namespace BellRinging
         public MethodLibrary()
         {
             _doc = new XmlDocument();
-            _doc.Load(@"C:\Users\rbso\Downloads\surprise-xml\surprise.xml");
-        }
+            _doc.Load(@"C:\Users\rober\Downloads\surprise-xml\surprise.xml");
+    }
 
-        public IEnumerable<string> MethodNames
+    public IEnumerable<string> MethodNames
         {
             get
             {
