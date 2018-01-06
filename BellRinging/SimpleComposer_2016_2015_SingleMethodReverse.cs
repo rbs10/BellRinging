@@ -25,7 +25,7 @@ namespace BellRinging
         MethodLibrary lib = new MethodLibrary();
         //int l = 7 * 32 * 9 +1;// -10 * 32;
         int l = 2019;
-        bestTotalMusic = 100; //225 * l / 2500; // start looking for some music
+        bestTotalMusic = 0; //225 * l / 2500; // start looking for some music
         var backstrokeStart = true;
         //backstrokeStart = false;
         Problem p = new Problem()
@@ -38,8 +38,8 @@ namespace BellRinging
             MaxLength = l, //10*32*7,
             Reverse = false,
             MusicDelta = 20,
-            MaxCalls = 12,
-            MaxSingles = 999,
+            MaxCalls = 15,
+            MaxSingles = 2,
             MaxBobs=999
         };
         this.problem = p;
@@ -49,7 +49,7 @@ namespace BellRinging
              // "London", 
               //"Pudsey"
               //,
-              "Yorkshire"
+              "Cambridge"
               //,
               //"Bastow"
              // ,
