@@ -38,7 +38,7 @@ namespace BellRinging
             MaxLength = l, //10*32*7,
             Reverse = false,
             MusicDelta = 20,
-            MaxCalls = 999,
+            MaxCalls = 12,
             MaxSingles = 999,
             MaxBobs=999
         };
