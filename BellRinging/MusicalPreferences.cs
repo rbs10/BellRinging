@@ -51,8 +51,9 @@ namespace BellRinging
       public void Init()
     {
 
-        //Init2016();
-        InitFlat();
+      //Init2016();
+     // InitFlat();
+     Init3();
         //InitCyclic4part();
 
           foreach ( var row in Row.AllRows)
@@ -362,7 +363,62 @@ namespace BellRinging
           _musicalChanges.Add(new MusicalChangeRun(1, "Run down 8", 8, -1));
       }
 
-      public void InitRuns()
+
+    public void Init3()
+    {
+      IgnoreRounds = true;
+
+      //_musicalChanges.Add(new MusicalChange("21345678", 1, "Near miss"));
+      //_musicalChanges.Add(new MusicalChange("13245678", 1, "Near miss"));
+      //_musicalChanges.Add(new MusicalChange("12435678", 1, "Near miss"));
+      //_musicalChanges.Add(new MusicalChange("12354678", 1, "Near miss"));
+      //_musicalChanges.Add(new MusicalChange("12346578", 1, "Near miss"));
+      //_musicalChanges.Add(new MusicalChange("12345768", 1, "Near miss"));
+      //_musicalChanges.Add(new MusicalChange("12345687", 1, "Near miss"));
+
+
+      //_musicalChanges.Add(new MusicalChange("21345678".Reverse(), 1, "Near reverse miss"));
+      //_musicalChanges.Add(new MusicalChange("13245678".Reverse(), 1, "Near reverse miss"));
+      //_musicalChanges.Add(new MusicalChange("12435678".Reverse(), 1, "Near reverse miss"));
+      //_musicalChanges.Add(new MusicalChange("12354678".Reverse(), 1, "Near reverse miss"));
+      //_musicalChanges.Add(new MusicalChange("12346578".Reverse(), 1, "Near reverse miss"));
+      //_musicalChanges.Add(new MusicalChange("12345768".Reverse(), 1, "Near reverse miss"));
+      //_musicalChanges.Add(new MusicalChange("12345687".Reverse(), 1, "Near reverse miss"));
+
+      ///////* queens, kings, whittingtons, tittums */
+      //_musicalChanges.Add(new MusicalChange("13572468", 0, "Queens"));
+      //_musicalChanges.Add(new MusicalChange("17532468", 0, "Kings"));
+      //_musicalChanges.Add(new MusicalChange("12753468", 0, "Whittingtons"));
+      //_musicalChanges.Add(new MusicalChange("15263748", 0, "Tittums"));
+
+      //_musicalChanges.Add(new MusicalChange("xxxx2468", 0, "Queens back"));
+
+
+      _musicalChanges.Add(new MusicalChangeRun(1, "Run up 3", 3, 1));
+      _musicalChanges.Add(new MusicalChangeRun(1, "Run down 3", 3, -1));
+
+
+      _musicalChanges.Add(new MusicalChangeRun(-5, "Run up 4", 4, 1));
+      _musicalChanges.Add(new MusicalChangeRun(-5, "Run down 4", 4, -1));
+
+
+      _musicalChanges.Add(new MusicalChangeRun(-5, "Run up 5", 5, 1));
+      _musicalChanges.Add(new MusicalChangeRun(-5, "Run down 5", 5, -1));
+
+
+      _musicalChanges.Add(new MusicalChangeRun(-5, "Run up 6", 6, 1));
+      _musicalChanges.Add(new MusicalChangeRun(-5, "Run down 6", 6, -1));
+
+
+      _musicalChanges.Add(new MusicalChangeRun(-5, "Run up 7", 7, 1));
+      _musicalChanges.Add(new MusicalChangeRun(-5, "Run down 7", 7, -1));
+
+
+      _musicalChanges.Add(new MusicalChangeRun(-5, "Run up 8", 8, 1));
+      _musicalChanges.Add(new MusicalChangeRun(-5, "Run down 8", 8, -1));
+    }
+
+    public void InitRuns()
       {
           IgnoreRounds = true;
 
@@ -490,11 +546,11 @@ namespace BellRinging
         {
             foreach (var c in _musicalChanges)
             {
-                int scoreC = c.Score(r);
-                if (scoreC > rowScore)
-                {
-                    rowScore = scoreC;
-                }
+                rowScore += c.Score(r);
+                //if (scoreC > rowScore)
+                //{
+                //    rowScore = scoreC;
+                //}
             }
         }
         return rowScore;

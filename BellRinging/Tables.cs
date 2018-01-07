@@ -383,19 +383,19 @@ namespace BellRinging
         }
       }
 
-      int[] boxes = new int[maxMusic + 1];
-      int total = 0;
-      foreach (int score in music)
-      {
-        ++boxes[score];
-        total += score;
-      }
+      //int[] boxes = new int[maxMusic + 1];
+      //int total = 0;
+      //foreach (int score in music)
+      //{
+      //  ++boxes[score];
+      //  total += score;
+      //}
 
-      Console.WriteLine(_methodsByChoice[0].Name + " -> " + total);
-      for (int i = 0; i < boxes.Length; ++i)
-      {
-        Console.WriteLine("Score = " + i + " Total Changes = " + boxes[i]);
-      }
+      //Console.WriteLine(_methodsByChoice[0].Name + " -> " + total);
+      //for (int i = 0; i < boxes.Length; ++i)
+      //{
+      //  Console.WriteLine("Score = " + i + " Total Changes = " + boxes[i]);
+      //}
     }
 
     private void ComputeLeadsToEnd()
