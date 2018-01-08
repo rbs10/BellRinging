@@ -24,13 +24,13 @@ namespace BellRinging
     {
         MethodLibrary lib = new MethodLibrary();
         //int l = 7 * 32 * 9 +1;// -10 * 32;
-        int l = 2019;
-        bestTotalMusic = 100; //225 * l / 2500; // start looking for some music
+        int l = 2021 ;
+      bestTotalMusic = 100; //225 * l / 2500; // start looking for some music
         var backstrokeStart = true;
         //backstrokeStart = false;
         Problem p = new Problem()
         {
-            TenorsTogether = true,
+            TenorsTogether = false,
             AllowSingles = true,
             
             MaxLeads = l/32 +2,
@@ -38,8 +38,8 @@ namespace BellRinging
             MaxLength = l, //10*32*7,
             Reverse = false,
             MusicDelta = 20,
-            MaxCalls = 15,
-            MaxSingles = 2,
+            MaxCalls = 18,
+            MaxSingles = 999,
             MaxBobs=999
         };
         this.problem = p;
@@ -48,8 +48,7 @@ namespace BellRinging
             // "Glasgow"
              // "London", 
               //"Pudsey"
-              //,
-              "Superlative"
+            "Superlative"
               //,
               //"Bastow"
              // ,
@@ -103,24 +102,30 @@ namespace BellRinging
                 // Superlative 134
              methodObject = new Method(method, letter.ToString(), not2, 8, p.AllowSingles);
             }
-            if (method == "Bastow")
+            if (method == "London")
             {
                 //methodObject.FirstLeadOnly();
                 methodObject.LastLeadOnly();
             }
             p.AddMethod(methodObject);
         }
-        if (p.Reverse || backstrokeStart)
-        {
-            var start = new Method("PlainLeadEnd", " EC ", null, 8, p.AllowSingles);
-            //start.LastLeadOnly();
-            p.AddMethod(start);
-            p.FirstChoice = p.AllowSingles ? 3 : 2;
-            //p.FirstChoice = p.AllowSingles ? 5 : 4;
-            start.FirstLeadOnly();
-        }
+      if (p.Reverse || backstrokeStart)
+      {
+        
+          var not2 = lib.GetNotation("Belfast");
+          var start = new Method("Start", "Q", not2, 8, p.AllowSingles);
+          for (int i = 0; i < 29; ++i)
+          {
+            start.CorePermuations.Permuations.RemoveAt(0);
+         }
+        //start.LastLeadOnly();
+        p.AddMethod(start);
+        p.FirstChoice = p.AllowSingles ? 3 : 2;
+        //p.FirstChoice = p.AllowSingles ? 5 : 4;
+        start.FirstLeadOnly();
+      }
 
-        if (methods.Contains("Bastow"))
+      if (methods.Contains("Bastow"))
         {
             // at least for Y and S then Bastow start seems to imply need to finish with bob
             p.FirstChoice = (p.AllowSingles ? 3 : 2) * (p.Methods.Count() - 1) + 1;

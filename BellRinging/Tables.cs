@@ -185,6 +185,7 @@ namespace BellRinging
                                     nextLeadHead = null;
                                 }
                             }
+
                         }
                         else
                         {
@@ -192,6 +193,23 @@ namespace BellRinging
                             nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
                         }
 
+                        // disallow transition from tenors together to not
+                        if ( nextLeadHead != null )
+              {
+
+                var wasCoursing = l.LeadHead().CoursingOrder().StartsWith("7");
+                var isCousing = nextLeadHead.CoursingOrder().StartsWith("7");
+                // insist that any calls puts tenors back together if apart - so as little split tenor as possible
+                 if (_leadHeadPermutations[i] != _methodsByChoice[i].PlainLeadEndPermutation && !isCousing)
+                  {
+                    nextLeadHead = null;
+                  }
+                 // remove anything taking us out of coursing
+                if ( wasCoursing && !isCousing && l.ContainsRoundsAt < 0 )
+                {
+                  nextLeadHead = null;
+                }
+              }
                         //    // plain lead ends
                         //if (num == 3220 || num == 4293 || num == 973 || num == 1492  || num == 4912 || num==2683)
                         //{
@@ -228,8 +246,9 @@ namespace BellRinging
         // standard include all version
         var ret1 = (!problem.TenorsTogether) || 
             nextLeadHead.CoursingOrder() == "642357" || // allow start from plain lead end at back course 12436587
-            (problem.Reverse?nextLeadHead.CoursingOrder().EndsWith("7"):
-            nextLeadHead.CoursingOrder().StartsWith("7"));
+            (problem.Reverse?
+              nextLeadHead.CoursingOrder().EndsWith("7"):
+              nextLeadHead.CoursingOrder().StartsWith("7"));
         return ret1;
         //return true;
 
