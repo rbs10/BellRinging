@@ -111,9 +111,9 @@ namespace BellRinging
         }
       if (p.Reverse || backstrokeStart)
       {
-        
-          var not2 = lib.GetNotation("Belfast");
-          var start = new Method("Start", "Q", not2, 8, p.AllowSingles);
+          var starter = "London";
+          var not2 = lib.GetNotation(starter);
+          var start = new Method(starter, "Q", not2, 8, p.AllowSingles);
           for (int i = 0; i < 29; ++i)
           {
             start.CorePermuations.Permuations.RemoveAt(0);
