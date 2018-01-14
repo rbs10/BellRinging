@@ -17,18 +17,18 @@ namespace BellRinging
         {
             MethodLibrary lib = new MethodLibrary();
             int l = 1344;// -10 * 32;
-            bestTotalMusic = 0; //225 * l / 2500; // start looking for some music
+            bestTotalMusic = 80; //225 * l / 2500; // start looking for some music
             Problem p = new Problem()
             {
                 TenorsTogether = true,
-                AllowSingles = true,
+                AllowSingles = false,
                 MinLeads = 1250/32,
                 MaxLeads = l / 32 + 1,
                 MinLength = 1250,
                 MaxLength = l,
                 Reverse = false,
                 MusicDelta = 10,
-                MaxCalls = 20,
+                MaxCalls = 999,
                  MaxBobs = 9999, // not tested this version ?
                  MaxSingles = 9999, // not tested this version ?
                   RotateCompositions = false, // not a block composition engine
@@ -44,7 +44,7 @@ namespace BellRinging
              // "London", 
               //"Pudsey"
               //,
-              "Cambridge"
+             method2
               //,
               //"Bastow"
              // ,
@@ -660,8 +660,10 @@ namespace BellRinging
 
                 int totalScore = _composition.Score;// -_composition.Calls;
                 var quality = _composition.COM;
-                //quality = _composition.choices.Where((c, i) => i <= noLeads && c > 2).Count();
-                var calls = bestMusic.Length - 1 - _composition.Calls;
+        //quality = _composition.choices.Where((c, i) => i <= noLeads && c > 2).Count();
+        var calls = _composition.Calls;
+        if (_composition.Calls > problem.MaxCalls) return;
+                var callsKey = bestMusic.Length - 1 - _composition.Calls;
                 //_composition.CalcWraps();
 
                 // compositionsWithMusicScore[totalScore]++;
@@ -713,9 +715,9 @@ namespace BellRinging
                     {
                         bestQuality[group] = quality;
                     }
-                    if (calls > bestCalls[group])
+                    if (callsKey > bestCalls[group])
                     {
-                        bestCalls[group] = calls;
+                        bestCalls[group] = callsKey;
                     }
                     return;
                     Console.WriteLine("Leads = " + (noLeads + 1) + " ( " + (noLeads + 1) * 32 + "  changes) Total music " + totalMusic);
