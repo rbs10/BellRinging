@@ -193,23 +193,24 @@ namespace BellRinging
                             nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
                         }
 
-                        // disallow transition from tenors together to not
-                        if ( nextLeadHead != null )
-              {
+              // 2021 need to go from in course to reverse
+              //          // disallow transition from tenors together to not
+              //          if ( nextLeadHead != null )
+              //{
 
-                var wasCoursing = l.LeadHead().CoursingOrder().StartsWith("7");
-                var isCousing = nextLeadHead.CoursingOrder().StartsWith("7");
-                // insist that any calls puts tenors back together if apart - so as little split tenor as possible
-                 if (_leadHeadPermutations[i] != _methodsByChoice[i].PlainLeadEndPermutation && !isCousing)
-                  {
-                    nextLeadHead = null;
-                  }
-                 // remove anything taking us out of coursing
-                if ( wasCoursing && !isCousing && l.ContainsRoundsAt < 0 )
-                {
-                  nextLeadHead = null;
-                }
-              }
+              //  var wasCoursing = l.LeadHead().CoursingOrder().EndsWith("7");
+              //  var isCousing = nextLeadHead.CoursingOrder().EndsWith("7");
+              //  // insist that any calls puts tenors back together if apart - so as little split tenor as possible
+              //   if (_leadHeadPermutations[i] != _methodsByChoice[i].PlainLeadEndPermutation && !isCousing)
+              //    {
+              //      nextLeadHead = null;
+              //    }
+              //   // remove anything taking us out of coursing
+              //  if ( wasCoursing && !isCousing && l.ContainsRoundsAt < 0 )
+              //  {
+              //    nextLeadHead = null;
+              //  }
+              //}
                         //    // plain lead ends
                         //if (num == 3220 || num == 4293 || num == 973 || num == 1492  || num == 4912 || num==2683)
                         //{

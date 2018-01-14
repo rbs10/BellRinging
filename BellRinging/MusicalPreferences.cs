@@ -451,12 +451,12 @@ namespace BellRinging
         //Console.WriteLine(r.ToString() + " " + rowScore);
       }
 
-      //var leadHead = allRows.First();
-      //var coursing = leadHead.CoursingOrder().StartsWith("7");
-      //if ( coursing )
-      //{
-      //  score += 10;
-      //}
+      var leadHead = allRows.First();
+      var coursing = leadHead.CoursingOrder().EndsWith("7");
+      if (coursing)
+      {
+        score += 10;
+      }
       return score;
     }
     private int Score(Row r)

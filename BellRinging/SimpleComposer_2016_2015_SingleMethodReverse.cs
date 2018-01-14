@@ -25,7 +25,7 @@ namespace BellRinging
         MethodLibrary lib = new MethodLibrary();
         //int l = 7 * 32 * 9 +1;// -10 * 32;
         int l = 2021 ;
-      bestTotalMusic = 80; //225 * l / 2500; // start looking for some music
+      bestTotalMusic = 100; //225 * l / 2500; // start looking for some music
         var backstrokeStart = true;
         //backstrokeStart = false;
         Problem p = new Problem()
@@ -34,12 +34,12 @@ namespace BellRinging
             AllowSingles = true,
             
             MaxLeads = l/32 +2,
-            MinLength = l,
+            MinLength =l,
             MaxLength = l, //10*32*7,
-            Reverse = false,
+            Reverse = true,
             MusicDelta = 20,
             MaxCalls = 16,
-            MaxSingles = 999,
+            MaxSingles = 2,
             MaxBobs=999
         };
         this.problem = p;
@@ -102,11 +102,11 @@ namespace BellRinging
                 // Superlative 134
              methodObject = new Method(method, letter.ToString(), not2, 8, p.AllowSingles);
             }
-            if (method == "London")
-            {
-                //methodObject.FirstLeadOnly();
-                methodObject.LastLeadOnly();
-            }
+            //if (method == "London")
+            //{
+            //    //methodObject.FirstLeadOnly();
+            //    methodObject.LastLeadOnly();
+            //}
             p.AddMethod(methodObject);
         }
       if (p.Reverse || backstrokeStart)
