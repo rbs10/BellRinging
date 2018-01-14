@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompLibFormatter.cs" />
     <Compile Include="Formatting\LeadDefinition.cs" />
     <Compile Include="Composition.cs" />
     <Compile Include="CompositionTokenizer.cs" />

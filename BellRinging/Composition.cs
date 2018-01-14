@@ -1145,7 +1145,12 @@ namespace BellRinging
             text += string.Format("{0} {1}\r\n", "Wraps", _selectedComposition.CalcWraps());
 
 
-            text += "\r\nMICROSIRIL\r\n\r\n";
+      text += "\r\nCOMPLIB\r\n\r\n";
+      text += new CompLibFormatter(this).Write();
+      text += "\r\n";
+      text += "\r\n";
+
+      text += "\r\nMICROSIRIL\r\n\r\n";
             text += new MicroSirilFormatter(this).WriteMicroSiril();
             text += "\r\n";
             text += "\r\n";
