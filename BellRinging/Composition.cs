@@ -794,10 +794,10 @@ namespace BellRinging
             get
             {
                 //return Music;
-                //return Music - Calls;
+                return Music - Calls;
                 //return _maxGap; // CalcWraps();
                 //CalcWraps();// 100 - Calls;
-                return _seqNess;
+                //return _seqNess;
             }
         }
 
