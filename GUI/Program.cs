@@ -19,12 +19,16 @@ namespace GUI
       Form form = null;
       foreach (string method in
       new string[] { 
-          "Yorkshire", "Superlative", "Cambridge", "Lincolnshire", "Pudsey", "Bristol",
-          "Ashtead", "Cassiobury", "Cornwall","Tavistock",
-          "Jersey",
-          "Glasgow",
-          "Dereham", "Deva",
-          "Uxbridge", "Lindum", "London", "Lessness", "Watford", "Wembley", "Rutland"
+
+        "Cambridge"
+
+          //"Yorkshire", "Superlative", "Cambridge", "Lincolnshire", "Pudsey", "Bristol",
+          //"Ashtead", "Cassiobury", "Cornwall","Tavistock",
+          //"Jersey",
+          //"Glasgow",
+          //"Dereham", "Deva",
+          //"Uxbridge", "Lindum", "London", "Lessness", "Watford", "Wembley", "Rutland"
+
            //"Yorkshire", "Superlative","Cambridge",
            //, "Superlative","Bristol",
           //"Superlative"
