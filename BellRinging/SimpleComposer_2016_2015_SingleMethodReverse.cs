@@ -16,18 +16,26 @@ namespace BellRinging
         public void Initialise(string method2)
         {
             MethodLibrary lib = new MethodLibrary();
-            int l = 2018;// -10 * 32;
-            bestTotalMusic = 150; //225 * l / 2500; // start looking for some music
+            int l = 1344;// -10 * 32;
+            bestTotalMusic = 0; //225 * l / 2500; // start looking for some music
             Problem p = new Problem()
             {
                 TenorsTogether = true,
                 AllowSingles = true,
+                MinLeads = 1250/32,
                 MaxLeads = l / 32 + 1,
-                MinLength = l,
+                MinLength = 1250,
                 MaxLength = l,
-                Reverse = true,
+                Reverse = false,
                 MusicDelta = 10,
-                MaxCalls = 20
+                MaxCalls = 20,
+                 MaxBobs = 9999, // not tested this version ?
+                 MaxSingles = 9999, // not tested this version ?
+                  RotateCompositions = false, // not a block composition engine
+                   ExcludeUnrungMethodsFromBalance = false,  // not implemented for this version?
+                    BlockLength = 0,  // not a block composition engine
+                     FirstChoice  = 0, // nothing special
+                     VariableHunt = false
             };
             this.problem = p;
             int index = 0;
@@ -36,7 +44,7 @@ namespace BellRinging
              // "London", 
               //"Pudsey"
               //,
-              "Superlative"
+              "Cambridge"
               //,
               //"Bastow"
              // ,
