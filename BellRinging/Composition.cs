@@ -885,15 +885,15 @@ namespace BellRinging
             var denom = _music * maxLeadIndex;
             if (denom == 0) denom = 1;
             _centreOfMusic = (100 * _centreOfMusic) / denom;
-            //if (_calls > 0)
-            //{
-            //    _quality = _music / _calls;
-            //}
-            // reverse composition so earlier is better
-            //_quality = 100 - _centreOfMusic;
-            //_quality = (int)(100 * q);
-            //_quality = 100 * _music / maxLeadIndex;
-            _quality = 100 - totGap;
+      //if (_calls > 0)
+      //{
+      //  _quality = _music / _calls;
+      //}
+      // reverse composition so earlier is better
+      //_quality = 100 - _centreOfMusic;
+      //_quality = (int)(100 * q);
+      _quality = 100 * _music / maxLeadIndex;
+      //_quality = 100 - totGap;
             _maxGap = 100 - maxGap;
         }
         public int Music

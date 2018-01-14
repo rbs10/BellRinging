@@ -16,8 +16,8 @@ namespace BellRinging
         public void Initialise(string method2)
         {
             MethodLibrary lib = new MethodLibrary();
-            int l = 1344;// -10 * 32;
-            bestTotalMusic = 80; //225 * l / 2500; // start looking for some music
+            int l = 1700;// -10 * 32;
+            bestTotalMusic = 110; //225 * l / 2500; // start looking for some music
             Problem p = new Problem()
             {
                 TenorsTogether = true,
