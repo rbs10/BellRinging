@@ -450,8 +450,21 @@ namespace BellRinging
         lastRowScore = rowScore;
         //Console.WriteLine(r.ToString() + " " + rowScore);
       }
+
+      var coursing = allRows.First().CoursingOrder();
+      score = 0;
+      if (coursing.Contains("75")) ++score;
+      if (coursing.Contains("53")) ++score;
+      if (coursing.Contains("32")) ++score;
+      if (coursing.Contains("24")) ++score;
+      if (coursing.Contains("46")) ++score;
+      if (coursing.EndsWith("6")) ++score;
+      if (coursing.StartsWith("7")) ++score;
+
+
       return score;
     }
+
     private int Score(Row r)
     {
         int ret = 0;

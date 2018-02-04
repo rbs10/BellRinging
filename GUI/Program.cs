@@ -20,14 +20,17 @@ namespace GUI
       foreach (string method in
       new string[] { 
 
-        "Cambridge"
+       // "Cooktown Orchid", ### DELIGHT! ###
+       // "Frodsham", "Turramurra"
 
-          //"Yorkshire", "Superlative", "Cambridge", "Lincolnshire", "Pudsey", "Bristol",
-          //"Ashtead", "Cassiobury", "Cornwall","Tavistock",
-          //"Jersey",
-          //"Glasgow",
-          //"Dereham", "Deva",
-          //"Uxbridge", "Lindum", "London", "Lessness", "Watford", "Wembley", "Rutland"
+        //"Eggybread",
+
+         "Yorkshire", "Superlative", "Cambridge", "Lincolnshire", "Pudsey", "Bristol",
+        //  "Ashtead", "Cassiobury", "Cornwall","Tavistock",
+        //  "Jersey",
+        //  "Glasgow",
+        //  "Dereham", "Deva",
+        //  "Uxbridge", "Lindum", "London", "Lessness", "Watford", "Wembley", "Rutland"
 
            //"Yorkshire", "Superlative","Cambridge",
            //, "Superlative","Bristol",
