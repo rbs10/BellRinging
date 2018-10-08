@@ -79,29 +79,31 @@ namespace BellRinging
         public void Initialise(string method2)
         {
             MethodLibrary lib = new MethodLibrary();
-            int blockLength = 8;
-            int parts = 5;
+            int blockLength = 7;
+            int parts = 7;
             int l = 32 * parts * blockLength; // 2016;// -10 * 32;
             sharedStats.bestTotalMusic = 0; // start looking for some music
-            //Problem p = new Problem()
-            //{
-            //    TenorsTogether = false,
-            //    AllowSingles = true,
-            //    MinLeads = (int) (l/32-1),
-            //    MaxLeads = l/32 ,
-            //    MinLength = l,
-            //    MaxLength = l,5
-            //    Reverse = false,
-            //    BlockLength = blockLength,
-            //    VariableHunt = true,
-            //    MusicDelta = 10,
-            //    RotateCompositions = false
-            //};
+                                            //Problem p = new Problem()
+                                            //{
+                                            //    TenorsTogether = false,
+                                            //    AllowSingles = true,
+                                            //    MinLeads = (int) (l/32-1),
+                                            //    MaxLeads = l/32 ,
+                                            //    MinLength = l,
+                                            //    MaxLength = l,5
+                                            //    Reverse = false,
+                                            //    BlockLength = blockLength,
+                                            //    VariableHunt = true,
+                                            //    MusicDelta = 10,
+                                            //    RotateCompositions = false
+                                            //};
+
+      var courseEndsXXX8 = false;
 
             Problem p = new Problem()
             {
-                TenorsTogether = true,
-                AllowSingles = false,
+                TenorsTogether = false,
+                AllowSingles = true,
                 MinLeads = (l / 32) - 1,
                 MaxLeads = l / 32,
                 MinLength = l / 2,
@@ -130,9 +132,9 @@ namespace BellRinging
               new string[] { 
              
              // "Lincolnshire","Rutland"
-              
+              "Deva"
              //"Rutland",
-               "London", "Uxbridge", "Lincolnshire", "Double Dublin", "Yorkshire"
+               //"London", "Uxbridge", "Lincolnshire", "Double Dublin", "Yorkshire"
               //, "Superlative"
            //   , "Pudsey"
            //, "Cassiobury"
@@ -250,28 +252,34 @@ namespace BellRinging
                     }
                 }
             }
-            //allowedPartEnds.Add(Row.FromString("42316857").ToNumber());
+      //allowedPartEnds.Add(Row.FromString("42316857").ToNumber());
 
-            /*
-             // cyclic part ends
-             problem.allowedPartEnds.Add(Row.FromString("13456782").ToNumber());
-             problem.allowedPartEnds.Add(Row.FromString("14567823").ToNumber());
-             problem.allowedPartEnds.Add(Row.FromString("15678234").ToNumber());
-             problem.allowedPartEnds.Add(Row.FromString("16782345").ToNumber());
-             problem.allowedPartEnds.Add(Row.FromString("17823456").ToNumber());
-             problem.allowedPartEnds.Add(Row.FromString("18234567").ToNumber());
+     
+       // cyclic part ends
+       problem.allowedPartEnds.Add(Row.FromString("13456782").ToNumber());
+       problem.allowedPartEnds.Add(Row.FromString("14567823").ToNumber());
+       problem.allowedPartEnds.Add(Row.FromString("15678234").ToNumber());
+       problem.allowedPartEnds.Add(Row.FromString("16782345").ToNumber());
+       problem.allowedPartEnds.Add(Row.FromString("17823456").ToNumber());
+       problem.allowedPartEnds.Add(Row.FromString("18234567").ToNumber());
+ /*
+       // plain bob part ends
+       problem.allowedPartEnds.Add(Row.FromString("13527486").ToNumber());
+       problem.allowedPartEnds.Add(Row.FromString("14263857").ToNumber());
+       problem.allowedPartEnds.Add(Row.FromString("15738264").ToNumber());
+       problem.allowedPartEnds.Add(Row.FromString("16482735").ToNumber());
+       problem.allowedPartEnds.Add(Row.FromString("17856342").ToNumber());
+       problem.allowedPartEnds.Add(Row.FromString("18674523").ToNumber());  
+       */
 
-             // plain bob part ends
-             problem.allowedPartEnds.Add(Row.FromString("13527486").ToNumber());
-             problem.allowedPartEnds.Add(Row.FromString("14263857").ToNumber());
-             problem.allowedPartEnds.Add(Row.FromString("15738264").ToNumber());
-             problem.allowedPartEnds.Add(Row.FromString("16482735").ToNumber());
-             problem.allowedPartEnds.Add(Row.FromString("17856342").ToNumber());
-             problem.allowedPartEnds.Add(Row.FromString("18674523").ToNumber());  
-             */
+      if (courseEndsXXX8)
+      {
+        problem.allowedPartEnds = new HashSet<int>(
+          Row.AllRows.Where(r => r.ToString().StartsWith("1") && r.ToString().EndsWith("8"))
+          .Select(r => r.ToNumber()));
+      }
 
-
-        }
+    }
 
         public void InitialiseWithSnapStart(string method)
         {
@@ -866,7 +874,8 @@ namespace BellRinging
                                 // compositionsWithMusicScore[totalScore]++;
                                 int changes = _composition.Changes;
                                 //var group = calls;
-                                var group = _composition.COM * 1000 + _composition.Calls; // just look for most music
+                                //var group = _composition.COM * 1000 + _composition.Calls; // just look for most music
+                var group = _composition.Calls;
                                 //if ( changes == 2016 )
 
 

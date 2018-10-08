@@ -51,15 +51,34 @@ namespace BellRinging
       public void Init()
     {
 
-        //Init2016();
-        InitFlat();
-        //InitCyclic4part();
+      //Init2016();
+      //InitFlat();
+      //InitCyclic4part();
 
-          foreach ( var row in Row.AllRows)
+      InitNamedRuns();
+
+      foreach ( var row in Row.AllRows)
           {
               scores[row.ToNumber()] = Score(row);
           }
        // InitSJT();
+    }
+
+    void InitNamedRuns()
+    {
+
+      foreach (var run in new[] { "1234", "2345", "3456", "4567", "5678" })
+      {
+        for (int i = 0; i < 8 - run.Length; ++i)
+        {
+
+          var prefix = new string('x', i);
+          var suffix = new string('x', 4 - i);
+          _musicalChanges.Add(new MusicalChange(prefix + run + suffix, 1, run ));
+          var reverseRun = run.Reverse();
+          _musicalChanges.Add(new MusicalChange(prefix + reverseRun + suffix, 1, reverseRun ));
+        }
+      }
     }
 
       void
@@ -443,23 +462,40 @@ namespace BellRinging
       //return score;
 
       int lastRowScore = 0;
+      int rowInLead = 0;
+      int backstroke87s = 0;
       foreach (Row r in allRows)
       {
         score += lastRowScore;
         int rowScore = this.scores[r.ToNumber()];
         lastRowScore = rowScore;
+        if (rowInLead % 2 == 0)
+        {
+          if ( r.ToString().EndsWith("87"))
+          {
+            ++backstroke87s;
+          }
+        }
+        ++rowInLead;
         //Console.WriteLine(r.ToString() + " " + rowScore);
       }
 
-      var coursing = allRows.First().CoursingOrder();
-      score = 0;
-      if (coursing.Contains("75")) ++score;
-      if (coursing.Contains("53")) ++score;
-      if (coursing.Contains("32")) ++score;
-      if (coursing.Contains("24")) ++score;
-      if (coursing.Contains("46")) ++score;
-      if (coursing.EndsWith("6")) ++score;
-      if (coursing.StartsWith("7")) ++score;
+      //var coursing = allRows.First().CoursingOrder();
+      //score = 0;
+      //if (coursing.Contains("75")) ++score;
+      //if (coursing.Contains("53")) ++score;
+      //if (coursing.Contains("32")) ++score;
+      //if (coursing.Contains("24")) ++score;
+      //if (coursing.Contains("46")) ++score;
+      //if (coursing.EndsWith("6")) ++score;
+      //if (coursing.StartsWith("7")) ++score;
+
+      // all rows.First => coursing order => first row (0) is backstroke
+
+      if (backstroke87s > 0)
+      {
+        score = -999;
+      }
 
 
       return score;

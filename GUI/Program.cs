@@ -25,7 +25,8 @@ namespace GUI
 
         //"Eggybread",
 
-         "Yorkshire", "Superlative", "Cambridge", "Lincolnshire", "Pudsey", "Bristol",
+         "Deva"//, "Bristol", "Deva", "Cornwall", "Lessness", "Superlative", "Cambridge", "London"
+         //, "Superlative", "Cambridge", "Lincolnshire", "Pudsey", "Bristol",
         //  "Ashtead", "Cassiobury", "Cornwall","Tavistock",
         //  "Jersey",
         //  "Glasgow",

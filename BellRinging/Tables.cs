@@ -150,77 +150,84 @@ namespace BellRinging
 
     private void InitialseTableForMethod(MusicalPreferences musicalPreferences, int methodIndex, Method method)
     {
-        IEnumerable<Lead> allLeads = method.AllLeads;
-        //Console.WriteLine("Generated all leads " + (DateTime.UtcNow - startInit));
-        int callsPerMethod = problem.AllowSingles ? 3 : 2;
+      IEnumerable<Lead> allLeads = method.AllLeads;
+      //Console.WriteLine("Generated all leads " + (DateTime.UtcNow - startInit));
+      int callsPerMethod = problem.AllowSingles ? 3 : 2;
 
-        // index the leads
-        foreach (Lead l in allLeads)
+      // index the leads
+      foreach (Lead l in allLeads)
+      {
+        if (IncludeLeadHead(l.LeadHead(), methodIndex) || method.Name == "Null" || method.Name == "PlainLeadEnd")
         {
-            if (IncludeLeadHead(l.LeadHead(), methodIndex) || method.Name == "Null" || method.Name == "PlainLeadEnd")
+          int num = l.ToNumber();
+          for (int i = 0; i < _methodsByChoice.Length; ++i)
+          {
+            if (_methodsByChoice[i] == method)
             {
-                int num = l.ToNumber();
-                for (int i = 0; i < _methodsByChoice.Length; ++i)
+              Row nextLeadHead = null;
+              if (modelInternalRounds)
+              {
+                if (l.ContainsRoundsAt <= 0) // does not contain rounds internally
                 {
-                    if (_methodsByChoice[i] == method)
-                    {
-                        Row nextLeadHead = null;
-                        if (modelInternalRounds)
-                        {
-                            if (l.ContainsRoundsAt <= 0) // does not contain rounds internally
-                            {
-                                nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
-                            }
-                            else
-                            {
-                                // note that this is a route to the end - distance = 1 as still have to choose this lead
-                                leadsToEnd[num] = 1;
-
-                                // at least for reverse composition when need to consider this
-                                nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
-
-                                // no call where comes round internally!
-                                if (_leadHeadPermutations[i] != _methodsByChoice[i].PlainLeadEndPermutation)
-                                {
-                                    nextLeadHead = null;
-                                }
-                            }
-                        }
-                        else
-                        {
-
-                            nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
-                        }
-
-                        //    // plain lead ends
-                        //if (num == 3220 || num == 4293 || num == 973 || num == 1492  || num == 4912 || num==2683)
-                        //{
-                        //  Console.WriteLine(num);
-                        //}
-
-                        if (nextLeadHead != null && (IncludeLeadHead(nextLeadHead, methodIndex))
-                            // restrict only to things which go into tenors together - for 2017 composition and only consistent forward ?
-                            //&& ((i % callsPerMethod) == 0 || nextLeadHead.CoursingOrder().StartsWith("7"))
-                            )
-                        {
-
-                            // music[num, i] = (int)l.CalcWraps(); // Wraps hunt version
-                            music[num, i] = l.Score(musicalPreferences, nextLeadHead); // normal scoring
-                            //music[num, i] = (int)(10 - (int)i); // favour simplicity
-                            // music[num, i] = (int)(l.Score(musicalPreferences, nextLeadHead) - (i > 0 ? 10 : 0)); - odd is hit - note need take out WriteMusicalChanges
-
-                            leadMapping[num, i] = nextLeadHead.ToNumber();
-                            // ignore mapping back from nextLeadHead=rounds when this lead contains snap finish
-                            //if (l.ContainsRoundsAt <= 0)
-                            {
-                                reverseLeadMapping[nextLeadHead.ToNumber(), i] = num;
-                            }
-                        }
-                    }
+                  nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
                 }
+                else
+                {
+                  // note that this is a route to the end - distance = 1 as still have to choose this lead
+                  leadsToEnd[num] = 1;
+
+                  // at least for reverse composition when need to consider this
+                  nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
+
+                  // no call where comes round internally!
+                  if (_leadHeadPermutations[i] != _methodsByChoice[i].PlainLeadEndPermutation)
+                  {
+                    nextLeadHead = null;
+                  }
+                }
+              }
+              else
+              {
+
+                nextLeadHead = l.NextLeadHead(_leadHeadPermutations[i]);
+              }
+
+              //    // plain lead ends
+              //if (num == 3220 || num == 4293 || num == 973 || num == 1492  || num == 4912 || num==2683)
+              //{
+              //  Console.WriteLine(num);
+              //}
+
+              if (nextLeadHead != null && (IncludeLeadHead(nextLeadHead, methodIndex))
+                  // restrict only to things which go into tenors together - for 2017 composition and only consistent forward ?
+                  //&& ((i % callsPerMethod) == 0 || nextLeadHead.CoursingOrder().StartsWith("7"))
+                  )
+              {
+
+                // music[num, i] = (int)l.CalcWraps(); // Wraps hunt version
+                music[num, i] = l.Score(musicalPreferences, nextLeadHead); // normal scoring
+                                                                           //music[num, i] = (int)(10 - (int)i); // favour simplicity
+                                                                           // music[num, i] = (int)(l.Score(musicalPreferences, nextLeadHead) - (i > 0 ? 10 : 0)); - odd is hit - note need take out WriteMusicalChanges
+                if (music[num, i] >= 0 )
+                {
+                  leadMapping[num, i] = nextLeadHead.ToNumber();
+                  // ignore mapping back from nextLeadHead=rounds when this lead contains snap finish
+                  //if (l.ContainsRoundsAt <= 0)
+                  {
+                    reverseLeadMapping[nextLeadHead.ToNumber(), i] = num;
+                  }
+                }
+                if (music[num, i]  < 0 )
+                {
+                  music[num, i] = 1; // avoid index out of range errors
+                }
+
+              }
             }
+          }
         }
-        Console.WriteLine(method.Name);
+      }
+      Console.WriteLine(method.Name);
     }
 
     private bool IncludeLeadHead(Row nextLeadHead, int methodIndex)

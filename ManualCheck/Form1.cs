@@ -61,6 +61,7 @@ namespace ManualCheck
 
             foreach (string method in
           new string[] {
+            "Deva",
               "Superlative",
               "London", 
               "Pudsey",

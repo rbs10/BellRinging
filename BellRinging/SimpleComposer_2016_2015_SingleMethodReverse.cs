@@ -28,9 +28,9 @@ namespace BellRinging
                 MaxLength = l,
                 Reverse = false,
                 MusicDelta = 10,
-                MaxCalls = 999,
-                 MaxBobs = 9999, // not tested this version ?
-                 MaxSingles = 9999, // not tested this version ?
+                MaxCalls = 9999,
+                 MaxBobs = 9999, 
+                 MaxSingles = 9999, 
                   RotateCompositions = false, // not a block composition engine
                    ExcludeUnrungMethodsFromBalance = false,  // not implemented for this version?
                     BlockLength = 0,  // not a block composition engine
@@ -448,7 +448,8 @@ namespace BellRinging
 
                     //&& _composition.Imbalance < 5
                     && _composition.Calls <= problem.MaxCalls
-
+                    && _composition.Singles <= problem.MaxSingles
+                    && _composition.Calls - _composition.Singles <= problem.MaxBobs
                    // && ( maxLeadIndex != 16 ||)
                         // avoid lots of singles
                         //&& ( maxLeadIndex > maxLeads - 5 || choices[maxLeadIndex] != 2 )
@@ -668,8 +669,8 @@ namespace BellRinging
 
                 // compositionsWithMusicScore[totalScore]++;
                 int changes = _composition.Changes;
-                //var group = calls;
-                var group = _composition.COM * 1000 + _composition.Calls; // just look for most music
+        //var group = calls;
+        var group = 1; // _composition.COM * 1000 + _composition.Calls; // just look for most music
                 //if ( changes == 2016 )
 
 
