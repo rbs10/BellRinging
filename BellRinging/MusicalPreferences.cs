@@ -55,7 +55,9 @@ namespace BellRinging
       //InitFlat();
       //InitCyclic4part();
 
-      InitNamedRuns();
+      //InitNamedRuns();
+
+      InitInteriorRuns();
 
       foreach ( var row in Row.AllRows)
           {
@@ -81,7 +83,24 @@ namespace BellRinging
       }
     }
 
-      void
+    void InitInteriorRuns()
+    {
+
+      foreach (var run in new[] { "1234", "2345", "3456", "4567", "5678" })
+      {
+        for (int i = 1; i < 7 - run.Length; ++i)
+        {
+
+          var prefix = new string('x', i);
+          var suffix = new string('x', 4 - i);
+          _musicalChanges.Add(new MusicalChange(prefix + run + suffix, 1, run));
+          var reverseRun = run.Reverse();
+          _musicalChanges.Add(new MusicalChange(prefix + reverseRun + suffix, 1, reverseRun));
+        }
+      }
+    }
+
+    void
         InitCyclic4part()
       {
           Init2500();

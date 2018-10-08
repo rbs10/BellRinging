@@ -80,7 +80,7 @@ namespace BellRinging
         {
             MethodLibrary lib = new MethodLibrary();
             int blockLength = 7;
-            int parts = 7;
+            int parts = 6;
             int l = 32 * parts * blockLength; // 2016;// -10 * 32;
             sharedStats.bestTotalMusic = 0; // start looking for some music
                                             //Problem p = new Problem()
@@ -132,7 +132,7 @@ namespace BellRinging
               new string[] { 
              
              // "Lincolnshire","Rutland"
-              "Deva"
+             method2
              //"Rutland",
                //"London", "Uxbridge", "Lincolnshire", "Double Dublin", "Yorkshire"
               //, "Superlative"
@@ -254,7 +254,7 @@ namespace BellRinging
             }
       //allowedPartEnds.Add(Row.FromString("42316857").ToNumber());
 
-     
+      /*
        // cyclic part ends
        problem.allowedPartEnds.Add(Row.FromString("13456782").ToNumber());
        problem.allowedPartEnds.Add(Row.FromString("14567823").ToNumber());
@@ -262,15 +262,16 @@ namespace BellRinging
        problem.allowedPartEnds.Add(Row.FromString("16782345").ToNumber());
        problem.allowedPartEnds.Add(Row.FromString("17823456").ToNumber());
        problem.allowedPartEnds.Add(Row.FromString("18234567").ToNumber());
- /*
-       // plain bob part ends
-       problem.allowedPartEnds.Add(Row.FromString("13527486").ToNumber());
-       problem.allowedPartEnds.Add(Row.FromString("14263857").ToNumber());
-       problem.allowedPartEnds.Add(Row.FromString("15738264").ToNumber());
-       problem.allowedPartEnds.Add(Row.FromString("16482735").ToNumber());
-       problem.allowedPartEnds.Add(Row.FromString("17856342").ToNumber());
-       problem.allowedPartEnds.Add(Row.FromString("18674523").ToNumber());  
-       */
+              */
+      /*
+            // plain bob part ends
+            problem.allowedPartEnds.Add(Row.FromString("13527486").ToNumber());
+            problem.allowedPartEnds.Add(Row.FromString("14263857").ToNumber());
+            problem.allowedPartEnds.Add(Row.FromString("15738264").ToNumber());
+            problem.allowedPartEnds.Add(Row.FromString("16482735").ToNumber());
+            problem.allowedPartEnds.Add(Row.FromString("17856342").ToNumber());
+            problem.allowedPartEnds.Add(Row.FromString("18674523").ToNumber());  
+            */
 
       if (courseEndsXXX8)
       {
