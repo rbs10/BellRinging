@@ -391,12 +391,13 @@ namespace BellRinging
       //   score = 10;
       //}
       //return score;
-
+      bool handstroke = false;
       int lastRowScore = 0;
       foreach (Row r in allRows)
       {
         score += lastRowScore;
-        int rowScore = this.scores[r.ToNumber()];
+        int rowScore = handstroke ? this.scores[r.ToNumber()] : 0;
+        handstroke = !handstroke;
         lastRowScore = rowScore;
         //Console.WriteLine(r.ToString() + " " + rowScore);
       }

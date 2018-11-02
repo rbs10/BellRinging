@@ -32,7 +32,7 @@ namespace BellRinging
         this.problem = p;
         int index = 0;
 
-      var method = "Superlative";
+      var method = "Yorkshire";
       var notation = lib.GetNotation(method);
       p.AddMethod(new Method(method, "", notation, 8, p.AllowSingles));
       var methodWithSnapStart = new Method(method + "(snap)", "!", notation, 8, p.AllowSingles);
