@@ -16,7 +16,7 @@ namespace BellRinging
     public void Initialise(string method2)
     {
         MethodLibrary lib = new MethodLibrary();
-        int l = 2016;// -10 * 32;
+        int l = 1918 ;// -10 * 32;
         bestTotalMusic = 0; //225 * l / 2500; // start looking for some music
         Problem p = new Problem()
         {
@@ -25,97 +25,24 @@ namespace BellRinging
             MaxLeads = l/32 +1,
             MinLength = l,
             MaxLength = l,
-            Reverse = true,
-            MusicDelta = 10,
-            MaxCalls = 10
+            Reverse = false,
+            MusicDelta = 999,
+            MaxCalls = 12
         };
         this.problem = p;
         int index = 0;
-        var methods  = new string[] {
-            // "Glasgow"
-             // "London", 
-              //"Pudsey"
-              //,
-              "Superlative"
-              //,
-              //"Bastow"
-             // ,
-            // "Bastow"//,
-          //"Superlative"
-         // ,"Superlative"
-         // 
-         // ,"London"
-         // ,"Cambridge"
-         // ,
-         //"Bristol"
-         //, "Pudsey", "Lincolnshire"
-          //"Belfast", //"Glasgow",
-          //"Londonderry",
-           };
 
-        foreach (string method in
-         methods)
-        {
-            ++index;
-            char letter = method[0];
-            if (method == "Lincolnshire") letter = 'N';
-            if (method == "Belfast") letter = 'F';
-            Method methodObject;
-            if ( method == "Bastow")
-            {
+      var method = "Superlative";
+      var notation = lib.GetNotation(method);
+      p.AddMethod(new Method(method, "", notation, 8, p.AllowSingles));
+      var methodWithSnapStart = new Method(method + "(snap)", "!", notation, 8, p.AllowSingles);
+      methodWithSnapStart.SnapStart();
+      p.AddMethod(methodWithSnapStart);
 
-                methodObject = new Method(method, "β", "X12-18", 8, p.AllowSingles);
-            }
-            else
-            {
-                var not2 = lib.GetNotation(method);
-               //  Orm Embar S Major: b -38-1458-56-36.14-34.58.14-16.78
-                //Yevaud S Major: g -38-1458-56-36.14-34.58.14-16.78
-                //Tehanu S Major: d -58-14-56-36-12-58.34-16.78
-                //Kalessin S Major: j -58-14-56-36-12-58.34-16.78
-                //Bar Oth S Major: d -58-14-56-36-34-58.12-16.78
-                //Orm Irian S Major: j -58-14-56-36-34-58.12-16.78   
-                
-                // 9-call 140 - var not2 = "-38-1458-56-36.14-34.58.14-16.78".Replace("-", "x") + "-12";
-                // 12-call 152 - var not2 = "-38-1458-56-36.14-34.58.14-16.78".Replace("-", "x") + "-18";
-                // 14-call 129 var not2 = "-58-14-56-36-12-58.34-16.78".Replace("-", "x") + "-12";
-                // 19-call 127 var not2 = "-58-14-56-36-12-58.34-16.78".Replace("-", "x") + "-18";
-                
-                // 14-call 128 var not2 = "-58-14-56-36-34-58.12-16.78".Replace("-", "x") + "-12";
-                // 19-call 124 var not2 = "-58-14-56-36-34-58.12-16.78".Replace("-", "x") + "-18";
-                //  (136 with snap start)
-                //
-                // c.f. Glasgow 91
-                // Bristol > 160
-                // Superlative 134
-             methodObject = new Method(method, letter.ToString(), not2, 8, p.AllowSingles);
-            }
-            if (method == "Bastow")
-            {
-                //methodObject.FirstLeadOnly();
-                methodObject.LastLeadOnly();
-            }
-            p.AddMethod(methodObject);
-        }
-        if (p.Reverse)
-        {
-            var start = new Method("Null", " EC ", null, 8, p.AllowSingles);
-            //start.LastLeadOnly();
-            p.AddMethod(start);
-            p.FirstChoice = p.AllowSingles ? 3 : 2;
-            start.FirstLeadOnly();
-        }
-
-        if (methods.Contains("Bastow"))
-        {
-            // at least for Y and S then Bastow start seems to imply need to finish with bob
-            p.FirstChoice = (p.AllowSingles ? 3 : 2) * (p.Methods.Count() - 1) + 1;
-        }
-       
-
-        p.MusicalPreferences = new MusicalPreferences();
+      p.MusicalPreferences = new MusicalPreferences();
         p.MusicalPreferences.Init();
-        _tables.Initialise(p);
+      _tables.Initialise(p);
+      p.FirstChoice = p.AllowSingles ? 3 : 2;
     }
 
     public void InitialiseWithSnapStart(string method)
@@ -434,6 +361,7 @@ namespace BellRinging
           //    )
 
           //&& _composition.Imbalance < 5
+          //&& (maxLeadIndex < 7 || _composition.Calls > 2)
           && _composition.Calls <= problem.MaxCalls
 
          // && ( maxLeadIndex != 16 ||)
