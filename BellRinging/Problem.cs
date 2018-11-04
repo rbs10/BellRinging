@@ -93,5 +93,6 @@ namespace BellRinging
     public int MaxBobs { get; set; }
 
     public HashSet<int> allowedPartEnds = new HashSet<int>();
+    internal bool Optimise;
   }
 }

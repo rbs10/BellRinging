@@ -44,7 +44,7 @@ namespace BellRinging
              // "London", 
               //"Pudsey"
               //,
-             method2
+             "Cambridge", "Yorkshire", "Superlative", "Lessness", "Bristol", "Cornwall", "London"
               //,
               //"Bastow"
              // ,

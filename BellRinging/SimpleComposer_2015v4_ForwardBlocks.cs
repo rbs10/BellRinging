@@ -79,8 +79,8 @@ namespace BellRinging
         public void Initialise(string method2)
         {
             MethodLibrary lib = new MethodLibrary();
-            int blockLength = 7;
-            int parts = 6;
+            int blockLength = 8;
+            int parts = 5;
             int l = 32 * parts * blockLength; // 2016;// -10 * 32;
             sharedStats.bestTotalMusic = 0; // start looking for some music
                                             //Problem p = new Problem()
@@ -102,7 +102,7 @@ namespace BellRinging
 
             Problem p = new Problem()
             {
-                TenorsTogether = false,
+                TenorsTogether = true,
                 AllowSingles = true,
                 MinLeads = (l / 32) - 1,
                 MaxLeads = l / 32,
@@ -113,8 +113,11 @@ namespace BellRinging
                 VariableHunt = false,
                 MusicDelta = 50,
                 RotateCompositions = true,
-                ExcludeUnrungMethodsFromBalance = false
+                ExcludeUnrungMethodsFromBalance = false,
+                Optimise = false
             };
+
+      var pickled = true;
 
             /*
              1,792 Spliced Surprise Major (8 methods)
@@ -132,7 +135,8 @@ namespace BellRinging
               new string[] { 
              
              // "Lincolnshire","Rutland"
-             method2
+             
+             "Cambridge", "Yorkshire", "Superlative", "Lessness", "Bristol", "Cornwall", "London"
              //"Rutland",
                //"London", "Uxbridge", "Lincolnshire", "Double Dublin", "Yorkshire"
               //, "Superlative"
@@ -181,14 +185,22 @@ namespace BellRinging
             {
                 ++index;
                 char letter = method[0];
-                if (method == "Lincolnshire") letter = 'N';
-                if (method == "Belfast") letter = 'F';
-                if (method == "Cassiobury") letter = 'O';
-                if (method == "Cornwall") letter = 'E';
-                if (method == "Lindum") letter = 'M';
-                if (method == "Wembley") letter = 'X';
-                if (method == "Cray") letter = 'K';
-                if (method == "Preston") letter = 'H';
+        if (!pickled)
+        {
+          if (method == "Lincolnshire") letter = 'N';
+          if (method == "Belfast") letter = 'F';
+          if (method == "Cassiobury") letter = 'O';
+          if (method == "Cornwall") letter = 'E';
+          if (method == "Lindum") letter = 'M';
+          if (method == "Wembley") letter = 'X';
+          if (method == "Cray") letter = 'K';
+          if (method == "Preston") letter = 'H';
+        }
+        else
+        {
+          if (method == "Cornwall") letter = 'W';
+          if (method == "Lessness") letter = 'E';
+        }
                 Method methodObject;
                 if (method == "Bastow")
                 {
@@ -602,7 +614,7 @@ namespace BellRinging
                             //&& ( (maxLeadIndex != problem.BlockLength-1) || allowedPartEnds.Contains(nextLead)) 
 
                             // use all the methods
-                        && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
+                        && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 2)
 
 
                        //&& (maxLeadIndex > problem.BlockLength || _composition.Calls < 7)
@@ -919,7 +931,10 @@ namespace BellRinging
                                     {
                                         _composition.TimeToFind = DateTime.UtcNow - _startTime;
                                         _receiver.AddComposition(_composition.Clone());
-                                        Optimise(_composition, _receiver);
+                    if (problem.Optimise)
+                    {
+                      Optimise(_composition, _receiver);
+                    }
                                     }
 
                                     if (totalScore > bestMusic[group])
