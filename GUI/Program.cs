@@ -24,8 +24,8 @@ namespace GUI
        // "Frodsham", "Turramurra"
 
         //"Eggybread",
-
-         "Deva", "Bristol", "Yorkshire", "Cambridge", "Superlative", "London", "Lessness", "Cornwall"
+        "Cambridge"
+         //"Deva", "Bristol", "Yorkshire", "Cambridge", "Superlative", "London", "Lessness", "Cornwall"
          //, "Bristol", "Deva", "Cornwall", "Lessness", "Superlative", "Cambridge", "London"
          //, "Superlative", "Cambridge", "Lincolnshire", "Pudsey", "Bristol",
         //  "Ashtead", "Cassiobury", "Cornwall","Tavistock",

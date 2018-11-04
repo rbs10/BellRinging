@@ -113,7 +113,8 @@ namespace BellRinging
                 VariableHunt = false,
                 MusicDelta = 50,
                 RotateCompositions = true,
-                ExcludeUnrungMethodsFromBalance = false
+                ExcludeUnrungMethodsFromBalance = false,
+                MaxCalls = 12
             };
 
             /*
@@ -605,95 +606,96 @@ namespace BellRinging
                         && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
 
 
-                       //&& (maxLeadIndex > problem.BlockLength || _composition.Calls < 7)
-                            //&& (maxLeadIndex > problem.BlockLength|| _composition.COM < 9)
+                    && _composition.Calls <= problem.MaxCalls
+                          //&& (maxLeadIndex > problem.BlockLength || _composition.Calls < 7)
+                          //&& (maxLeadIndex > problem.BlockLength|| _composition.COM < 9)
 
-                       // && (maxLeadIndex > problem.BlockLength || _composition.COM < Math.Min(9,1 + 9 *maxLeadIndex/problem.BlockLength))
+                          // && (maxLeadIndex > problem.BlockLength || _composition.COM < Math.Min(9,1 + 9 *maxLeadIndex/problem.BlockLength))
 
-                        //&& (maxLeadIndex != problem.BlockLength - 1 ||
-                        //  (
-                        //    //problem.allowedPartEnds.Count == 0 || problem.allowedPartEnds.Contains(nextLead)  &&
-                        //   _composition.Calls < 7 && _composition.COM < 10))
+                          //&& (maxLeadIndex != problem.BlockLength - 1 ||
+                          //  (
+                          //    //problem.allowedPartEnds.Count == 0 || problem.allowedPartEnds.Contains(nextLead)  &&
+                          //   _composition.Calls < 7 && _composition.COM < 10))
 
-                       //     && _composition.Calls + _composition.COM < 45
-                            //    && _composition.Calls + _composition.COM < 45 * maxLeadIndex/maxLeads + 5
-                            // && _composition.Calls < 21
-                            // avoid lots of singles
-                            //&& ( maxLeadIndex > maxLeads - 5 || choices[maxLeadIndex] != 2 )
+                          //     && _composition.Calls + _composition.COM < 45
+                          //    && _composition.Calls + _composition.COM < 45 * maxLeadIndex/maxLeads + 5
+                          // && _composition.Calls < 21
+                          // avoid lots of singles
+                          //&& ( maxLeadIndex > maxLeads - 5 || choices[maxLeadIndex] != 2 )
 
 
                           // this is expensive - better to work out once got something that comes round
-                            //&&  IsTrue(nextLead, leads, maxLeadIndex)  // next lead is true against what got so far
+                          //&&  IsTrue(nextLead, leads, maxLeadIndex)  // next lead is true against what got so far
 
                           // obsoleted by allowed part ends for cyclic composition
-                            // && maxLeadIndex + _tables.leadsToEnd[nextLead] < maxLeads // could come round in time
+                          // && maxLeadIndex + _tables.leadsToEnd[nextLead] < maxLeads // could come round in time
 
                           // constraint to go through Cambridge group sBIM finish
-                            //&& (nextLead == 3910 || maxLeadIndex != maxLeads - 5 ) // 63 - 5 = 58
+                          //&& (nextLead == 3910 || maxLeadIndex != maxLeads - 5 ) // 63 - 5 = 58
 
                           // try and get a largely tenors together compostion
-                            //&& ( maxLeadIndex > 58 || Row.FromNumber(nextLead).IsTenorsTogetherLeadEnd)
+                          //&& ( maxLeadIndex > 58 || Row.FromNumber(nextLead).IsTenorsTogetherLeadEnd)
 
                           //&& totalChoices < 30
 
 
-                         //&& totalMusic * maxLeads >= (80 * maxLeadIndex * bestTotalMusic) / 100 - 5
+                          //&& totalMusic * maxLeads >= (80 * maxLeadIndex * bestTotalMusic) / 100 - 5
 
                           // aiming for superlative score above 90)
-                            //&& totalMusic >= maxLeadIndex * ( 90.0/63 * 0.8) - 5
-                            //&& totalMusic >= maxLeadIndex * (260 / 63 * 0.8) - 5
-                            // && totalMusic >= maxLeadIndex * (700 / 63 * 0.8) - 5 // was 473
-                            //&& totalMusic >= bestMusic[maxLeads - 1] - (maxLeads - 1 - maxLeadIndex) * _tables.maxMusic // could be more miscal
-                            //&& totalMusic >= bestMusic[maxLeads - 1] - (maxLeads - 1 - maxLeadIndex) * _tables.maxMusic -1 // could be more miscal
-                            /*
-                             * 
-                             *  YORKSHIRE
-                             * 
-                             * got us to 5
-                            && ((totalMusic >= 3) || (maxLeadIndex < 20))
-                            && ((totalMusic >= 4) || (maxLeadIndex < 30))
-                            && ((totalMusic >= 2) || (maxLeadIndex < 10))
-                             * 
-                             * 
-            
-                             * also 5 quite quick
-                            && ((totalMusic >= 5) || (maxLeadIndex < 36))
-                            && ((totalMusic >= 4) || (maxLeadIndex < 24))
-                            && ((totalMusic >= 3) || (maxLeadIndex < 16))
-                            && ((totalMusic >= 2) || (maxLeadIndex < 8))
-                             * 
-                             *  5 all searched           
-                            && ((totalMusic >= 5) || (maxLeadIndex < 28))
-                            && ((totalMusic >= 4) || (maxLeadIndex < 21))
-                            && ((totalMusic >= 3) || (maxLeadIndex < 14))
+                          //&& totalMusic >= maxLeadIndex * ( 90.0/63 * 0.8) - 5
+                          //&& totalMusic >= maxLeadIndex * (260 / 63 * 0.8) - 5
+                          // && totalMusic >= maxLeadIndex * (700 / 63 * 0.8) - 5 // was 473
+                          //&& totalMusic >= bestMusic[maxLeads - 1] - (maxLeads - 1 - maxLeadIndex) * _tables.maxMusic // could be more miscal
+                          //&& totalMusic >= bestMusic[maxLeads - 1] - (maxLeads - 1 - maxLeadIndex) * _tables.maxMusic -1 // could be more miscal
+                          /*
+                           * 
+                           *  YORKSHIRE
+                           * 
+                           * got us to 5
+                          && ((totalMusic >= 3) || (maxLeadIndex < 20))
+                          && ((totalMusic >= 4) || (maxLeadIndex < 30))
+                          && ((totalMusic >= 2) || (maxLeadIndex < 10))
+                           * 
+                           * 
 
-                             * 7 in 60 leads
-                            && ((totalMusic >= 6) || (maxLeadIndex < 35))
-                            && ((totalMusic >= 5) || (maxLeadIndex < 28))
-                            && ((totalMusic >= 4) || (maxLeadIndex < 21))
-                            && ((totalMusic >= 3) || (maxLeadIndex < 14))
-            
-                             * * 6 in 1346 all done - nothing else
-                            && ((totalMusic >= 7) || (maxLeadIndex < 42))
-                            && ((totalMusic >= 6) || (maxLeadIndex < 35))
-                            && ((totalMusic >= 5) || (maxLeadIndex < 28))
-                            && ((totalMusic >= 4) || (maxLeadIndex < 21))
-                            && ((totalMusic >= 3) || (maxLeadIndex < 14)) 
-                             * 
-                             * 8 at 1920 running to 60 leads
-                            && ((totalMusic >= 7) || (maxLeadIndex < 48))
-                            && ((totalMusic >= 6) || (maxLeadIndex < 35))
-                            && ((totalMusic >= 5) || (maxLeadIndex < 28))
-                            && ((totalMusic >= 4) || (maxLeadIndex < 21))
-                            && ((totalMusic >= 3) || (maxLeadIndex < 14))* */
+                           * also 5 quite quick
+                          && ((totalMusic >= 5) || (maxLeadIndex < 36))
+                          && ((totalMusic >= 4) || (maxLeadIndex < 24))
+                          && ((totalMusic >= 3) || (maxLeadIndex < 16))
+                          && ((totalMusic >= 2) || (maxLeadIndex < 8))
+                           * 
+                           *  5 all searched           
+                          && ((totalMusic >= 5) || (maxLeadIndex < 28))
+                          && ((totalMusic >= 4) || (maxLeadIndex < 21))
+                          && ((totalMusic >= 3) || (maxLeadIndex < 14))
+
+                           * 7 in 60 leads
+                          && ((totalMusic >= 6) || (maxLeadIndex < 35))
+                          && ((totalMusic >= 5) || (maxLeadIndex < 28))
+                          && ((totalMusic >= 4) || (maxLeadIndex < 21))
+                          && ((totalMusic >= 3) || (maxLeadIndex < 14))
+
+                           * * 6 in 1346 all done - nothing else
+                          && ((totalMusic >= 7) || (maxLeadIndex < 42))
+                          && ((totalMusic >= 6) || (maxLeadIndex < 35))
+                          && ((totalMusic >= 5) || (maxLeadIndex < 28))
+                          && ((totalMusic >= 4) || (maxLeadIndex < 21))
+                          && ((totalMusic >= 3) || (maxLeadIndex < 14)) 
+                           * 
+                           * 8 at 1920 running to 60 leads
+                          && ((totalMusic >= 7) || (maxLeadIndex < 48))
+                          && ((totalMusic >= 6) || (maxLeadIndex < 35))
+                          && ((totalMusic >= 5) || (maxLeadIndex < 28))
+                          && ((totalMusic >= 4) || (maxLeadIndex < 21))
+                          && ((totalMusic >= 3) || (maxLeadIndex < 14))* */
 
                           //&& ((totalMusic >= 2) || (maxLeadIndex < 14))
-                            //&& ((totalMusic >= 3) || (maxLeadIndex < 21))
-                            //&& ((totalMusic >= 4) || (maxLeadIndex < 28))
-                            //&& ((totalMusic >= 5) || (maxLeadIndex < 35))
-                            //&& ((totalMusic >= 6) || (maxLeadIndex < 48))
-                            //&& ((totalMusic >= 7) || (maxLeadIndex < 54))
-                            //&& ((totalMusic >= 2) || (maxLeadIndex < 7))
+                          //&& ((totalMusic >= 3) || (maxLeadIndex < 21))
+                          //&& ((totalMusic >= 4) || (maxLeadIndex < 28))
+                          //&& ((totalMusic >= 5) || (maxLeadIndex < 35))
+                          //&& ((totalMusic >= 6) || (maxLeadIndex < 48))
+                          //&& ((totalMusic >= 7) || (maxLeadIndex < 54))
+                          //&& ((totalMusic >= 2) || (maxLeadIndex < 7))
                           )
                         {
                             totalMusic += _tables.music[currentLead, choices[maxLeadIndex]];

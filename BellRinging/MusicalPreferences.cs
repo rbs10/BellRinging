@@ -57,13 +57,14 @@ namespace BellRinging
 
       //InitNamedRuns();
 
-      InitInteriorRuns();
+      //InitInteriorRuns();
+
+        InitSJT();
 
       foreach ( var row in Row.AllRows)
           {
               scores[row.ToNumber()] = Score(row);
           }
-       // InitSJT();
     }
 
     void InitNamedRuns()
@@ -487,7 +488,11 @@ namespace BellRinging
       {
         score += lastRowScore;
         int rowScore = this.scores[r.ToNumber()];
-        lastRowScore = rowScore;
+        if (rowInLead % 2 == 0)
+        {
+          rowScore = 0; //  Half-muffled
+        }
+          lastRowScore = rowScore;
         if (rowInLead % 2 == 0)
         {
           if ( r.ToString().EndsWith("87"))
