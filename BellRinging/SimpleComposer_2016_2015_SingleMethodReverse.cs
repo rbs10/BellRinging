@@ -17,18 +17,18 @@ namespace BellRinging
         {
             MethodLibrary lib = new MethodLibrary();
             int l = 1918;// -10 * 32;
-            bestTotalMusic = 0; //225 * l / 2500; // start looking for some music
+            bestTotalMusic = 80; //225 * l / 2500; // start looking for some music
             Problem p = new Problem()
             {
-                TenorsTogether = true,
+                TenorsTogether = false,
                 AllowSingles = true,
                 MinLeads = l/32,
                 MaxLeads = l / 32 + 1,
                 MinLength = l,
                 MaxLength = l,
                 Reverse = false,
-                MusicDelta = 10,
-                MaxCalls = 12,
+                MusicDelta = 5,
+                MaxCalls = 16,
                  MaxBobs = 9999, 
                  MaxSingles = 9999, 
                   RotateCompositions = false, // not a block composition engine
