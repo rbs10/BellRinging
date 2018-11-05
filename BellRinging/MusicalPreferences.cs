@@ -52,18 +52,18 @@ namespace BellRinging
     {
 
       //Init2016();
-      //InitFlat();
+      InitFlat();
       //InitCyclic4part();
 
       //InitNamedRuns();
 
-      InitInteriorRuns();
+     // InitInteriorRuns();
+      // InitSJT();
 
       foreach ( var row in Row.AllRows)
           {
               scores[row.ToNumber()] = Score(row);
           }
-       // InitSJT();
     }
 
     void InitNamedRuns()

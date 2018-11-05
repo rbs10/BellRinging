@@ -79,8 +79,8 @@ namespace BellRinging
         public void Initialise(string method2)
         {
             MethodLibrary lib = new MethodLibrary();
-            int blockLength = 8;
-            int parts = 5;
+            int blockLength = 14;
+            int parts = 3;
             int l = 32 * parts * blockLength; // 2016;// -10 * 32;
             sharedStats.bestTotalMusic = 0; // start looking for some music
                                             //Problem p = new Problem()
@@ -98,7 +98,7 @@ namespace BellRinging
                                             //    RotateCompositions = false
                                             //};
 
-      var courseEndsXXX8 = false;
+      var courseEndsXXX8 = "5678";
 
             Problem p = new Problem()
             {
@@ -114,7 +114,8 @@ namespace BellRinging
                 MusicDelta = 50,
                 RotateCompositions = true,
                 ExcludeUnrungMethodsFromBalance = false,
-                Optimise = false
+                Optimise = false,
+                MaxCalls = 999
             };
 
       var pickled = true;
@@ -285,10 +286,10 @@ namespace BellRinging
             problem.allowedPartEnds.Add(Row.FromString("18674523").ToNumber());  
             */
 
-      if (courseEndsXXX8)
+      if (courseEndsXXX8 != null)
       {
         problem.allowedPartEnds = new HashSet<int>(
-          Row.AllRows.Where(r => r.ToString().StartsWith("1") && r.ToString().EndsWith("8"))
+          Row.AllRows.Where(r => r.ToString().StartsWith("1") && r.ToString().EndsWith(courseEndsXXX8))
           .Select(r => r.ToNumber()));
       }
 
@@ -614,10 +615,10 @@ namespace BellRinging
                             //&& ( (maxLeadIndex != problem.BlockLength-1) || allowedPartEnds.Contains(nextLead)) 
 
                             // use all the methods
-                        && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 2)
+                        && (maxLeadIndex > problem.BlockLength || _composition.Imbalance < 3)
 
 
-                       //&& (maxLeadIndex > problem.BlockLength || _composition.Calls < 7)
+                       && (maxLeadIndex > problem.BlockLength || _composition.Calls < problem.MaxCalls)
                             //&& (maxLeadIndex > problem.BlockLength|| _composition.COM < 9)
 
                        // && (maxLeadIndex > problem.BlockLength || _composition.COM < Math.Min(9,1 + 9 *maxLeadIndex/problem.BlockLength))
